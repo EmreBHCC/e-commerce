@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopX – Kontrol Paneli v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css?v=2" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ──────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">⚙️</div>
+      <div>
+        <div class="logo-title">Shop<strong>X</strong></div>
+        <div class="logo-sub">Admin Paneli</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" id="nav-logs" onclick="switchTab('logs')">
+        <span class="nav-icon">📊</span>
+        <span>Canlı Loglar</span>
+        <span class="nav-badge" id="nav-badge-logs">0</span>
+      </button>
+      <button class="nav-item" id="nav-control" onclick="switchTab('control')">
+        <span class="nav-icon">🎮</span>
+        <span>Kontrol Merkezi</span>
+      </button>
+      <button class="nav-item" id="nav-subjects" onclick="switchTab('subjects')">
+        <span class="nav-icon">🧪</span>
+        <span>Denekler</span>
+        <span class="nav-badge" id="nav-badge-subjects">0</span>
+      </button>
+      <button class="nav-item" id="nav-stats" onclick="switchTab('stats')">
+        <span class="nav-icon">📈</span>
+        <span>İstatistikler</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-status">
+      <div class="status-indicator" id="status-indicator">
+        <div class="status-dot disconnected" id="status-dot"></div>
+        <span id="status-text">Bağlantı bekleniyor...</span>
+      </div>
+      <div class="active-subject-bar" id="active-subject-bar" style="display:none">
+        <div class="asb-dot"></div>
+        <div class="asb-info">
+          <div class="asb-label">Aktif Denek</div>
+          <div class="asb-name" id="asb-name">—</div>
+        </div>
+      </div>
+      <div class="session-info" id="session-info">
+        <div>Oturum: <span id="admin-session-time">00:00</span></div>
+        <div>Log: <span id="admin-log-count">0</span> kayıt</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ──────────────────────────────────────────────── -->
+  <main class="main" id="main">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title" id="topbar-title">📊 Canlı Loglar</div>
+        <div class="topbar-sub" id="topbar-sub">Kullanıcı hareketleri gerçek zamanlı</div>
+      </div>
+      <div class="topbar-right">
+        <div class="sync-pulse" id="sync-pulse"></div>
+        <span class="sync-label" id="sync-label">Senkronize</span>
+        <button class="clear-btn" id="clear-all-btn" onclick="clearAllLogs()">🗑 Logları Temizle</button>
+      </div>
+    </div>
+
+    <!-- ── TAB: LOGS ─────────────────────────────────────── -->
+    <section class="tab-content active" id="tab-logs">
+      <div class="filter-bar">
+        <button class="filter-chip active" data-filter="all" onclick="applyFilter('all', this)">Tümü</button>
+        <button class="filter-chip" data-filter="system" onclick="applyFilter('system', this)">🔧 Sistem</button>
+        <button class="filter-chip" data-filter="navigation" onclick="applyFilter('navigation', this)">🧭 Navigasyon</button>
+        <button class="filter-chip" data-filter="product" onclick="applyFilter('product', this)">📦 Ürün</button>
+        <button class="filter-chip" data-filter="cart" onclick="applyFilter('cart', this)">🛒 Sepet</button>
+        <button class="filter-chip" data-filter="search" onclick="applyFilter('search', this)">🔍 Arama</button>
+        <button class="filter-chip" data-filter="ui" onclick="applyFilter('ui', this)">🖱 UI</button>
+        <div class="filter-spacer"></div>
+        <label class="auto-scroll-toggle">
+          <input type="checkbox" id="auto-scroll-check" checked />
+          <span>Otomatik Kaydır</span>
+        </label>
+      </div>
+      <div class="log-stream" id="log-stream">
+        <div class="log-empty" id="log-empty">
+          <div class="log-empty-icon">📡</div>
+          <div class="log-empty-title">Bağlantı bekleniyor</div>
+          <div class="log-empty-sub">Ana sayfayı aynı tarayıcıda açtığınızda loglar burada görünecek</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB: CONTROL ──────────────────────────────────── -->
+    <section class="tab-content" id="tab-control">
+      <div class="control-grid">
+
+        <div class="control-card">
+          <div class="control-card-header">
+            <span class="control-card-icon">⚡</span>
+            <div>
+              <div class="control-card-title">Flaş İndirim Popup</div>
+              <div class="control-card-sub">Ana sitede popup tetikle</div>
+            </div>
+          </div>
+          <div class="control-card-body">
+            <button class="action-btn primary" onclick="sendCommand('SHOW_FLASH_POPUP')">⚡ Popup Göster</button>
+            <button class="action-btn danger" onclick="sendCommand('CLOSE_FLASH_POPUP')">✕ Popup Kapat</button>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-card-header">
+            <span class="control-card-icon">🔌</span>
+            <div>
+              <div class="control-card-title">İnternet Simülasyonu</div>
+              <div class="control-card-sub">Kullanıcıya bağlantı hatası göster</div>
+            </div>
+          </div>
+          <div class="control-card-body">
+            <button class="action-btn warning" onclick="sendCommand('SIMULATE_OFFLINE')">📵 İnternet Kes</button>
+            <button class="action-btn success" onclick="sendCommand('SIMULATE_ONLINE')">✅ İnterneti Geri Al</button>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-card-header">
+            <span class="control-card-icon">💬</span>
+            <div>
+              <div class="control-card-title">Özel Toast Bildirimi</div>
+              <div class="control-card-sub">Kullanıcıya mesaj gönder</div>
+            </div>
+          </div>
+          <div class="control-card-body">
+            <input class="ctrl-input" id="toast-message" placeholder="Mesaj yazın..." value="🎉 Özel fırsatınız var!" />
+            <div class="ctrl-row">
+              <select class="ctrl-select" id="toast-type">
+                <option value="success">✅ Başarı</option>
+                <option value="info">ℹ️ Bilgi</option>
+                <option value="error">❌ Hata</option>
+              </select>
+              <button class="action-btn primary" onclick="sendToast()">Gönder</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-card-header">
+            <span class="control-card-icon">📢</span>
+            <div>
+              <div class="control-card-title">Özel Duyuru Popup</div>
+              <div class="control-card-sub">Tam ekran duyuru modalı aç</div>
+            </div>
+          </div>
+          <div class="control-card-body">
+            <input class="ctrl-input" id="popup-title" placeholder="Başlık" value="🔥 Süreli Fırsat!" />
+            <textarea class="ctrl-textarea" id="popup-body" placeholder="İçerik">Bu fırsat sadece 5 dakika geçerlidir! Hemen sepete ekleyin.</textarea>
+            <button class="action-btn primary" onclick="sendCustomPopup()">📢 Popup Gönder</button>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-card-header">
+            <span class="control-card-icon">🖼</span>
+            <div>
+              <div class="control-card-title">Banner Kontrolü</div>
+              <div class="control-card-sub">Slider'ı uzaktan yönet</div>
+            </div>
+          </div>
+          <div class="control-card-body ctrl-row-wrap">
+            <button class="action-btn secondary" onclick="sendCommand('BANNER_PREV')">← Önceki</button>
+            <button class="action-btn secondary" onclick="sendCommand('BANNER_NEXT')">Sonraki →</button>
+            <button class="action-btn secondary" onclick="sendCommand('BANNER_SLIDE_0')">Slayt 1</button>
+            <button class="action-btn secondary" onclick="sendCommand('BANNER_SLIDE_1')">Slayt 2</button>
+            <button class="action-btn secondary" onclick="sendCommand('BANNER_SLIDE_2')">Slayt 3</button>
+          </div>
+        </div>
+
+        <div class="control-card">
+          <div class="control-card-header">
+            <span class="control-card-icon">🏠</span>
+            <div>
+              <div class="control-card-title">Sayfa Yönlendirme</div>
+              <div class="control-card-sub">Ana siteyi yönlendir</div>
+            </div>
+          </div>
+          <div class="control-card-body ctrl-row-wrap">
+            <button class="action-btn secondary" onclick="sendCommand('GO_HOME')">🏠 Ana Sayfa</button>
+            <button class="action-btn secondary" onclick="sendCommand('OPEN_CART')">🛒 Sepet Aç</button>
+            <button class="action-btn secondary" onclick="sendCommand('OPEN_CHECKOUT')">💳 Ödeme</button>
+            <button class="action-btn secondary" onclick="sendCommand('OPEN_HELP')">❓ Yardım</button>
+            <button class="action-btn danger" onclick="sendCommand('SCROLL_TO_TOP')">⬆ Yukarı Kaydır</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── TAB: SUBJECTS ─────────────────────────────────── -->
+    <section class="tab-content" id="tab-subjects">
+      <div class="subjects-layout">
+
+        <!-- LEFT: New subject + active session -->
+        <div class="subjects-left">
+
+          <!-- Create New Subject -->
+          <div class="subj-card">
+            <div class="subj-card-title">🧪 Yeni Denek Başlat</div>
+            <div class="subj-form">
+              <input class="ctrl-input" id="subj-name" placeholder="Denek adı / kodu (örn: D-01)" />
+              <textarea class="ctrl-textarea" id="subj-notes" placeholder="Notlar (isteğe bağlı)" rows="2"></textarea>
+              <button class="action-btn primary" id="btn-start-subject" onclick="startSubjectSession()">
+                ▶ Oturumu Başlat
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Session Monitor -->
+          <div class="subj-card" id="active-session-card" style="display:none">
+            <div class="subj-card-title">⏱ Aktif Oturum</div>
+            <div class="active-sess-info">
+              <div class="active-sess-row">
+                <span class="active-sess-label">Denek</span>
+                <span class="active-sess-val" id="active-sess-name">—</span>
+              </div>
+              <div class="active-sess-row">
+                <span class="active-sess-label">Başlangıç</span>
+                <span class="active-sess-val" id="active-sess-start">—</span>
+              </div>
+              <div class="active-sess-row">
+                <span class="active-sess-label">Süre</span>
+                <span class="active-sess-val accent" id="active-sess-elapsed">00:00</span>
+              </div>
+              <div class="active-sess-row">
+                <span class="active-sess-label">Log sayısı</span>
+                <span class="active-sess-val accent" id="active-sess-logcount">0</span>
+              </div>
+            </div>
+            <button class="action-btn danger" id="btn-stop-subject" onclick="stopSubjectSession()">
+              ⏹ Oturumu Durdur
+            </button>
+          </div>
+
+          <!-- Data Management -->
+          <div class="subj-card">
+            <div class="subj-card-title">💾 Veri Yönetimi</div>
+            <div class="control-card-body">
+              <button class="action-btn success" onclick="exportAllSessions()">⬇ Tüm Verileri İndir (JSON)</button>
+              <button class="action-btn secondary" onclick="exportAllSessionsCSV()">📊 CSV Olarak İndir</button>
+              <button class="action-btn danger" onclick="clearAllSessions()">🗑 Tüm Oturumları Sil</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Session List -->
+        <div class="subjects-right">
+          <div class="subj-list-header">
+            <div class="subj-card-title">📋 Oturum Geçmişi</div>
+            <span class="subj-count" id="subj-count">0 oturum</span>
+          </div>
+          <div class="subj-list" id="subj-list">
+            <div class="subj-empty" id="subj-empty">
+              <div style="font-size:2.5rem;opacity:.3">🧪</div>
+              <div style="color:var(--text3);font-size:.82rem;margin-top:8px">Henüz oturum yok</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── TAB: STATS ─────────────────────────────────────── -->
+    <section class="tab-content" id="tab-stats">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="stat-total">0</div><div class="stat-label">Toplam Log</div></div>
+        <div class="stat-card"><div class="stat-icon">🛒</div><div class="stat-value" id="stat-cart">0</div><div class="stat-label">Sepet İşlemi</div></div>
+        <div class="stat-card"><div class="stat-icon">🔍</div><div class="stat-value" id="stat-search">0</div><div class="stat-label">Arama</div></div>
+        <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value" id="stat-product">0</div><div class="stat-label">Ürün Etkileşimi</div></div>
+        <div class="stat-card"><div class="stat-icon">🧭</div><div class="stat-value" id="stat-nav">0</div><div class="stat-label">Navigasyon</div></div>
+        <div class="stat-card"><div class="stat-icon">🖱</div><div class="stat-value" id="stat-ui">0</div><div class="stat-label">UI Etkileşimi</div></div>
+      </div>
+      <div class="chart-section">
+        <div class="chart-title">📊 Log Dağılımı</div>
+        <div class="chart-bars" id="chart-bars"></div>
+      </div>
+      <div class="timeline-section">
+        <div class="chart-title">🕐 Aktivite Akışı (Son 20)</div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── NOTIFICATION BELL ───────────────────────────────── -->
+  <div class="notif-bell" id="notif-bell" onclick="clearNotifBadge()">
+    🔔
+    <span class="notif-count" id="notif-count" style="display:none">0</span>
+  </div>
+
+  <script src="admin.js?v=2"></script>
+</body>
+</html>

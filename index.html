@@ -1,0 +1,569 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="ShopX - Türkiye'nin En Trend E-Ticaret Sitesi. Kadın ve Erkek için binlerce ürün." />
+    <title>ShopX – Türkiye'nin En Trend Mağazası</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ===================== GENDER SELECTION SCREEN ===================== -->
+    <div id="gender-screen" class="gender-screen">
+
+        <!-- Logo -->
+        <div class="gs-logo">
+            <span class="gs-logo-icon">🛍</span>
+            <span class="gs-logo-text">Shop<strong>X</strong></span>
+        </div>
+        <p class="gs-tagline">Sana özel alışveriş deneyimi için kategori seç</p>
+
+        <!-- Trust stats bar -->
+        <div class="gs-stats">
+            <div class="gs-stat">
+                <span class="gs-stat-num">10M+</span>
+                <span class="gs-stat-lbl">Ürün</span>
+            </div>
+            <div class="gs-stat-sep"></div>
+            <div class="gs-stat">
+                <span class="gs-stat-num">%60</span>
+                <span class="gs-stat-lbl">Kampanyalara kadar</span>
+            </div>
+            <div class="gs-stat-sep"></div>
+            <div class="gs-stat">
+                <span class="gs-stat-num">🔒</span>
+                <span class="gs-stat-lbl">Güvenli Ödeme</span>
+            </div>
+            <div class="gs-stat-sep"></div>
+            <div class="gs-stat">
+                <span class="gs-stat-num">🚚</span>
+                <span class="gs-stat-lbl">Ücretsiz Kargo</span>
+            </div>
+        </div>
+
+        <!-- STEP 1: Gender -->
+        <div id="gender-step-1" class="gender-step">
+            <div class="gender-cards">
+
+                <!-- KADIN -->
+                <button type="button" class="gender-card female" id="btn-female" onclick="selectGender('female')"
+                    aria-label="Kadın kategorisine gir">
+                    <span class="gc-shape gc-s1"></span>
+                    <span class="gc-shape gc-s2"></span>
+                    <span class="gc-emoji">👩</span>
+                    <span class="gc-body">
+                        <span class="gc-badge">Kadın</span>
+                        <span class="gc-title">Moda &amp; Güzellik</span>
+                        <span class="gc-sub">Yüz binlerce ürün sizi bekliyor</span>
+                        <span class="gc-tags">
+                            <span class="gc-tag">👗 Elbise</span>
+                            <span class="gc-tag">💄 Makyaj</span>
+                            <span class="gc-tag">👜 Çanta</span>
+                            <span class="gc-tag">👠 Ayakkabı</span>
+                        </span>
+                        <span class="gc-cta">Alışverişe Başla →</span>
+                    </span>
+                </button>
+
+                <!-- ERKEK -->
+                <button type="button" class="gender-card male" id="btn-male" onclick="selectGender('male')"
+                    aria-label="Erkek kategorisine gir">
+                    <span class="gc-shape gc-s1"></span>
+                    <span class="gc-shape gc-s2"></span>
+                    <span class="gc-emoji">👨</span>
+                    <span class="gc-body">
+                        <span class="gc-badge">Erkek</span>
+                        <span class="gc-title">Spor &amp; Teknoloji</span>
+                        <span class="gc-sub">En yeni ürünler, en iyi fiyatlar</span>
+                        <span class="gc-tags">
+                            <span class="gc-tag">👟 Spor</span>
+                            <span class="gc-tag">🎮 Gaming</span>
+                            <span class="gc-tag">⌚ Saat</span>
+                            <span class="gc-tag">👕 Giyim</span>
+                        </span>
+                        <span class="gc-cta">Alışverişe Başla →</span>
+                    </span>
+                </button>
+
+            </div>
+            <p class="gs-footer">Seçimini istediğin zaman üst menüden değiştirebilirsin</p>
+        </div>
+
+        <!-- STEP 2: Budget -->
+        <div id="gender-step-2" class="gender-step hidden">
+            <div class="budget-screen">
+                <div class="budget-icon" id="budget-gender-icon">🛍</div>
+                <h2 class="budget-title">Harika! Bir adım daha 👋</h2>
+                <p class="budget-subtitle">Bugünkü alışveriş bütçen ne kadar? Sana en uygun ürünleri önerelim.</p>
+                <div class="budget-options" id="budget-options">
+                    <button class="budget-btn" id="budget-1" onclick="selectBudget('low', '500 TL altı')"
+                        data-val="low">
+                        <span class="budget-emoji">💸</span>
+                        <span class="budget-label">500 TL Altı</span>
+                        <span class="budget-desc">Uygun fiyatlı seçenekler</span>
+                    </button>
+                    <button class="budget-btn" id="budget-2" onclick="selectBudget('medium', '500–1500 TL')"
+                        data-val="medium">
+                        <span class="budget-emoji">💳</span>
+                        <span class="budget-label">500 – 1.500 TL</span>
+                        <span class="budget-desc">Kalite-fiyat dengesi</span>
+                    </button>
+                    <button class="budget-btn" id="budget-3" onclick="selectBudget('high', '1500–3500 TL')"
+                        data-val="high">
+                        <span class="budget-emoji">💰</span>
+                        <span class="budget-label">1.500 – 3.500 TL</span>
+                        <span class="budget-desc">Premium ürünler</span>
+                    </button>
+                    <button class="budget-btn" id="budget-4" onclick="selectBudget('luxury', '3500 TL üstü')"
+                        data-val="luxury">
+                        <span class="budget-emoji">👑</span>
+                        <span class="budget-label">3.500 TL Üstü</span>
+                        <span class="budget-desc">Lüks koleksiyon</span>
+                    </button>
+                </div>
+                <button class="budget-skip" id="budget-skip" onclick="selectBudget('any', 'Belirtilmedi')">Şimdilik atla
+                    →</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===================== MAIN SHOP SCREEN ===================== -->
+    <div id="shop-screen" class="shop-screen hidden">
+
+        <!-- HEADER -->
+        <header class="header" id="main-header">
+            <div class="header-top">
+                <div class="container">
+                    <div class="header-top-inner">
+                        <span class="header-topbar-text">🚚 150 TL üzeri ücretsiz kargo &nbsp;|&nbsp; 🔒 Güvenli
+                            alışveriş &nbsp;|&nbsp; ⭐ 4.9/5 Müşteri Puanı</span>
+                        <div class="header-top-actions">
+                            <a href="#" id="link-track" onclick="openOrderTracking(); return false;">Sipariş Takibi</a>
+                            <a href="#" id="link-help" onclick="openHelp(); return false;">Yardım</a>
+                            <a href="#" id="link-switch-gender" onclick="switchGender(); return false;"
+                                class="switch-gender-link">🔄 Kategori Değiştir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-main">
+                <div class="container">
+                    <div class="header-main-inner">
+                        <div class="logo" id="main-logo" onclick="handleLogoClick()" title="Ana Sayfaya Git">
+                            <span class="logo-icon">🛍</span>
+                            <span class="logo-text">Shop<strong>X</strong></span>
+                            <span class="gender-badge" id="gender-badge"></span>
+                        </div>
+
+                        <div class="search-bar" id="search-container">
+                            <div class="search-inner">
+                                <input type="text" id="search-input" class="search-input"
+                                    placeholder="Ürün, kategori veya marka ara..."
+                                    oninput="handleSearchInput(this.value)"
+                                    onfocus="logAction('Arama kutusuna tıklandı')"
+                                    onkeydown="if(event.key==='Enter') doSearch()" aria-label="Ürün ara" />
+                                <button class="search-btn" id="search-btn" onclick="doSearch()" aria-label="Ara">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2.5">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <path d="m21 21-4.35-4.35" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="search-suggestions" id="search-suggestions"></div>
+                        </div>
+
+                        <div class="header-actions">
+                            <div class="header-action-item" id="account-btn" onclick="openAccount()" tabindex="0">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                <span>Hesabım</span>
+                            </div>
+
+                            <div class="header-action-item" id="favorites-btn" onclick="openFavorites()" tabindex="0">
+                                <div class="action-icon-wrap">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path
+                                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                                    </svg>
+                                    <span class="badge" id="fav-count">0</span>
+                                </div>
+                                <span>Favoriler</span>
+                            </div>
+
+                            <div class="header-action-item cart-action" id="cart-btn" onclick="openCart()" tabindex="0">
+                                <div class="action-icon-wrap">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="9" cy="21" r="1" />
+                                        <circle cx="20" cy="21" r="1" />
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                                    </svg>
+                                    <span class="badge" id="cart-count">0</span>
+                                </div>
+                                <span>Sepetim</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NAVIGATION -->
+            <nav class="nav" id="main-nav" aria-label="Ana Menü">
+                <div class="container">
+                    <ul class="nav-list" id="nav-list"></ul>
+                </div>
+            </nav>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content" id="main-content">
+            <!-- HOME VIEW -->
+            <div id="home-view">
+                <section class="hero-section" id="hero-section">
+                    <div class="banner-slider" id="banner-slider">
+                        <div class="banner-slides" id="banner-slides"></div>
+                        <button class="slider-btn prev" id="slider-prev" onclick="slideBanner(-1)"
+                            aria-label="Önceki">&#8249;</button>
+                        <button class="slider-btn next" id="slider-next" onclick="slideBanner(1)"
+                            aria-label="Sonraki">&#8250;</button>
+                        <div class="slider-dots" id="slider-dots"></div>
+                    </div>
+                </section>
+
+                <section class="categories-section" id="categories-section">
+                    <div class="container">
+                        <h2 class="section-title">Kategoriler</h2>
+                        <div class="categories-grid" id="categories-grid"></div>
+                    </div>
+                </section>
+
+                <section class="flash-sale-section" id="flash-sale">
+                    <div class="container">
+                        <div class="flash-header">
+                            <div class="flash-title-group">
+                                <span class="flash-icon">⚡</span>
+                                <h2 class="flash-title">Flaş İndirim</h2>
+                            </div>
+                            <div class="countdown" id="countdown">
+                                <div class="countdown-unit"><span id="cd-h">03</span><small>SA</small></div>
+                                <div class="countdown-sep">:</div>
+                                <div class="countdown-unit"><span id="cd-m">24</span><small>DK</small></div>
+                                <div class="countdown-sep">:</div>
+                                <div class="countdown-unit"><span id="cd-s">00</span><small>SN</small></div>
+                            </div>
+                            <a href="#" class="section-see-all" id="flash-see-all"
+                                onclick="showCategoryPage('flash', 'Flaş İndirim'); return false;">Tümünü Gör →</a>
+                        </div>
+                        <div class="products-grid" id="flash-products-grid"></div>
+                    </div>
+                </section>
+
+                <section class="products-section" id="recommended-section">
+                    <div class="container">
+                        <div class="section-header">
+                            <h2 class="section-title" id="recommended-title">Sana Özel Öneriler</h2>
+                            <a href="#" class="section-see-all" id="rec-see-all"
+                                onclick="showCategoryPage('recommended','Önerilen Ürünler'); return false;">Tümünü Gör
+                                →</a>
+                        </div>
+                        <div class="products-grid" id="recommended-products-grid"></div>
+                    </div>
+                </section>
+
+                <section class="promo-section" id="promo-section">
+                    <div class="container">
+                        <div class="promo-grid" id="promo-grid"></div>
+                    </div>
+                </section>
+
+                <section class="products-section" id="more-products-section">
+                    <div class="container">
+                        <div class="section-header">
+                            <h2 class="section-title">Çok Satanlar</h2>
+                            <a href="#" class="section-see-all" id="more-see-all"
+                                onclick="showCategoryPage('bestseller','Çok Satanlar'); return false;">Tümünü Gör →</a>
+                        </div>
+                        <div class="products-grid" id="more-products-grid"></div>
+                    </div>
+                </section>
+
+                <!-- BUDGET BANNER -->
+                <section class="budget-banner-section" id="budget-banner-section">
+                    <div class="container">
+                        <div class="budget-banner" id="budget-banner-box" onclick="openBudgetFilterModal()">
+                            <div class="budget-banner-text">
+                                <strong id="budget-banner-label">💰 Bütçene Göre Ürünler</strong>
+                                <span id="budget-banner-sub">Bütçe tercihin güncellemek için tıkla</span>
+                            </div>
+                            <button class="budget-change-btn">Bütçeni Güncelle →</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- CATEGORY / SEARCH RESULTS VIEW -->
+            <div id="category-view" class="hidden">
+                <div class="container">
+                    <div class="category-view-header">
+                        <button class="back-btn" id="back-btn" onclick="goHome()">
+                            ← <span id="back-label">Ana Sayfa</span>
+                        </button>
+                        <h2 class="category-view-title" id="category-view-title">Kategori</h2>
+                        <div class="sort-filter-row">
+                            <select class="sort-select" id="sort-select" onchange="sortProducts(this.value)">
+                                <option value="default">Varsayılan Sıralama</option>
+                                <option value="price-asc">Fiyat: Düşükten Yükseğe</option>
+                                <option value="price-desc">Fiyat: Yüksekten Düşüğe</option>
+                                <option value="rating">En Yüksek Puan</option>
+                                <option value="reviews">En Çok Değerlendirilen</option>
+                            </select>
+                            <span class="product-count-label" id="product-count-label">0 ürün</span>
+                        </div>
+                    </div>
+                    <div class="products-grid products-grid-wide" id="category-products-grid"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="footer" id="main-footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <div class="logo" onclick="goHome()">
+                            <span class="logo-icon">🛍</span>
+                            <span class="logo-text">Shop<strong>X</strong></span>
+                        </div>
+                        <p class="footer-desc">Türkiye'nin en trend e-ticaret platformu. Milyonlarca ürün, güvenli
+                            alışveriş.</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Kurumsal</h4>
+                        <ul>
+                            <li><a href="#" onclick="openInfoModal('about'); return false;">Hakkımızda</a></li>
+                            <li><a href="#" onclick="openInfoModal('career'); return false;">Kariyer</a></li>
+                            <li><a href="#" onclick="openInfoModal('press'); return false;">Basın</a></li>
+                            <li><a href="#" onclick="openInfoModal('investor'); return false;">Yatırımcı İlişkileri</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Yardım</h4>
+                        <ul>
+                            <li><a href="#" onclick="openOrderTracking(); return false;">Sipariş Takibi</a></li>
+                            <li><a href="#" onclick="openInfoModal('return'); return false;">İade &amp; Değişim</a></li>
+                            <li><a href="#" onclick="openHelp(); return false;">Sık Sorulan Sorular</a></li>
+                            <li><a href="#" onclick="openInfoModal('contact'); return false;">İletişim</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Güvenli Ödeme</h4>
+                        <div class="payment-badges">
+                            <span class="payment-badge">💳 Kredi Kartı</span>
+                            <span class="payment-badge">🏦 Havale</span>
+                            <span class="payment-badge">💰 Kapıda</span>
+                            <span class="payment-badge">📱 Mobil</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2026 ShopX. Tüm hakları saklıdır.</p>
+                    <div class="footer-links">
+                        <a href="#" onclick="openInfoModal('privacy'); return false;">Gizlilik Politikası</a>
+                        <a href="#" onclick="openInfoModal('kvkk'); return false;">KVKK</a>
+                        <a href="#" onclick="openInfoModal('terms'); return false;">Kullanım Koşulları</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div><!-- end shop-screen -->
+
+    <!-- ===================== CART DRAWER ===================== -->
+    <div class="drawer-overlay" id="cart-overlay" onclick="closeCart()"></div>
+    <aside class="drawer" id="cart-drawer" aria-label="Sepetim">
+        <div class="drawer-header">
+            <h3>🛒 Sepetim</h3>
+            <button class="drawer-close" id="cart-close" onclick="closeCart()">✕</button>
+        </div>
+        <div class="drawer-body" id="cart-body">
+            <div class="empty-state" id="cart-empty">
+                <span class="empty-icon">🛒</span>
+                <p>Sepetiniz boş</p>
+                <span>Ürün eklemek için alışverişe başlayın</span>
+            </div>
+            <div id="cart-items"></div>
+        </div>
+        <div class="drawer-footer" id="cart-footer">
+            <div class="cart-summary">
+                <div class="cart-summary-row"><span>Ürün Toplamı</span><span id="cart-subtotal">0 TL</span></div>
+                <div class="cart-summary-row"><span>Kargo</span><span id="cart-shipping"
+                        class="free-shipping">Ücretsiz</span></div>
+                <div class="cart-summary-row total-row"><span>Toplam</span><strong id="cart-total-price">0 TL</strong>
+                </div>
+            </div>
+            <button class="checkout-btn" id="checkout-btn" onclick="openCheckout()">Ödemeye Geç →</button>
+        </div>
+    </aside>
+
+    <!-- ===================== FAVORITES DRAWER ===================== -->
+    <div class="drawer-overlay" id="fav-overlay" onclick="closeFavorites()"></div>
+    <aside class="drawer" id="fav-drawer" aria-label="Favorilerim">
+        <div class="drawer-header">
+            <h3>❤️ Favorilerim</h3>
+            <button class="drawer-close" id="fav-close" onclick="closeFavorites()">✕</button>
+        </div>
+        <div class="drawer-body" id="fav-body">
+            <div class="empty-state" id="fav-empty">
+                <span class="empty-icon">❤️</span>
+                <p>Favori listeniz boş</p>
+                <span>Beğendiğin ürünleri kaydet</span>
+            </div>
+            <div id="fav-items"></div>
+        </div>
+    </aside>
+
+    <!-- ===================== PRODUCT MODAL ===================== -->
+    <div class="modal-overlay" id="product-overlay" onclick="closeProduct()"></div>
+    <div class="product-modal" id="product-modal" role="dialog">
+        <button class="modal-close" id="product-modal-close" onclick="closeProduct()">✕</button>
+        <div class="product-modal-inner" id="product-modal-inner"></div>
+    </div>
+
+    <!-- ===================== CHECKOUT MODAL ===================== -->
+    <div class="modal-overlay" id="checkout-overlay" onclick="closeCheckout()"></div>
+    <div class="checkout-modal" id="checkout-modal" role="dialog" aria-label="Ödeme" style="display:none">
+        <button class="modal-close" id="checkout-close" onclick="closeCheckout()">✕</button>
+        <div class="checkout-inner">
+            <div class="checkout-steps" id="checkout-steps">
+                <div class="checkout-step active" id="cstep-1"><span class="step-num">1</span><span
+                        class="step-lbl">Sepet</span></div>
+                <div class="checkout-step-line"></div>
+                <div class="checkout-step" id="cstep-2"><span class="step-num">2</span><span
+                        class="step-lbl">Adres</span></div>
+                <div class="checkout-step-line"></div>
+                <div class="checkout-step" id="cstep-3"><span class="step-num">3</span><span
+                        class="step-lbl">Ödeme</span></div>
+                <div class="checkout-step-line"></div>
+                <div class="checkout-step" id="cstep-4"><span class="step-num">✓</span><span
+                        class="step-lbl">Onay</span></div>
+            </div>
+            <div id="checkout-body"></div>
+        </div>
+    </div>
+
+    <!-- ===================== HELP MODAL ===================== -->
+    <div class="modal-overlay" id="help-overlay" onclick="closeHelp()"></div>
+    <div class="help-modal" id="help-modal" role="dialog" aria-label="Yardım" style="display:none">
+        <button class="modal-close" onclick="closeHelp()">✕</button>
+        <h2 class="help-title">🙋 Yardım Merkezi</h2>
+        <div class="help-tabs">
+            <button class="help-tab active" onclick="switchHelpTab('faq', this)">SSS</button>
+            <button class="help-tab" onclick="switchHelpTab('shipping', this)">Kargo</button>
+            <button class="help-tab" onclick="switchHelpTab('return', this)">İade</button>
+            <button class="help-tab" onclick="switchHelpTab('contact', this)">İletişim</button>
+        </div>
+        <div id="help-content"></div>
+        <div class="help-dev-section" id="help-dev-section">
+            <button class="dev-log-btn" id="dev-log-btn" onclick="openLogPanel(); closeHelp();">
+                📊 Sistem Aktivite Raporu
+            </button>
+        </div>
+    </div>
+
+    <!-- ===================== ORDER TRACKING MODAL ===================== -->
+    <div class="modal-overlay" id="tracking-overlay" onclick="closeOrderTracking()"></div>
+    <div class="info-modal" id="tracking-modal" role="dialog" style="display:none">
+        <button class="modal-close" onclick="closeOrderTracking()">✕</button>
+        <div id="tracking-content"></div>
+    </div>
+
+    <!-- ===================== INFO MODAL ===================== -->
+    <div class="modal-overlay" id="info-overlay" onclick="closeInfoModal()"></div>
+    <div class="info-modal" id="info-modal" role="dialog" style="display:none">
+        <button class="modal-close" onclick="closeInfoModal()">✕</button>
+        <div id="info-content"></div>
+    </div>
+
+    <!-- ===================== ACCOUNT MODAL ===================== -->
+    <div class="modal-overlay" id="account-overlay" onclick="closeAccount()"></div>
+    <div class="info-modal" id="account-modal" role="dialog" style="display:none">
+        <button class="modal-close" onclick="closeAccount()">✕</button>
+        <div id="account-content"></div>
+    </div>
+
+    <!-- ===================== BUDGET FILTER MODAL ===================== -->
+    <div class="modal-overlay" id="budget-filter-overlay" onclick="closeBudgetFilterModal()"></div>
+    <div class="info-modal" id="budget-filter-modal" role="dialog" style="display:none">
+        <button class="modal-close" onclick="closeBudgetFilterModal()">✕</button>
+        <div id="budget-filter-content"></div>
+    </div>
+
+    <!-- ===================== FLASH SALE POPUP ===================== -->
+    <div class="flash-popup" id="flash-popup" style="display:none">
+        <div class="flash-popup-header">
+            <span class="flash-popup-tag">⚡ FLAŞ İNDİRİM</span>
+            <button class="flash-popup-close" onclick="closeFlashPopup()">✕</button>
+        </div>
+        <div class="flash-popup-body" id="flash-popup-body"></div>
+        <div class="flash-popup-footer">
+            <div class="flash-popup-timer">
+                Bu teklif <span id="flash-popup-timer">02:00</span> içinde sona eriyor!
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== LOG PANEL (HIDDEN – dev only) ===================== -->
+    <div class="log-panel" id="log-panel" style="display:none">
+        <div class="log-panel-header">
+            <div class="log-panel-title">
+                <span>📊 Sistem Aktivite Raporu</span>
+                <span class="log-live-dot"></span>
+                <span class="log-live-text">CANLI</span>
+            </div>
+            <div class="log-panel-actions">
+                <button class="log-action-btn" id="log-filter-btn" onclick="toggleLogFilter()">🔽 Filtrele</button>
+                <button class="log-action-btn" id="log-export-btn" onclick="exportLogs()">⬇ İndir</button>
+                <button class="log-action-btn" id="log-clear-btn" onclick="clearLogs()">🗑 Temizle</button>
+                <button class="log-panel-close" id="log-panel-close" onclick="closeLogPanel()">✕</button>
+            </div>
+        </div>
+        <div class="log-filter-bar" id="log-filter-bar">
+            <button class="log-filter-chip active" data-filter="all" onclick="filterLogs('all', this)">Tümü</button>
+            <button class="log-filter-chip" data-filter="navigation"
+                onclick="filterLogs('navigation', this)">Navigasyon</button>
+            <button class="log-filter-chip" data-filter="product" onclick="filterLogs('product', this)">Ürün</button>
+            <button class="log-filter-chip" data-filter="cart" onclick="filterLogs('cart', this)">Sepet</button>
+            <button class="log-filter-chip" data-filter="search" onclick="filterLogs('search', this)">Arama</button>
+            <button class="log-filter-chip" data-filter="ui" onclick="filterLogs('ui', this)">UI</button>
+            <button class="log-filter-chip" data-filter="system" onclick="filterLogs('system', this)">Sistem</button>
+        </div>
+        <div class="log-entries" id="log-entries"></div>
+        <div class="log-panel-footer">
+            <span id="log-total-count">0 log kaydı</span>
+            <span id="log-session-time">Oturum: 00:00</span>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
