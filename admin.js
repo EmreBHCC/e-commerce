@@ -1,13 +1,30 @@
 /* ── admin.js – ShopX Admin Control Panel ── */
 
-// ── BROADCASTCHANNEL ───────────────────────────────────
-const CHANNEL_NAME = 'shopx_admin_bridge';
-const bc = new BroadcastChannel(CHANNEL_NAME);
+// ── SOCKET.IO ─────────────────────────────────────────
+const socket = io();
+const API = '';   // aynı origin, prefix yok
 
-// ── LOCALSTORAGE KEYS ─────────────────────────────────
-const LS_KEY      = 'shopx_test_sessions';
-const LS_LOGS_KEY = 'shopx_live_logs';   // persisted live log stream
-const LS_LOGS_MAX = 500;                 // max logs to keep in storage
+// ── API HELPERS ───────────────────────────────────────
+async function apiGet(path) {
+  const res = await fetch(API + path);
+  if (!res.ok) throw new Error(`GET ${path} → ${res.status}`);
+  return res.json();
+}
+async function apiPost(path, body) {
+  const res = await fetch(API + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!res.ok) throw new Error(`POST ${path} → ${res.status}`);
+  return res.json();
+}
+async function apiPut(path, body) {
+  const res = await fetch(API + path, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!res.ok) throw new Error(`PUT ${path} → ${res.status}`);
+  return res.json();
+}
+async function apiDelete(path) {
+  const res = await fetch(API + path, { method: 'DELETE' });
+  if (!res.ok) throw new Error(`DELETE ${path} → ${res.status}`);
+  return res.json();
+}
 
 // ── STATE ─────────────────────────────────────────────
 const Admin = {
@@ -22,36 +39,33 @@ const Admin = {
   activeSessionTimer: null,
 };
 
-// ── LOCALSTORAGE HELPERS ───────────────────────────────
-function loadSessions() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    console.error('Session load error:', e);
-    return [];
-  }
-}
+// ── OTURUM ÖNBELLEK + REST HELPERS ────────────────────
+// Senkron okumalar için bellek önbelleği; yazımlar sunucuya gider
+let _sessionsCache = [];
 
-function saveSessions(sessions) {
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify(sessions));
-  } catch (e) {
-    console.error('Session save error:', e);
-    showAdminToast('⚠️ Veri kaydetme hatası! localStorage dolu olabilir.', 'error');
-  }
+function loadSessions() {
+  return _sessionsCache;
 }
 
 function getSession(id) {
-  return loadSessions().find(s => s.id === id) || null;
+  return _sessionsCache.find(s => s.id === id) || null;
 }
 
 function upsertSession(session) {
-  const sessions = loadSessions();
-  const idx = sessions.findIndex(s => s.id === session.id);
-  if (idx >= 0) sessions[idx] = session;
-  else sessions.unshift(session);
-  saveSessions(sessions);
+  const idx = _sessionsCache.findIndex(s => s.id === session.id);
+  if (idx >= 0) _sessionsCache[idx] = session;
+  else _sessionsCache.unshift(session);
+  // Sunucuya asenkron kaydet (fire-and-forget)
+  apiPut(`/api/sessions/${session.id}`, session).catch(e => console.warn('upsertSession error:', e));
+}
+
+async function _loadSessionsFromServer() {
+  try {
+    _sessionsCache = await apiGet('/api/sessions');
+  } catch (e) {
+    console.warn('Session yükleme hatası:', e);
+    _sessionsCache = [];
+  }
 }
 
 // ── SUBJECT SESSION MANAGEMENT ─────────────────────────
@@ -120,6 +134,9 @@ function startSubjectSession() {
     refreshSubjectListSilent(); // update duration in list without full re-render
   }, 1000);
 
+  // Sunucuya ve shop'a bildir
+  socket.emit('session_started', { name });
+
   showAdminToast(`▶ "${name}" oturumu başlatıldı`, 'success');
   switchTab('subjects');
 }
@@ -130,15 +147,14 @@ function stopSubjectSession(silent = false) {
     return;
   }
 
-  const sessions = loadSessions();
-  const sess = sessions.find(s => s.id === Admin.activeSessionId);
+  const sess = getSession(Admin.activeSessionId);
   if (sess) {
     const now = new Date();
     sess.status = 'stopped';
     sess.endTime = now.toISOString();
     sess.endTimeDisplay = now.toLocaleString('tr-TR');
     sess.durationSecs = Math.floor((Date.now() - new Date(sess.startTime).getTime()) / 1000);
-    saveSessions(sessions);
+    upsertSession(sess);
   }
 
   clearInterval(Admin.activeSessionTimer);
@@ -153,7 +169,11 @@ function stopSubjectSession(silent = false) {
   if (bar) bar.style.display = 'none';
 
   refreshSubjectList();
-  if (!silent) showAdminToast(`⏹ "${stoppedName}" oturumu durduruldu`, 'info');
+  if (!silent) {
+    // Sunucuya ve shop'a bildir — site sıfırlanacak
+    socket.emit('session_stopped', {});
+    showAdminToast(`⏹ "${stoppedName}" oturumu durduruldu — site sıfırlanıyor`, 'info');
+  }
 }
 
 function updateActiveSessionUI(session) {
@@ -179,12 +199,11 @@ function updateActiveBadge(name) {
 // ── LOG ROUTING TO ACTIVE SESSION ─────────────────────
 function appendLogToActiveSession(entry) {
   if (!Admin.activeSessionId) return;
-  const sessions = loadSessions();
-  const sess = sessions.find(s => s.id === Admin.activeSessionId);
+  const sess = getSession(Admin.activeSessionId);
   if (!sess || sess.status !== 'running') return;
   sess.logs.push(entry);
   if (sess.stats[entry.type] !== undefined) sess.stats[entry.type]++;
-  saveSessions(sessions);
+  upsertSession(sess);
 }
 
 // ── SESSION LIST RENDERING ─────────────────────────────
@@ -266,8 +285,8 @@ function refreshSubjectListSilent() {
 
 function deleteSession(id) {
   if (!confirm('Bu oturumu silmek istiyor musunuz? Bu işlem geri alınamaz.')) return;
-  const sessions = loadSessions().filter(s => s.id !== id);
-  saveSessions(sessions);
+  _sessionsCache = _sessionsCache.filter(s => s.id !== id);
+  apiDelete(`/api/sessions/${id}`).catch(e => console.warn('deleteSession error:', e));
   refreshSubjectList();
   showAdminToast('🗑 Oturum silindi', 'info');
 }
@@ -275,7 +294,8 @@ function deleteSession(id) {
 function clearAllSessions() {
   if (!confirm('TÜM oturumları ve loglarını silmek istiyor musunuz? Bu işlem GERİ ALINAMAZ!')) return;
   if (Admin.activeSessionId) stopSubjectSession(true);
-  saveSessions([]);
+  _sessionsCache = [];
+  apiDelete('/api/sessions/all').catch(e => console.warn('clearAllSessions error:', e));
   refreshSubjectList();
   showAdminToast('🗑 Tüm oturumlar silindi', 'info');
 }
@@ -407,17 +427,67 @@ function formatDuration(secs) {
   return `${String(m).padStart(2,'0')}dk ${String(s).padStart(2,'0')}sn`;
 }
 
-// ── BROADCAST: RECEIVE FROM MAIN SITE ─────────────────
-bc.onmessage = (event) => {
-  const { type, payload } = event.data || {};
-  if (type === 'LOG') {
-    handleIncomingLog(payload);
-  } else if (type === 'HEARTBEAT') {
-    setConnected(true);
-  } else if (type === 'ACK') {
-    showAdminToast(`✅ Komut işlendi: ${payload?.cmd || ''}`, 'success');
+// ── SOCKET.IO: GELEN OLAYLAR ──────────────────────────
+socket.on('connect', () => {
+  socket.emit('identify', { role: 'admin' });
+  showAdminToast('🟢 Sunucuya bağlandı', 'success');
+  resetHeartbeatTimer();
+});
+
+socket.on('disconnect', () => {
+  setConnected(false);
+  showAdminToast('🔴 Sunucu bağlantısı kesildi', 'error');
+});
+
+socket.on('log', (entry) => {
+  handleIncomingLog(entry);
+  resetHeartbeatTimer();
+});
+
+socket.on('heartbeat', () => {
+  resetHeartbeatTimer();
+});
+
+socket.on('shop_connected', () => {
+  setConnected(true);
+  showAdminToast('🟢 Shop bağlandı', 'success');
+});
+
+socket.on('shop_disconnected', () => {
+  setConnected(false);
+});
+
+socket.on('logs_history', (logs) => {
+  if (!logs || !logs.length) return;
+  const emptyEl = document.getElementById('log-empty');
+  if (emptyEl) emptyEl.style.display = 'none';
+  for (let i = logs.length - 1; i >= 0; i--) {
+    const entry = logs[i];
+    Admin.logs.unshift(entry);
+    if (Admin.stats[entry.type] !== undefined) Admin.stats[entry.type]++;
+    renderLogRow(entry);
+    updateTimeline(entry);
   }
-};
+  updateCounters();
+  showAdminToast(`📂 ${logs.length} log sunucudan yüklendi`, 'info');
+});
+
+socket.on('logs_cleared', () => {
+  Admin.logs = [];
+  Admin.stats = { system: 0, navigation: 0, product: 0, cart: 0, search: 0, ui: 0 };
+  const stream = document.getElementById('log-stream');
+  if (stream) stream.innerHTML = `<div class="log-empty" id="log-empty"><div class="log-empty-icon">📡</div><div class="log-empty-title">Log akışı temizlendi</div></div>`;
+  updateCounters();
+});
+
+socket.on('ack', (data) => {
+  showAdminToast(`✅ Komut işlendi: ${data?.cmd || ''}`, 'success');
+});
+
+socket.on('sessions_updated', async () => {
+  await _loadSessionsFromServer();
+  refreshSubjectList();
+});
 
 // ── INCOMING LOG HANDLER ───────────────────────────────
 function handleIncomingLog(entry) {
@@ -430,11 +500,8 @@ function handleIncomingLog(entry) {
   Admin.logs.unshift(entry);
   if (Admin.stats[entry.type] !== undefined) Admin.stats[entry.type]++;
 
-  // Route log to active subject session
+  // Aktif oturuma log ekle
   appendLogToActiveSession(entry);
-
-  // Persist live log to localStorage
-  _persistLiveLog(entry);
 
   renderLogRow(entry);
   updateCounters();
@@ -479,9 +546,9 @@ function renderLogRow(entry) {
   if (autoScroll?.checked) stream.scrollTop = 0;
 }
 
-// ── BROADCAST: SEND COMMAND TO MAIN SITE ──────────────
+// ── SOCKET.IO: KOMUT GÖNDER ───────────────────────────
 function sendCommand(cmd, data = {}) {
-  bc.postMessage({ type: 'COMMAND', cmd, ...data });
+  socket.emit('command', { cmd, ...data });
   showAdminToast(`📡 Komut gönderildi: ${cmd}`, 'info');
 }
 
@@ -489,7 +556,7 @@ function sendToast() {
   const msg = document.getElementById('toast-message').value.trim();
   const toastType = document.getElementById('toast-type').value;
   if (!msg) { showAdminToast('⚠️ Mesaj girin', 'warning'); return; }
-  bc.postMessage({ type: 'COMMAND', cmd: 'SHOW_TOAST', msg, toastType });
+  socket.emit('command', { cmd: 'SHOW_TOAST', msg, toastType });
   showAdminToast('💬 Toast gönderildi', 'success');
 }
 
@@ -497,9 +564,10 @@ function sendCustomPopup() {
   const title = document.getElementById('popup-title').value.trim();
   const body  = document.getElementById('popup-body').value.trim();
   if (!title) { showAdminToast('⚠️ Başlık girin', 'warning'); return; }
-  bc.postMessage({ type: 'COMMAND', cmd: 'SHOW_CUSTOM_POPUP', title, body });
+  socket.emit('command', { cmd: 'SHOW_CUSTOM_POPUP', title, body });
   showAdminToast('📢 Popup gönderildi', 'success');
 }
+
 
 // ── FILTER ────────────────────────────────────────────
 function applyFilter(type, btn) {
@@ -592,7 +660,8 @@ function updateCounters() {
 function clearAllLogs() {
   Admin.logs = [];
   Admin.stats = { system: 0, navigation: 0, product: 0, cart: 0, search: 0, ui: 0 };
-  localStorage.removeItem(LS_LOGS_KEY); // clear persisted logs too
+  // Sunucudaki logları temizle
+  apiPost('/api/logs/clear', {}).catch(e => console.warn('clearAllLogs error:', e));
   const stream = document.getElementById('log-stream');
   if (stream) {
     stream.innerHTML = `
@@ -608,45 +677,8 @@ function clearAllLogs() {
   showAdminToast('🗑 Canlı log akışı temizlendi', 'info');
 }
 
-// ── LIVE LOG PERSISTENCE ──────────────────────────────
-function _persistLiveLog(entry) {
-  try {
-    const raw = localStorage.getItem(LS_LOGS_KEY);
-    const logs = raw ? JSON.parse(raw) : [];
-    logs.unshift(entry);
-    // Trim to max to avoid quota issues
-    if (logs.length > LS_LOGS_MAX) logs.length = LS_LOGS_MAX;
-    localStorage.setItem(LS_LOGS_KEY, JSON.stringify(logs));
-  } catch (e) {
-    // Storage quota exceeded – skip silently
-  }
-}
-
-function _restoreLiveLogs() {
-  try {
-    const raw = localStorage.getItem(LS_LOGS_KEY);
-    if (!raw) return;
-    const logs = JSON.parse(raw);
-    if (!logs || !logs.length) return;
-
-    // Hide empty placeholder
-    const emptyEl = document.getElementById('log-empty');
-    if (emptyEl) emptyEl.style.display = 'none';
-
-    // Render oldest→newest (array is newest-first, so iterate reverse)
-    for (let i = logs.length - 1; i >= 0; i--) {
-      const entry = logs[i];
-      Admin.logs.unshift(entry);
-      if (Admin.stats[entry.type] !== undefined) Admin.stats[entry.type]++;
-      renderLogRow(entry);
-      updateTimeline(entry);
-    }
-    updateCounters();
-    showAdminToast(`📂 ${logs.length} log geri yüklendi`, 'info');
-  } catch (e) {
-    console.warn('Live log restore error:', e);
-  }
-}
+// Log kalıcılığı artık sunucu tarafından yönetilmektedir.
+// Bağlanıldığında 'logs_history' olayı ile geçmiş loglar yüklenir.
 
 // ── CONNECTION STATUS ──────────────────────────────────
 function setConnected(val) {
@@ -672,12 +704,8 @@ let heartbeatTimeout = null;
 function resetHeartbeatTimer() {
   clearTimeout(heartbeatTimeout);
   setConnected(true);
-  heartbeatTimeout = setTimeout(() => setConnected(false), 6000);
+  heartbeatTimeout = setTimeout(() => setConnected(false), 8000);
 }
-bc.addEventListener('message', e => {
-  if (e.data?.type === 'HEARTBEAT') resetHeartbeatTimer();
-  if (e.data?.type === 'LOG') resetHeartbeatTimer();
-});
 
 // ── SESSION TIMER ─────────────────────────────────────
 setInterval(() => {
@@ -723,22 +751,20 @@ function escHtml(str) {
 }
 
 // ── INIT ──────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  // Restore persisted live logs first
-  _restoreLiveLogs();
-
+window.addEventListener('DOMContentLoaded', async () => {
   showAdminToast('🚀 Admin paneli hazır', 'success');
+
+  // Oturumları sunucudan yükle
+  await _loadSessionsFromServer();
   refreshSubjectList();
 
-  // Restore active session if the page was refreshed mid-session
-  const sessions = loadSessions();
-  const running = sessions.find(s => s.status === 'running');
+  // Sayfa yenilenmişse devam eden oturumu kurtar
+  const running = _sessionsCache.find(s => s.status === 'running');
   if (running) {
     Admin.activeSessionId = running.id;
     updateActiveSessionUI(running);
     updateActiveBadge(running.name);
     showAdminToast(`⏱ "${running.name}" oturumu devam ediyor`, 'info');
-    // Re-attach timer
     clearInterval(Admin.activeSessionTimer);
     Admin.activeSessionTimer = setInterval(() => {
       if (!Admin.activeSessionId) return;
@@ -757,9 +783,7 @@ window.addEventListener('DOMContentLoaded', () => {
       refreshSubjectListSilent();
     }, 1000);
   }
-
-  // Ask main site to identify itself
-  setTimeout(() => bc.postMessage({ type: 'PING' }), 500);
+  // Socket.IO bağlantısı kurulunca logs_history olayı logs'u yükler
 });
 
 // ── EXPOSE GLOBALS ────────────────────────────────────

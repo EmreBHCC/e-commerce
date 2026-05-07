@@ -94,43 +94,75 @@
                 </button>
 
             </div>
-            <p class="gs-footer">Seçimini istediğin zaman üst menüden değiştirebilirsin</p>
         </div>
 
-        <!-- STEP 2: Budget -->
+        <!-- STEP 2: Budget + Financial Profile -->
         <div id="gender-step-2" class="gender-step hidden">
             <div class="budget-screen">
                 <div class="budget-icon" id="budget-gender-icon">🛍</div>
-                <h2 class="budget-title">Harika! Bir adım daha 👋</h2>
-                <p class="budget-subtitle">Bugünkü alışveriş bütçen ne kadar? Sana en uygun ürünleri önerelim.</p>
+                <h2 class="budget-title">Harika! Birkaç bilgi daha 👋</h2>
+                <p class="budget-subtitle">Bugünkü alışveriş bütçen ne kadar?</p>
                 <div class="budget-options" id="budget-options">
-                    <button class="budget-btn" id="budget-1" onclick="selectBudget('low', '500 TL altı')"
-                        data-val="low">
+                    <button class="budget-btn" id="budget-1" onclick="highlightBudget('low','500 TL altı')" data-val="low">
                         <span class="budget-emoji">💸</span>
-                        <span class="budget-label">500 TL Altı</span>
-                        <span class="budget-desc">Uygun fiyatlı seçenekler</span>
+                        <span class="budget-btn-text">
+                            <span class="budget-label">500 TL Altı</span>
+                            <span class="budget-desc">Uygun fiyatlı seçenekler</span>
+                        </span>
                     </button>
-                    <button class="budget-btn" id="budget-2" onclick="selectBudget('medium', '500–1500 TL')"
-                        data-val="medium">
+                    <button class="budget-btn" id="budget-2" onclick="highlightBudget('medium','500–1500 TL')" data-val="medium">
                         <span class="budget-emoji">💳</span>
-                        <span class="budget-label">500 – 1.500 TL</span>
-                        <span class="budget-desc">Kalite-fiyat dengesi</span>
+                        <span class="budget-btn-text">
+                            <span class="budget-label">500 – 1.500 TL</span>
+                            <span class="budget-desc">Kalite-fiyat dengesi</span>
+                        </span>
                     </button>
-                    <button class="budget-btn" id="budget-3" onclick="selectBudget('high', '1500–3500 TL')"
-                        data-val="high">
+                    <button class="budget-btn" id="budget-3" onclick="highlightBudget('high','1500–3500 TL')" data-val="high">
                         <span class="budget-emoji">💰</span>
-                        <span class="budget-label">1.500 – 3.500 TL</span>
-                        <span class="budget-desc">Premium ürünler</span>
+                        <span class="budget-btn-text">
+                            <span class="budget-label">1.500 – 3.500 TL</span>
+                            <span class="budget-desc">Premium ürünler</span>
+                        </span>
                     </button>
-                    <button class="budget-btn" id="budget-4" onclick="selectBudget('luxury', '3500 TL üstü')"
-                        data-val="luxury">
+                    <button class="budget-btn" id="budget-4" onclick="highlightBudget('luxury','3500 TL üstü')" data-val="luxury">
                         <span class="budget-emoji">👑</span>
-                        <span class="budget-label">3.500 TL Üstü</span>
-                        <span class="budget-desc">Lüks koleksiyon</span>
+                        <span class="budget-btn-text">
+                            <span class="budget-label">3.500 TL Üstü</span>
+                            <span class="budget-desc">Lüks koleksiyon</span>
+                        </span>
                     </button>
                 </div>
-                <button class="budget-skip" id="budget-skip" onclick="selectBudget('any', 'Belirtilmedi')">Şimdilik atla
-                    →</button>
+
+                <!-- Financial Profile -->
+                <div class="gs-financial-section">
+                    <div class="gs-fin-header">
+                        <span class="gs-fin-icon">💳</span>
+                        <div class="gs-fin-header-text">
+                            <div class="gs-fin-title">Finansal Profiliniz</div>
+                            <div class="gs-fin-sub">Ödeme adımında kayıtlı kart olarak kullanılır</div>
+                        </div>
+                        <span class="gs-fin-badge">İsteğe Bağlı</span>
+                    </div>
+                    <div class="gs-fin-fields">
+                        <div class="gs-fin-field">
+                            <label class="gs-fin-label">Aylık Net Maaş (TL)</label>
+                            <input class="gs-fin-input" type="number" id="gs-fin-salary" placeholder="örn: 15000" min="0" />
+                        </div>
+                        <div class="gs-fin-field">
+                            <label class="gs-fin-label">Aylık Kredi Ödemesi (TL)</label>
+                            <input class="gs-fin-input" type="number" id="gs-fin-credit" placeholder="örn: 2000" min="0" />
+                        </div>
+                        <div class="gs-fin-field">
+                            <label class="gs-fin-label">Aylık Sabit Gider (TL)</label>
+                            <input class="gs-fin-input" type="number" id="gs-fin-debt" placeholder="örn: 1500" min="0" />
+                        </div>
+                    </div>
+                </div>
+
+                <button class="budget-confirm-btn" id="budget-confirm-btn" onclick="goToShopFromBudget()">
+                    Alışverişe Başla →
+                </button>
+                <button class="budget-skip" onclick="goToShopFromBudget()">Tüm adımları atla →</button>
             </div>
         </div>
 
@@ -312,6 +344,7 @@
                             </div>
                             <button class="budget-change-btn">Bütçeni Güncelle →</button>
                         </div>
+                        <button class="financial-profile-btn" onclick="event.stopPropagation();openFinancialModal()">💳 Finansal Profil</button>
                     </div>
                 </section>
             </div>
@@ -417,6 +450,7 @@
                 <div class="cart-summary-row total-row"><span>Toplam</span><strong id="cart-total-price">0 TL</strong>
                 </div>
             </div>
+            <div id="cart-financial-impact" class="cart-financial-impact" style="display:none"></div>
             <button class="checkout-btn" id="checkout-btn" onclick="openCheckout()">Ödemeye Geç →</button>
         </div>
     </aside>
@@ -514,6 +548,20 @@
         <div id="budget-filter-content"></div>
     </div>
 
+    <!-- ===================== PURPOSE MODAL ===================== -->
+    <div class="modal-overlay" id="purpose-overlay" onclick="closePurposeModal()"></div>
+    <div class="purpose-modal info-modal" id="purpose-modal" role="dialog" style="display:none">
+        <button class="modal-close" onclick="closePurposeModal()">✕</button>
+        <div id="purpose-content"></div>
+    </div>
+
+    <!-- ===================== FINANCIAL MODAL ===================== -->
+    <div class="modal-overlay" id="financial-overlay" onclick="closeFinancialModal()"></div>
+    <div class="info-modal" id="financial-modal" role="dialog" style="display:none">
+        <button class="modal-close" onclick="closeFinancialModal()">✕</button>
+        <div id="financial-content"></div>
+    </div>
+
     <!-- ===================== FLASH SALE POPUP ===================== -->
     <div class="flash-popup" id="flash-popup" style="display:none">
         <div class="flash-popup-header">
@@ -563,6 +611,7 @@
     <!-- TOAST -->
     <div class="toast-container" id="toast-container"></div>
 
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="app.js"></script>
 </body>
 
