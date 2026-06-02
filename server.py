@@ -3,20 +3,27 @@
 
 import json
 import os
+import re
+import subprocess
+import sys
 from datetime import datetime
-from threading import Lock
+from threading import Lock, Thread
 
 from flask import Flask, jsonify, request, send_from_directory
 from flask_socketio import SocketIO, emit, join_room
 
 # ── CONFIG ────────────────────────────────────────────────
-BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR   = os.path.join(BASE_DIR, 'data')
-LOGS_FILE  = os.path.join(DATA_DIR, 'logs.json')
-SESS_FILE  = os.path.join(DATA_DIR, 'sessions.json')
-MAX_LOGS   = 1000
+BASE_DIR        = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR        = os.path.join(BASE_DIR, 'data')
+LOGS_FILE       = os.path.join(DATA_DIR, 'logs.json')
+SESS_FILE       = os.path.join(DATA_DIR, 'sessions.json')
+HEATMAPS_DIR    = os.path.join(DATA_DIR, 'heatmaps')
+EYETRACKER_FILE = os.path.join(BASE_DIR, 'eye-tracker.py')
+EYETRACKER_STOP = os.path.join(DATA_DIR, 'eyetracker_stop')
+MAX_LOGS        = 1000
 
 os.makedirs(DATA_DIR, exist_ok=True)
+os.makedirs(HEATMAPS_DIR, exist_ok=True)
 
 app       = Flask(__name__, static_folder=BASE_DIR, static_url_path='')
 app.config['SECRET_KEY'] = 'shopx-secret-2026'
@@ -112,7 +119,61 @@ def api_export_all():
     })
 
 # ── AKTİF OTURUM TAKİBİ ──────────────────────────────────
-_active_session = {'active': False, 'name': None}
+_active_session   = {'active': False, 'name': None}
+_eye_tracker_proc = None
+
+# ── GÖZ TAKİBİ YÖNETİMİ ──────────────────────────────────
+def _slug(name):
+    return re.sub(r'[^\w]', '_', name)[:20].strip('_') or 'denek'
+
+def start_eye_tracker(session_name):
+    global _eye_tracker_proc
+    # Eski süreci temizle
+    if _eye_tracker_proc and _eye_tracker_proc.poll() is None:
+        _eye_tracker_proc.terminate()
+        try: _eye_tracker_proc.wait(timeout=3)
+        except Exception: _eye_tracker_proc.kill()
+    # Eski stop sinyalini temizle
+    try: os.remove(EYETRACKER_STOP)
+    except FileNotFoundError: pass
+
+    kwargs = {'creationflags': subprocess.CREATE_NEW_CONSOLE} if os.name == 'nt' else {}
+    try:
+        _eye_tracker_proc = subprocess.Popen(
+            [sys.executable, EYETRACKER_FILE,
+             '--session', session_name,
+             '--output-dir', HEATMAPS_DIR],
+            **kwargs
+        )
+        print(f'[EyeTracker] Başlatıldı PID={_eye_tracker_proc.pid}')
+        Thread(target=_watch_eye_tracker, args=(session_name,), daemon=True).start()
+    except Exception as e:
+        print(f'[EyeTracker] Başlatma hatası: {e}')
+
+def stop_eye_tracker():
+    try:
+        with open(EYETRACKER_STOP, 'w') as f:
+            f.write('stop')
+        print('[EyeTracker] Durdurma sinyali yazıldı')
+    except Exception as e:
+        print(f'[EyeTracker] Sinyal hatası: {e}')
+
+def _watch_eye_tracker(session_name):
+    global _eye_tracker_proc
+    proc = _eye_tracker_proc
+    if not proc:
+        return
+    proc.wait()
+    print('[EyeTracker] Süreç tamamlandı, heatmap taranıyor...')
+    import time as _t; _t.sleep(0.8)  # dosya yazımı için bekle
+
+    prefix = _slug(session_name) + '_'
+    files = [f for f in os.listdir(HEATMAPS_DIR) if f.startswith(prefix) and f.endswith('.png')]
+    if files:
+        socketio.emit('heatmap_saved', {'session': session_name, 'files': files}, to='admin')
+        print(f'[EyeTracker] Heatmap gönderildi: {files}')
+    else:
+        print('[EyeTracker] Heatmap bulunamadı.')
 
 # ── SOCKET.IO ─────────────────────────────────────────────
 @socketio.on('connect')
@@ -146,15 +207,18 @@ def on_session_started(data):
     global _active_session
     _active_session = {'active': True, 'name': data.get('name', '')}
     emit('command', {'cmd': 'SESSION_STARTED', 'name': _active_session['name']}, to='shop')
+    start_eye_tracker(_active_session['name'])
     print(f'[WS] Oturum başlatıldı: {_active_session["name"]}')
 
 @socketio.on('session_stopped')
 def on_session_stopped(data):
     """Admin → Sunucu: Oturum durduruldu — siteyi sıfırla"""
     global _active_session
+    name = _active_session.get('name', 'denek')
     _active_session = {'active': False, 'name': None}
     emit('command', {'cmd': 'SESSION_STOPPED'}, to='shop')
-    print(f'[WS] Oturum durduruldu, site sıfırlanıyor')
+    stop_eye_tracker()
+    print(f'[WS] Oturum durduruldu: {name}')
 
 @socketio.on('log')
 def on_log(entry):
@@ -181,6 +245,25 @@ def on_command(data):
 def on_ack(data):
     """Shop → Sunucu → Admin: komut onayı"""
     emit('ack', data, to='admin')
+
+# ── HEATMAP SERVİSİ ───────────────────────────────────────
+@app.route('/api/heatmap/<path:filename>')
+def api_serve_heatmap(filename):
+    if '..' in filename or '/' in filename.replace('\\', '/').lstrip('/'):
+        return jsonify({'error': 'Geçersiz dosya adı'}), 400
+    return send_from_directory(HEATMAPS_DIR, filename)
+
+@app.route('/api/heatmaps')
+def api_list_heatmaps():
+    metas = []
+    for fname in os.listdir(HEATMAPS_DIR):
+        if fname.endswith('.json'):
+            try:
+                with open(os.path.join(HEATMAPS_DIR, fname), 'r', encoding='utf-8') as f:
+                    metas.append(json.load(f))
+            except Exception:
+                pass
+    return jsonify(sorted(metas, key=lambda x: x.get('timestamp', ''), reverse=True))
 
 # ── BAŞLAT ────────────────────────────────────────────────
 if __name__ == '__main__':

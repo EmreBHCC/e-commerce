@@ -167,6 +167,8 @@ function stopSubjectSession(silent = false) {
   if (card) card.style.display = 'none';
   const bar = document.getElementById('active-subject-bar');
   if (bar) bar.style.display = 'none';
+  const etEl = document.getElementById('active-sess-eyetracker');
+  if (etEl) etEl.innerHTML = `<span style="color:#f59e0b">⏳ Kaydediliyor...</span>`;
 
   refreshSubjectList();
   if (!silent) {
@@ -262,6 +264,7 @@ function refreshSubjectList() {
           <button class="action-btn secondary" onclick="viewSessionDetail('${sess.id}')">🔍 Detay</button>
           <button class="action-btn secondary" onclick="exportSession('${sess.id}')">⬇ JSON</button>
           <button class="action-btn secondary" onclick="exportSessionCSV('${sess.id}')">📊 CSV</button>
+          ${sess.heatmapFiles && sess.heatmapFiles.length ? `<button class="action-btn secondary" onclick="viewSessionDetail('${sess.id}')" title="Göz takibi mevcut" style="color:#22c55e;border-color:rgba(34,197,94,.4)">👁 Heatmap</button>` : ''}
           ${!isActive ? `<button class="action-btn danger" onclick="deleteSession('${sess.id}')">🗑</button>` : ''}
         </div>
       </div>`;
@@ -339,6 +342,18 @@ function viewSessionDetail(id) {
         ${Object.entries(sess.stats).map(([k,v]) => `<span style="font-size:.72rem;background:var(--surface2);padding:3px 8px;border-radius:99px;color:#94a3b8"><strong style="color:#a5b4fc">${v}</strong> ${k}</span>`).join('')}
       </div>
       <div style="overflow-y:auto;flex:1;font-family:'JetBrains Mono',monospace;font-size:.76rem">${logRows}</div>
+      ${sess.heatmapFiles && sess.heatmapFiles.length ? `
+      <div style="padding:14px 20px;border-top:1px solid rgba(99,120,200,.15);flex-shrink:0">
+        <div style="font-size:.75rem;font-weight:700;color:#22c55e;margin-bottom:10px">👁 Göz Takibi Heatmap${sess.heatmapFiles.length > 1 ? 'ları' : ''}</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          ${sess.heatmapFiles.map(f => `
+            <a href="/api/heatmap/${encodeURIComponent(f)}" target="_blank" style="display:block">
+              <img src="/api/heatmap/${encodeURIComponent(f)}" alt="Heatmap"
+                   style="max-width:280px;max-height:160px;border-radius:8px;border:1px solid rgba(34,197,94,.3);display:block" />
+              <div style="font-size:.65rem;color:#64748b;margin-top:3px;font-family:JetBrains Mono,monospace">${escHtml(f)}</div>
+            </a>`).join('')}
+        </div>
+      </div>` : ''}
     </div>`;
   modal.style.display = 'flex';
 }
@@ -487,6 +502,26 @@ socket.on('ack', (data) => {
 socket.on('sessions_updated', async () => {
   await _loadSessionsFromServer();
   refreshSubjectList();
+});
+
+socket.on('heatmap_saved', (data) => {
+  const { session: sessName, files } = data;
+  // Eye-tracker durumu güncelle
+  const etEl = document.getElementById('active-sess-eyetracker');
+  if (etEl) etEl.innerHTML = `<span style="color:#94a3b8">⏹ Kaydedildi</span>`;
+
+  // Oturuma heatmap dosyalarını kaydet
+  const sess = _sessionsCache.find(s => s.name === sessName);
+  if (sess) {
+    sess.heatmapFiles = files;
+    upsertSession(sess);
+    refreshSubjectList();
+  }
+
+  // Log akışına görsel satır ekle
+  _insertHeatmapLogRow(sessName, files);
+
+  showAdminToast(`👁 Göz takibi tamamlandı: ${files.length} dosya kaydedildi`, 'success');
 });
 
 // ── INCOMING LOG HANDLER ───────────────────────────────
@@ -643,6 +678,33 @@ function updateTimeline(entry) {
   div.innerHTML = `<span class="tl-time">${entry.time}</span><span class="tl-msg">${escHtml(entry.msg)}</span>`;
   tl.insertBefore(div, tl.firstChild);
   while (tl.children.length > 20) tl.removeChild(tl.lastChild);
+}
+
+// ── HEATMAP LOG SATIRI ────────────────────────────────────
+function _insertHeatmapLogRow(sessName, files) {
+  const stream = document.getElementById('log-stream');
+  if (!stream) return;
+  const emptyEl = document.getElementById('log-empty');
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  const imgTags = files.map(f =>
+    `<a href="/api/heatmap/${encodeURIComponent(f)}" target="_blank">
+      <img src="/api/heatmap/${encodeURIComponent(f)}" alt="Heatmap"
+           style="max-width:320px;max-height:180px;border-radius:8px;border:1px solid rgba(99,102,241,.3);cursor:pointer;display:block;margin-top:6px" />
+     </a>`
+  ).join('');
+
+  const div = document.createElement('div');
+  div.className = 'log-row';
+  div.dataset.type = 'gaze';
+  div.innerHTML = `
+    <span class="log-ts">${new Date().toLocaleTimeString('tr-TR')}</span>
+    <span class="log-badge" style="background:rgba(34,197,94,.15);color:#22c55e;border-color:rgba(34,197,94,.3)">👁 gaze</span>
+    <span class="log-msg" style="flex-direction:column;align-items:flex-start">
+      <span>Göz takibi tamamlandı — <strong>${escHtml(sessName)}</strong> · ${files.length} dosya</span>
+      ${imgTags}
+    </span>`;
+  stream.insertBefore(div, stream.firstChild);
 }
 
 // ── COUNTERS ──────────────────────────────────────────

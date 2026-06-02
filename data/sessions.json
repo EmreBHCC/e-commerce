@@ -1,1049 +1,188 @@
 [
   {
-    "id": "sess_1776689652863",
-    "name": "ee",
+    "id": "sess_1778232036738",
+    "name": "deneme",
     "notes": "",
-    "status": "running",
-    "startTime": "2026-04-20T12:54:12.863Z",
-    "startTimeDisplay": "20.04.2026 15:54:12",
-    "endTime": null,
-    "endTimeDisplay": null,
-    "durationSecs": 3653,
+    "status": "stopped",
+    "startTime": "2026-05-08T09:20:36.738Z",
+    "startTimeDisplay": "08.05.2026 12:20:36",
+    "endTime": "2026-05-08T09:22:30.399Z",
+    "endTimeDisplay": "08.05.2026 12:22:30",
+    "durationSecs": 113,
     "logs": [
       {
-        "id": "1776689652878_3yicv",
-        "time": "15:54:12",
-        "timestamp": "2026-04-20T12:54:12.877Z",
-        "msg": "Oturum başlatıldı: \"ee\"",
+        "id": "1778232036748_z915h",
+        "time": "12:20:36",
+        "timestamp": "2026-05-08T09:20:36.747Z",
+        "msg": "Oturum başlatıldı: \"deneme\"",
         "type": "system",
-        "gender": null,
-        "cartSize": 0
+        "gender": "female",
+        "cartSize": 8
       },
       {
-        "id": "1776689719985_zizwm",
-        "time": "15:55:19",
-        "timestamp": "2026-04-20T12:55:19.985Z",
-        "msg": "Cinsiyet seçimi: Erkek",
+        "id": "1778232069136_hmg11",
+        "time": "12:21:09",
+        "timestamp": "2026-05-08T09:21:09.136Z",
+        "msg": "Flaş indirim pop-up gösterildi: Gray Dress",
+        "type": "ui",
+        "gender": "female",
+        "cartSize": 8
+      },
+      {
+        "id": "1778232122151_vta0v",
+        "time": "12:22:02",
+        "timestamp": "2026-05-08T09:22:02.150Z",
+        "msg": "Kullanıcı sayfaya geri döndü",
         "type": "system",
-        "gender": "male",
-        "cartSize": 0
+        "gender": "female",
+        "cartSize": 8
       },
       {
-        "id": "1776689722305_ht9q1",
-        "time": "15:55:22",
-        "timestamp": "2026-04-20T12:55:22.305Z",
-        "msg": "Bütçe seçildi: Belirtilmedi",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689722305_3argj",
-        "time": "15:55:22",
-        "timestamp": "2026-04-20T12:55:22.304Z",
-        "msg": "Finansal profil girilmedi",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689722806_5mwq8",
-        "time": "15:55:22",
-        "timestamp": "2026-04-20T12:55:22.806Z",
-        "msg": "Mağaza yükleniyor – Erkek | Bütçe: Belirtilmedi",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689723088_yfiv9",
-        "time": "15:55:23",
-        "timestamp": "2026-04-20T12:55:23.088Z",
-        "msg": "DummyJSON: 70 ürün yüklendi (male)",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689723090_9u0us",
-        "time": "15:55:23",
-        "timestamp": "2026-04-20T12:55:23.090Z",
-        "msg": "Mağaza hazır – 70 ürün yüklendi",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689724071_7sxxp",
-        "time": "15:55:24",
-        "timestamp": "2026-04-20T12:55:24.071Z",
-        "msg": "Sayfa kaydırıldı: %15",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689725507_z4pqu",
-        "time": "15:55:25",
-        "timestamp": "2026-04-20T12:55:25.507Z",
-        "msg": "Navigasyon: Tümü tıklandı",
-        "type": "navigation",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689725507_14oas",
-        "time": "15:55:25",
-        "timestamp": "2026-04-20T12:55:25.507Z",
-        "msg": "Kategori sayfası: \"Tümü\" (70 ürün)",
-        "type": "navigation",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689728083_bclvm",
-        "time": "15:55:28",
-        "timestamp": "2026-04-20T12:55:28.082Z",
-        "msg": "Sayfa kaydırıldı: %17",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689736347_wscmx",
-        "time": "15:55:36",
-        "timestamp": "2026-04-20T12:55:36.347Z",
-        "msg": "Sayfa kaydırıldı: %23",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689741467_ddpsy",
-        "time": "15:55:41",
-        "timestamp": "2026-04-20T12:55:41.467Z",
-        "msg": "Sayfa kaydırıldı: %50",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689742812_wx0dz",
-        "time": "15:55:42",
-        "timestamp": "2026-04-20T12:55:42.812Z",
-        "msg": "Flaş indirim pop-up gösterildi: Short Frock",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689745650_sgi0x",
-        "time": "15:55:45",
-        "timestamp": "2026-04-20T12:55:45.650Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689749161_g6jvq",
-        "time": "15:55:49",
-        "timestamp": "2026-04-20T12:55:49.161Z",
-        "msg": "Sayfa kaydırıldı: %50",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689810381_oniji",
-        "time": "15:56:50",
-        "timestamp": "2026-04-20T12:56:50.381Z",
-        "msg": "Sayfa kaydırıldı: %51",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689814573_9sian",
-        "time": "15:56:54",
-        "timestamp": "2026-04-20T12:56:54.573Z",
-        "msg": "Sayfa kaydırıldı: %78",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689921569_mmogs",
-        "time": "15:58:41",
-        "timestamp": "2026-04-20T12:58:41.569Z",
-        "msg": "Flaş indirim pop-up gösterildi: Blue Frock",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689925804_f42ik",
-        "time": "15:58:45",
-        "timestamp": "2026-04-20T12:58:45.803Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689947975_cam4v",
-        "time": "15:59:07",
-        "timestamp": "2026-04-20T12:59:07.975Z",
-        "msg": "Sayfa kaydırıldı: %71",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689955398_48xrz",
-        "time": "15:59:15",
-        "timestamp": "2026-04-20T12:59:15.398Z",
-        "msg": "Sayfa kaydırıldı: %90",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689960011_jndeq",
-        "time": "15:59:20",
-        "timestamp": "2026-04-20T12:59:20.010Z",
-        "msg": "Sayfa kaydırıldı: %80",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689969260_waag3",
-        "time": "15:59:29",
-        "timestamp": "2026-04-20T12:59:29.259Z",
-        "msg": "Sayfa kaydırıldı: %75",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689970536_tzguf",
-        "time": "15:59:30",
-        "timestamp": "2026-04-20T12:59:30.536Z",
-        "msg": "Favorilere eklendi: Monopod",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689970965_pumtb",
-        "time": "15:59:30",
-        "timestamp": "2026-04-20T12:59:30.965Z",
-        "msg": "Ürün üzerinde 2.1s beklendi: Monopod (TechGear)",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689972604_4euqg",
-        "time": "15:59:32",
-        "timestamp": "2026-04-20T12:59:32.604Z",
-        "msg": "Ürün görüntülendi: Selfie Lamp with iPhone (GadgetMaster) – 570 TL",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689972607_jpo3d",
-        "time": "15:59:32",
-        "timestamp": "2026-04-20T12:59:32.607Z",
-        "msg": "Ürün üzerinde 1.6s beklendi: Selfie Lamp with iPhone (GadgetMaster)",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689975266_aogke",
-        "time": "15:59:35",
-        "timestamp": "2026-04-20T12:59:35.266Z",
-        "msg": "Ürün detay modalı kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689975929_t80jd",
-        "time": "15:59:35",
-        "timestamp": "2026-04-20T12:59:35.929Z",
-        "msg": "Ürün görüntülendi: Selfie Lamp with iPhone (GadgetMaster) – 570 TL",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689976624_xpq1k",
-        "time": "15:59:36",
-        "timestamp": "2026-04-20T12:59:36.624Z",
-        "msg": "Ürün detay modalı kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689976982_ljxh2",
-        "time": "15:59:36",
-        "timestamp": "2026-04-20T12:59:36.981Z",
-        "msg": "Sayfa kaydırıldı: %71",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689977576_4ahhc",
-        "time": "15:59:37",
-        "timestamp": "2026-04-20T12:59:37.576Z",
-        "msg": "Ürün görüntülendi: Apple HomePod Mini Cosmic Grey (Apple) – 3800 TL",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689978472_wst8y",
-        "time": "15:59:38",
-        "timestamp": "2026-04-20T12:59:38.472Z",
-        "msg": "Ürün detay modalı kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689980452_5myhw",
-        "time": "15:59:40",
-        "timestamp": "2026-04-20T12:59:40.452Z",
-        "msg": "Ürün görüntülendi: Samsung Galaxy S8 (Samsung) – 19000 TL",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689981489_g35ms",
-        "time": "15:59:41",
-        "timestamp": "2026-04-20T12:59:41.489Z",
-        "msg": "Ürün detay modalı kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689983298_lxotk",
-        "time": "15:59:43",
-        "timestamp": "2026-04-20T12:59:43.298Z",
+        "id": "1778232125044_mw40c",
+        "time": "12:22:05",
+        "timestamp": "2026-05-08T09:22:05.044Z",
         "msg": "Kullanıcı sayfadan ayrıldı",
         "type": "system",
-        "gender": "male",
-        "cartSize": 0
+        "gender": "female",
+        "cartSize": 8
       },
       {
-        "id": "1776689983711_r1pow",
-        "time": "15:59:43",
-        "timestamp": "2026-04-20T12:59:43.711Z",
+        "id": "1778232125355_ixfyf",
+        "time": "12:22:05",
+        "timestamp": "2026-05-08T09:22:05.355Z",
         "msg": "ShopX yüklendi – Cinsiyet seçim ekranı gösterildi",
         "type": "system",
         "gender": null,
         "cartSize": 0
       },
       {
-        "id": "1776689985213_knorv",
-        "time": "15:59:45",
-        "timestamp": "2026-04-20T12:59:45.213Z",
-        "msg": "Cinsiyet seçimi: Erkek",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689985240_wutgj",
-        "time": "15:59:45",
-        "timestamp": "2026-04-20T12:59:45.240Z",
-        "msg": "Sayfa kaydırıldı: %NaN",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689986618_j40y9",
-        "time": "15:59:46",
-        "timestamp": "2026-04-20T12:59:46.618Z",
-        "msg": "Finansal profil girilmedi",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689986618_i5mgn",
-        "time": "15:59:46",
-        "timestamp": "2026-04-20T12:59:46.618Z",
-        "msg": "Bütçe seçildi: Belirtilmedi",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689987125_8w4fo",
-        "time": "15:59:47",
-        "timestamp": "2026-04-20T12:59:47.125Z",
-        "msg": "Mağaza yükleniyor – Erkek | Bütçe: Belirtilmedi",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689987537_p5m7z",
-        "time": "15:59:47",
-        "timestamp": "2026-04-20T12:59:47.537Z",
-        "msg": "DummyJSON: 70 ürün yüklendi (male)",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689987539_bgvqa",
-        "time": "15:59:47",
-        "timestamp": "2026-04-20T12:59:47.539Z",
-        "msg": "Mağaza hazır – 70 ürün yüklendi",
-        "type": "system",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689989254_j8m0f",
-        "time": "15:59:49",
-        "timestamp": "2026-04-20T12:59:49.254Z",
-        "msg": "Ürün görüntülendi: Man Plaid Shirt (Classic Wear) – 1330 TL",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689991332_gxkfr",
-        "time": "15:59:51",
-        "timestamp": "2026-04-20T12:59:51.332Z",
-        "msg": "Ürün detay modalı kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689992377_60ucy",
-        "time": "15:59:52",
-        "timestamp": "2026-04-20T12:59:52.377Z",
-        "msg": "Sayfa kaydırıldı: %29",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689994377_n0yhx",
-        "time": "15:59:54",
-        "timestamp": "2026-04-20T12:59:54.377Z",
-        "msg": "Ürün üzerinde 2.4s beklendi: Man Plaid Shirt (Classic Wear)",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689996141_319em",
-        "time": "15:59:56",
-        "timestamp": "2026-04-20T12:59:56.141Z",
-        "msg": "Ürün üzerinde 1.7s beklendi: Blue & Black Check Shirt (Fashion Trends)",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689997037_0b3kp",
-        "time": "15:59:57",
-        "timestamp": "2026-04-20T12:59:57.037Z",
-        "msg": "Sayfa kaydırıldı: %26",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689997732_hupmx",
-        "time": "15:59:57",
-        "timestamp": "2026-04-20T12:59:57.732Z",
-        "msg": "Favorilere eklendi: Man Plaid Shirt",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689998013_pru1e",
-        "time": "15:59:58",
-        "timestamp": "2026-04-20T12:59:58.013Z",
-        "msg": "Ürün üzerinde 1.9s beklendi: Man Plaid Shirt (Classic Wear)",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776689999288_xhk9j",
-        "time": "15:59:59",
-        "timestamp": "2026-04-20T12:59:59.287Z",
-        "msg": "Ürün görüntülendi: Man Short Sleeve Shirt (Casual Comfort) – 760 TL",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776690007131_lugf2",
-        "time": "16:00:07",
-        "timestamp": "2026-04-20T13:00:07.131Z",
-        "msg": "Flaş indirim pop-up gösterildi: Football",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776690077984_xoo5h",
-        "time": "16:01:17",
-        "timestamp": "2026-04-20T13:01:17.984Z",
-        "msg": "Satın alma amacı: \"İndirimde gördüm\" – Man Short Sleeve Shirt",
-        "type": "product",
-        "gender": "male",
-        "cartSize": 0
-      },
-      {
-        "id": "1776690077984_ssbkm",
-        "time": "16:01:17",
-        "timestamp": "2026-04-20T13:01:17.984Z",
-        "msg": "Ürün detay modalı kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690077984_rgke5",
-        "time": "16:01:17",
-        "timestamp": "2026-04-20T13:01:17.984Z",
-        "msg": "Sepete eklendi: Man Short Sleeve Shirt – 760 TL",
-        "type": "cart",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690127136_glzdn",
-        "time": "16:02:07",
-        "timestamp": "2026-04-20T13:02:07.135Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690189508_5otbz",
-        "time": "16:03:09",
-        "timestamp": "2026-04-20T13:03:09.508Z",
-        "msg": "Flaş indirim pop-up gösterildi: Monopod",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690290687_j4vco",
-        "time": "16:04:50",
-        "timestamp": "2026-04-20T13:04:50.687Z",
-        "msg": "Flaş indirim pop-up gösterildi: Puma Future Rider Trainers",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690408680_kusuc",
-        "time": "16:06:48",
-        "timestamp": "2026-04-20T13:06:48.680Z",
-        "msg": "Flaş indirim pop-up gösterildi: Girl Summer Dress",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690515146_mb1ux",
-        "time": "16:08:35",
-        "timestamp": "2026-04-20T13:08:35.145Z",
-        "msg": "Flaş indirim pop-up gösterildi: iPhone 5s",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690635149_9vk1g",
-        "time": "16:10:35",
-        "timestamp": "2026-04-20T13:10:35.149Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690645874_5b7m2",
-        "time": "16:10:45",
-        "timestamp": "2026-04-20T13:10:45.874Z",
-        "msg": "Flaş indirim pop-up gösterildi: iPhone 13 Pro",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690765875_eikji",
-        "time": "16:12:45",
-        "timestamp": "2026-04-20T13:12:45.875Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690768526_r1dkn",
-        "time": "16:12:48",
-        "timestamp": "2026-04-20T13:12:48.526Z",
-        "msg": "Flaş indirim pop-up gösterildi: Apple Airpower Wireless Charger",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776690883220_ne066",
-        "time": "16:14:43",
-        "timestamp": "2026-04-20T13:14:43.220Z",
-        "msg": "Flaş indirim pop-up gösterildi: Monopod",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691003221_r2apt",
-        "time": "16:16:43",
-        "timestamp": "2026-04-20T13:16:43.221Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691007145_bn6rs",
-        "time": "16:16:47",
-        "timestamp": "2026-04-20T13:16:47.145Z",
-        "msg": "Flaş indirim pop-up gösterildi: New DELL XPS 13 9300 Laptop",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691120855_zbjcv",
-        "time": "16:18:40",
-        "timestamp": "2026-04-20T13:18:40.854Z",
-        "msg": "Flaş indirim pop-up gösterildi: Basketball",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691240870_7oq36",
-        "time": "16:20:40",
-        "timestamp": "2026-04-20T13:20:40.870Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691248551_6bemh",
-        "time": "16:20:48",
-        "timestamp": "2026-04-20T13:20:48.551Z",
-        "msg": "Flaş indirim pop-up gösterildi: Cricket Helmet",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691368564_ntbl4",
-        "time": "16:22:48",
-        "timestamp": "2026-04-20T13:22:48.564Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691382964_cphtq",
-        "time": "16:23:02",
-        "timestamp": "2026-04-20T13:23:02.964Z",
-        "msg": "Flaş indirim pop-up gösterildi: Puma Future Rider Trainers",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691490996_k1h3c",
-        "time": "16:24:50",
-        "timestamp": "2026-04-20T13:24:50.996Z",
-        "msg": "Flaş indirim pop-up gösterildi: Brown Leather Belt Watch",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691609290_j2rsn",
-        "time": "16:26:49",
-        "timestamp": "2026-04-20T13:26:49.290Z",
-        "msg": "Flaş indirim pop-up gösterildi: Huawei Matebook X Pro",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691729305_578dn",
-        "time": "16:28:49",
-        "timestamp": "2026-04-20T13:28:49.305Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691749040_2mj2k",
-        "time": "16:29:09",
-        "timestamp": "2026-04-20T13:29:09.040Z",
-        "msg": "Flaş indirim pop-up gösterildi: Puma Future Rider Trainers",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691838358_yuk8m",
-        "time": "16:30:38",
-        "timestamp": "2026-04-20T13:30:38.358Z",
-        "msg": "Flaş indirim pop-up gösterildi: Blue Frock",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691955776_wpy66",
-        "time": "16:32:35",
-        "timestamp": "2026-04-20T13:32:35.776Z",
-        "msg": "Flaş indirim pop-up gösterildi: Rolex Submariner Watch",
-        "type": "ui",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691976514_iizxr",
-        "time": "16:32:56",
-        "timestamp": "2026-04-20T13:32:56.514Z",
-        "msg": "Kategori değiştirme ekranına gidildi",
-        "type": "navigation",
-        "gender": "male",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691977610_i6fgz",
-        "time": "16:32:57",
-        "timestamp": "2026-04-20T13:32:57.610Z",
+        "id": "1778232126362_7pozu",
+        "time": "12:22:06",
+        "timestamp": "2026-05-08T09:22:06.361Z",
         "msg": "Cinsiyet seçimi: Kadın",
         "type": "system",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776691977622_85xgh",
-        "time": "16:32:57",
-        "timestamp": "2026-04-20T13:32:57.622Z",
+        "id": "1778232126375_xot61",
+        "time": "12:22:06",
+        "timestamp": "2026-05-08T09:22:06.375Z",
         "msg": "Sayfa kaydırıldı: %NaN",
         "type": "ui",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776691978796_8vd10",
-        "time": "16:32:58",
-        "timestamp": "2026-04-20T13:32:58.796Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691979988_495ax",
-        "time": "16:32:59",
-        "timestamp": "2026-04-20T13:32:59.988Z",
-        "msg": "Finansal profil girilmedi",
+        "id": "1778232136489_4wfbk",
+        "time": "12:22:16",
+        "timestamp": "2026-05-08T09:22:16.489Z",
+        "msg": "Bütçe seçildi: ",
         "type": "system",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776691979988_nlds4",
-        "time": "16:32:59",
-        "timestamp": "2026-04-20T13:32:59.988Z",
-        "msg": "Bütçe seçildi: Belirtilmedi",
+        "id": "1778232136489_geou2",
+        "time": "12:22:16",
+        "timestamp": "2026-05-08T09:22:16.489Z",
+        "msg": "Finansal profil: Maaş 59.500 TL | Kredi 25.250 TL | Gider 21.750 TL | Kredi Limiti 215.000 TL | Net Harcanabilir 12.500 TL",
         "type": "system",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776691980492_h7r4b",
-        "time": "16:33:00",
-        "timestamp": "2026-04-20T13:33:00.492Z",
+        "id": "1778232136992_uq6tm",
+        "time": "12:22:16",
+        "timestamp": "2026-05-08T09:22:16.992Z",
         "msg": "Mağaza yükleniyor – Kadın | Bütçe: Belirtilmedi",
         "type": "system",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776691980704_2awvy",
-        "time": "16:33:00",
-        "timestamp": "2026-04-20T13:33:00.704Z",
+        "id": "1778232137580_pqwoo",
+        "time": "12:22:17",
+        "timestamp": "2026-05-08T09:22:17.580Z",
         "msg": "DummyJSON: 58 ürün yüklendi (female)",
         "type": "system",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776691980706_7xmeh",
-        "time": "16:33:00",
-        "timestamp": "2026-04-20T13:33:00.706Z",
+        "id": "1778232137583_vgh2v",
+        "time": "12:22:17",
+        "timestamp": "2026-05-08T09:22:17.583Z",
         "msg": "Mağaza hazır – 58 ürün yüklendi",
         "type": "system",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776691981991_sttc5",
-        "time": "16:33:01",
-        "timestamp": "2026-04-20T13:33:01.991Z",
-        "msg": "Sayfa kaydırıldı: %9",
+        "id": "1778232137939_oadgy",
+        "time": "12:22:17",
+        "timestamp": "2026-05-08T09:22:17.939Z",
+        "msg": "Sayfa kaydırıldı: %0",
         "type": "ui",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776691983130_pxmkh",
-        "time": "16:33:03",
-        "timestamp": "2026-04-20T13:33:03.130Z",
-        "msg": "Banner kaydırıldı: Slayt 2",
-        "type": "navigation",
+        "id": "1778232140074_eq62g",
+        "time": "12:22:20",
+        "timestamp": "2026-05-08T09:22:20.074Z",
+        "msg": "Ürün görüntülendi: Corset With Black Skirt (ShopX) – 3040 TL",
+        "type": "product",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776691984073_73vs2",
-        "time": "16:33:04",
-        "timestamp": "2026-04-20T13:33:04.073Z",
-        "msg": "Banner kaydırıldı: Slayt 3",
-        "type": "navigation",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691984838_f76uf",
-        "time": "16:33:04",
-        "timestamp": "2026-04-20T13:33:04.838Z",
-        "msg": "Banner kaydırıldı: Slayt 1",
-        "type": "navigation",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776691986446_dmug9",
-        "time": "16:33:06",
-        "timestamp": "2026-04-20T13:33:06.446Z",
-        "msg": "Sayfa kaydırıldı: %3",
+        "id": "1778232141494_maaxd",
+        "time": "12:22:21",
+        "timestamp": "2026-05-08T09:22:21.494Z",
+        "msg": "Ürün detay modalı kapatıldı",
         "type": "ui",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776692000507_kjq0t",
-        "time": "16:33:20",
-        "timestamp": "2026-04-20T13:33:20.507Z",
-        "msg": "Flaş indirim pop-up gösterildi: Golden Shoes Woman",
+        "id": "1778232142255_o3tp8",
+        "time": "12:22:22",
+        "timestamp": "2026-05-08T09:22:22.255Z",
+        "msg": "Ürün görüntülendi: Marni Red & Black Suit (ShopX) – 6840 TL",
+        "type": "product",
+        "gender": "female",
+        "cartSize": 0
+      },
+      {
+        "id": "1778232143311_tglp2",
+        "time": "12:22:23",
+        "timestamp": "2026-05-08T09:22:23.311Z",
+        "msg": "Ürün detay modalı kapatıldı",
         "type": "ui",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       },
       {
-        "id": "1776692120510_anht0",
-        "time": "16:35:20",
-        "timestamp": "2026-04-20T13:35:20.509Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692173877_at6vn",
-        "time": "16:36:13",
-        "timestamp": "2026-04-20T13:36:13.876Z",
-        "msg": "Flaş indirim pop-up gösterildi: Cricket Wicket",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692293878_7cu5z",
-        "time": "16:38:13",
-        "timestamp": "2026-04-20T13:38:13.877Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692307751_q6zu2",
-        "time": "16:38:27",
-        "timestamp": "2026-04-20T13:38:27.751Z",
-        "msg": "Flaş indirim pop-up gösterildi: Dior J'adore",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692405581_xedzx",
-        "time": "16:40:05",
-        "timestamp": "2026-04-20T13:40:05.580Z",
-        "msg": "Flaş indirim pop-up gösterildi: IWC Ingenieur Automatic Steel",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692515694_406l1",
-        "time": "16:41:55",
-        "timestamp": "2026-04-20T13:41:55.694Z",
-        "msg": "Flaş indirim pop-up gösterildi: American Football",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692635697_wm74h",
-        "time": "16:43:55",
-        "timestamp": "2026-04-20T13:43:55.697Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692649036_9zuu6",
-        "time": "16:44:09",
-        "timestamp": "2026-04-20T13:44:09.036Z",
-        "msg": "Flaş indirim pop-up gösterildi: White Faux Leather Backpack",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692753143_764di",
-        "time": "16:45:53",
-        "timestamp": "2026-04-20T13:45:53.143Z",
-        "msg": "Flaş indirim pop-up gösterildi: Women Handbag Black",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692873151_xzk9c",
-        "time": "16:47:53",
-        "timestamp": "2026-04-20T13:47:53.151Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692904427_7qpm3",
-        "time": "16:48:24",
-        "timestamp": "2026-04-20T13:48:24.427Z",
-        "msg": "Flaş indirim pop-up gösterildi: Rolex Cellini Moonphase",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776692998867_4xliq",
-        "time": "16:49:58",
-        "timestamp": "2026-04-20T13:49:58.867Z",
-        "msg": "Flaş indirim pop-up gösterildi: Green Crystal Earring",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776693118875_xjvz3",
-        "time": "16:51:58",
-        "timestamp": "2026-04-20T13:51:58.875Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776693128259_dhir9",
-        "time": "16:52:08",
-        "timestamp": "2026-04-20T13:52:08.259Z",
-        "msg": "Flaş indirim pop-up gösterildi: Golden Shoes Woman",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776693248274_z4bwq",
-        "time": "16:54:08",
-        "timestamp": "2026-04-20T13:54:08.274Z",
-        "msg": "Flaş indirim pop-up kapatıldı",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776693248865_et4sh",
-        "time": "16:54:08",
-        "timestamp": "2026-04-20T13:54:08.865Z",
-        "msg": "Flaş indirim pop-up gösterildi: Women Handbag Black",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776693291817_uv7z2",
-        "time": "16:54:51",
-        "timestamp": "2026-04-20T13:54:51.817Z",
-        "msg": "Sayfa kaydırıldı: %29",
-        "type": "ui",
-        "gender": "female",
-        "cartSize": 1
-      },
-      {
-        "id": "1776693292741_cetmi",
-        "time": "16:54:52",
-        "timestamp": "2026-04-20T13:54:52.740Z",
+        "id": "1778232144754_fvh3w",
+        "time": "12:22:24",
+        "timestamp": "2026-05-08T09:22:24.754Z",
         "msg": "Kullanıcı sayfadan ayrıldı",
         "type": "system",
         "gender": "female",
-        "cartSize": 1
+        "cartSize": 0
       }
     ],
     "stats": {
-      "system": 22,
-      "navigation": 6,
-      "product": 14,
-      "cart": 1,
+      "system": 11,
+      "navigation": 0,
+      "product": 2,
+      "cart": 0,
       "search": 0,
-      "ui": 71
-    }
+      "ui": 5
+    },
+    "heatmapFiles": [
+      "deneme_20260508_122230.png"
+    ]
   }
 ]

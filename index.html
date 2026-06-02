@@ -19,6 +19,12 @@
     <!-- ===================== GENDER SELECTION SCREEN ===================== -->
     <div id="gender-screen" class="gender-screen">
 
+        <!-- Tema Toggle -->
+        <button class="gs-theme-toggle" id="gs-theme-toggle" onclick="toggleGenderTheme()" aria-label="Tema değiştir">
+            <span class="toggle-icon" id="toggle-icon">☀️</span>
+            <span id="toggle-label">Açık Tema</span>
+        </button>
+
         <!-- Logo -->
         <div class="gs-logo">
             <span class="gs-logo-icon">🛍</span>
@@ -99,70 +105,64 @@
         <!-- STEP 2: Budget + Financial Profile -->
         <div id="gender-step-2" class="gender-step hidden">
             <div class="budget-screen">
-                <div class="budget-icon" id="budget-gender-icon">🛍</div>
-                <h2 class="budget-title">Harika! Birkaç bilgi daha 👋</h2>
-                <p class="budget-subtitle">Bugünkü alışveriş bütçen ne kadar?</p>
-                <div class="budget-options" id="budget-options">
-                    <button class="budget-btn" id="budget-1" onclick="highlightBudget('low','500 TL altı')" data-val="low">
-                        <span class="budget-emoji">💸</span>
-                        <span class="budget-btn-text">
-                            <span class="budget-label">500 TL Altı</span>
-                            <span class="budget-desc">Uygun fiyatlı seçenekler</span>
-                        </span>
-                    </button>
-                    <button class="budget-btn" id="budget-2" onclick="highlightBudget('medium','500–1500 TL')" data-val="medium">
-                        <span class="budget-emoji">💳</span>
-                        <span class="budget-btn-text">
-                            <span class="budget-label">500 – 1.500 TL</span>
-                            <span class="budget-desc">Kalite-fiyat dengesi</span>
-                        </span>
-                    </button>
-                    <button class="budget-btn" id="budget-3" onclick="highlightBudget('high','1500–3500 TL')" data-val="high">
-                        <span class="budget-emoji">💰</span>
-                        <span class="budget-btn-text">
-                            <span class="budget-label">1.500 – 3.500 TL</span>
-                            <span class="budget-desc">Premium ürünler</span>
-                        </span>
-                    </button>
-                    <button class="budget-btn" id="budget-4" onclick="highlightBudget('luxury','3500 TL üstü')" data-val="luxury">
-                        <span class="budget-emoji">👑</span>
-                        <span class="budget-btn-text">
-                            <span class="budget-label">3.500 TL Üstü</span>
-                            <span class="budget-desc">Lüks koleksiyon</span>
-                        </span>
-                    </button>
-                </div>
+                <div class="budget-icon" id="budget-gender-icon">💳</div>
+                <h2 class="budget-title">Finansal Profilin 👋</h2>
+                <p class="budget-subtitle">Harcama limitin aylık gelirine göre otomatik hesaplanır</p>
 
                 <!-- Financial Profile -->
                 <div class="gs-financial-section">
                     <div class="gs-fin-header">
-                        <span class="gs-fin-icon">💳</span>
+                        <span class="gs-fin-icon">📊</span>
                         <div class="gs-fin-header-text">
-                            <div class="gs-fin-title">Finansal Profiliniz</div>
-                            <div class="gs-fin-sub">Ödeme adımında kayıtlı kart olarak kullanılır</div>
+                            <div class="gs-fin-title">Gelir &amp; Gider Bilgilerin</div>
+                            <div class="gs-fin-sub">Net gelirin = Maaş − Kredi ödemesi − Sabit giderler</div>
                         </div>
                         <span class="gs-fin-badge">İsteğe Bağlı</span>
                     </div>
                     <div class="gs-fin-fields">
-                        <div class="gs-fin-field">
-                            <label class="gs-fin-label">Aylık Net Maaş (TL)</label>
-                            <input class="gs-fin-input" type="number" id="gs-fin-salary" placeholder="örn: 15000" min="0" />
+                        <div class="gs-slider-field">
+                            <div class="gs-slider-header">
+                                <label class="gs-fin-label">Aylık Net Maaş</label>
+                                <span class="gs-slider-val" id="gs-fin-salary-disp">0 TL</span>
+                            </div>
+                            <input class="gs-slider" type="range" id="gs-fin-salary"
+                                min="0" max="500000" step="1000" value="0"
+                                oninput="updateSlider(this,'gs-fin-salary-disp')" />
                         </div>
-                        <div class="gs-fin-field">
-                            <label class="gs-fin-label">Aylık Kredi Ödemesi (TL)</label>
-                            <input class="gs-fin-input" type="number" id="gs-fin-credit" placeholder="örn: 2000" min="0" />
+                        <div class="gs-slider-field">
+                            <div class="gs-slider-header">
+                                <label class="gs-fin-label">Aylık Kredi Ödemesi</label>
+                                <span class="gs-slider-val" id="gs-fin-credit-disp">0 TL</span>
+                            </div>
+                            <input class="gs-slider" type="range" id="gs-fin-credit"
+                                min="0" max="50000" step="250" value="0"
+                                oninput="updateSlider(this,'gs-fin-credit-disp')" />
                         </div>
-                        <div class="gs-fin-field">
-                            <label class="gs-fin-label">Aylık Sabit Gider (TL)</label>
-                            <input class="gs-fin-input" type="number" id="gs-fin-debt" placeholder="örn: 1500" min="0" />
+                        <div class="gs-slider-field">
+                            <div class="gs-slider-header">
+                                <label class="gs-fin-label">Aylık Sabit Gider</label>
+                                <span class="gs-slider-val" id="gs-fin-debt-disp">0 TL</span>
+                            </div>
+                            <input class="gs-slider" type="range" id="gs-fin-debt"
+                                min="0" max="50000" step="250" value="0"
+                                oninput="updateSlider(this,'gs-fin-debt-disp')" />
+                        </div>
+                        <div class="gs-slider-field">
+                            <div class="gs-slider-header">
+                                <label class="gs-fin-label">Kredi Limiti</label>
+                                <span class="gs-slider-val" id="gs-fin-limit-disp">0 TL</span>
+                            </div>
+                            <input class="gs-slider" type="range" id="gs-fin-limit"
+                                min="0" max="500000" step="5000" value="0"
+                                oninput="updateSlider(this,'gs-fin-limit-disp')" />
                         </div>
                     </div>
                 </div>
 
-                <button class="budget-confirm-btn" id="budget-confirm-btn" onclick="goToShopFromBudget()">
+                <button class="budget-confirm-btn active" id="budget-confirm-btn" onclick="goToShopFromBudget()">
                     Alışverişe Başla →
                 </button>
-                <button class="budget-skip" onclick="goToShopFromBudget()">Tüm adımları atla →</button>
+                <button class="budget-skip" onclick="goToShopFromBudget()">Finansal bilgilerimi girmek istemiyorum →</button>
             </div>
         </div>
 
@@ -176,8 +176,7 @@
             <div class="header-top">
                 <div class="container">
                     <div class="header-top-inner">
-                        <span class="header-topbar-text">🚚 150 TL üzeri ücretsiz kargo &nbsp;|&nbsp; 🔒 Güvenli
-                            alışveriş &nbsp;|&nbsp; ⭐ 4.9/5 Müşteri Puanı</span>
+                        <span class="header-topbar-text"><span id="topbar-ship-text">🚚 Ücretsiz kargo fırsatı</span> &nbsp;|&nbsp; 🔒 Güvenli alışveriş &nbsp;|&nbsp; ⭐ 4.9/5 Müşteri Puanı</span>
                         <div class="header-top-actions">
                             <a href="#" id="link-track" onclick="openOrderTracking(); return false;">Sipariş Takibi</a>
                             <a href="#" id="link-help" onclick="openHelp(); return false;">Yardım</a>
@@ -443,12 +442,20 @@
             <div id="cart-items"></div>
         </div>
         <div class="drawer-footer" id="cart-footer">
+            <div id="cart-tier-banner" class="cart-tier-banner" style="display:none"></div>
+            <div class="cart-coupon-section">
+                <div class="coupon-input-row">
+                    <input type="text" id="coupon-input" class="coupon-input" placeholder="Kupon kodu (SHOPX10, KARGO...)" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')applyCoupon()" />
+                    <button class="coupon-apply-btn" onclick="applyCoupon()">Uygula</button>
+                </div>
+                <div id="coupon-status"></div>
+            </div>
+            <div id="cart-gift-section" class="cart-gift-section" style="display:none"></div>
             <div class="cart-summary">
                 <div class="cart-summary-row"><span>Ürün Toplamı</span><span id="cart-subtotal">0 TL</span></div>
-                <div class="cart-summary-row"><span>Kargo</span><span id="cart-shipping"
-                        class="free-shipping">Ücretsiz</span></div>
-                <div class="cart-summary-row total-row"><span>Toplam</span><strong id="cart-total-price">0 TL</strong>
-                </div>
+                <div id="cart-discount-rows"></div>
+                <div class="cart-summary-row"><span>Kargo</span><span id="cart-shipping" class="free-shipping">Ücretsiz</span></div>
+                <div class="cart-summary-row total-row"><span>Toplam</span><strong id="cart-total-price">0 TL</strong></div>
             </div>
             <div id="cart-financial-impact" class="cart-financial-impact" style="display:none"></div>
             <button class="checkout-btn" id="checkout-btn" onclick="openCheckout()">Ödemeye Geç →</button>
@@ -608,8 +615,112 @@
         </div>
     </div>
 
+    <!-- ===================== COMPARE FLOATING BAR ===================== -->
+    <div class="compare-bar" id="compare-bar" style="display:none">
+        <div class="compare-bar-inner">
+            <span class="compare-bar-label">⚖️ Karşılaştır (<span id="compare-count">0</span>/3)</span>
+            <div class="compare-bar-items" id="compare-bar-items"></div>
+            <div class="compare-bar-actions">
+                <button class="compare-btn-go" onclick="openCompareModal()">Karşılaştır</button>
+                <button class="compare-btn-clear" onclick="clearCompare()">Temizle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== COMPARE MODAL ===================== -->
+    <div class="modal-overlay" id="compare-overlay" onclick="closeCompareModal()"></div>
+    <div class="compare-modal" id="compare-modal" role="dialog" style="display:none">
+        <button class="modal-close" onclick="closeCompareModal()">✕</button>
+        <div id="compare-content"></div>
+    </div>
+
+    <!-- ===================== BUDGET TRACKER BAR ===================== -->
+    <div id="budget-tracker-bar" class="budget-tracker-bar">
+        <div class="btb-handle"></div>
+        <div class="btb-inner">
+
+            <!-- Normal / uyarı durumu -->
+            <div class="btb-progress-state" id="btb-progress-state">
+                <div class="btb-top-row">
+                    <div class="btb-left">
+                        <span class="btb-state-icon" id="btb-icon">💰</span>
+                        <div class="btb-text-group">
+                            <span class="btb-title">Günlük Bütçe</span>
+                            <span class="btb-subtitle" id="btb-subtitle">Bütçe takibi aktif</span>
+                        </div>
+                    </div>
+                    <div class="btb-right">
+                        <span class="btb-amounts" id="btb-amounts">0 TL</span>
+                        <span class="btb-pct" id="btb-pct">%0</span>
+                    </div>
+                </div>
+                <div class="btb-track">
+                    <div class="btb-fill" id="btb-fill"></div>
+                </div>
+                <div class="btb-credit-line" id="btb-credit-line" style="display:none"></div>
+            </div>
+
+            <!-- Limit aşıldı durumu -->
+            <div class="btb-exceeded-state" id="btb-exceeded-state">
+                <div class="btb-warn-left">
+                    <div class="btb-warn-badge">⚠️</div>
+                    <div>
+                        <span class="btb-warn-title">Günlük bütçeni aştın!</span>
+                        <span class="btb-warn-sub" id="btb-over-msg">0 TL fazla harcama</span>
+                    </div>
+                </div>
+                <div class="btb-warn-actions">
+                    <button class="btb-upgrade-btn" onclick="openBudgetUpgradeModal()">
+                        Profili Düzenle ✏️
+                    </button>
+                    <button class="btb-checkout-btn" onclick="openCheckout()">
+                        Ödemeye Geç →
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===================== BUDGET UPGRADE MODAL ===================== -->
+    <div class="modal-overlay" id="budget-upgrade-overlay" onclick="closeBudgetUpgradeModal()"></div>
+    <div class="budget-upgrade-modal" id="budget-upgrade-modal" style="display:none">
+        <div class="bum-handle"></div>
+        <button class="modal-close bum-close" onclick="closeBudgetUpgradeModal()">✕</button>
+        <div id="budget-upgrade-content"></div>
+    </div>
+
     <!-- TOAST -->
     <div class="toast-container" id="toast-container"></div>
+
+    <!-- ===================== SANAL ASİSTAN ===================== -->
+    <button class="va-toggle" id="va-toggle" onclick="toggleAssistant()" aria-label="Sanal Asistan">
+        <span class="va-toggle-icon">💬</span>
+        <span class="va-toggle-label">Asistan</span>
+        <span class="va-badge" id="va-badge">1</span>
+    </button>
+
+    <div class="va-panel" id="va-panel">
+        <div class="va-header">
+            <div class="va-avatar-wrap">
+                <div class="va-avatar">🤖</div>
+                <span class="va-online-dot"></span>
+            </div>
+            <div class="va-header-info">
+                <div class="va-name">ShopX Asistanı</div>
+                <div class="va-status">● Çevrimiçi · Hızlı yanıt</div>
+            </div>
+            <button class="va-close-btn" onclick="closeAssistant()" aria-label="Kapat">✕</button>
+        </div>
+        <div class="va-messages" id="va-messages"></div>
+        <div class="va-quick-replies" id="va-quick-replies"></div>
+        <div class="va-input-row">
+            <input type="text" class="va-input" id="va-input" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter')sendVAMessage()" />
+            <button class="va-send-btn" onclick="sendVAMessage()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+        </div>
+    </div>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="app.js"></script>
