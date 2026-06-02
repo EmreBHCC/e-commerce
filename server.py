@@ -6,8 +6,9 @@ import os
 import re
 import subprocess
 import sys
+import webbrowser
 from datetime import datetime
-from threading import Lock, Thread
+from threading import Lock, Thread, Timer
 
 from flask import Flask, jsonify, request, send_from_directory
 from flask_socketio import SocketIO, emit, join_room
@@ -266,11 +267,17 @@ def api_list_heatmaps():
     return jsonify(sorted(metas, key=lambda x: x.get('timestamp', ''), reverse=True))
 
 # ── BAŞLAT ────────────────────────────────────────────────
+def _open_browser():
+    webbrowser.open('http://localhost:5000')
+    webbrowser.open_new_tab('http://localhost:5000/admin')
+
 if __name__ == '__main__':
     print('=' * 50)
     print('  ShopX Backend')
     print('  Shop  →  http://localhost:5000')
     print('  Admin →  http://localhost:5000/admin')
     print('=' * 50)
+    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+        Timer(1.5, _open_browser).start()
     socketio.run(app, host='0.0.0.0', port=5000, debug=True,
                  allow_unsafe_werkzeug=True)
