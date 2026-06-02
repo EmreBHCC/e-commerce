@@ -1,5 +1,35 @@
 [
   {
+    "id": "sess_1780405319658",
+    "name": "denememem",
+    "notes": "",
+    "status": "running",
+    "startTime": "2026-06-02T13:01:59.658Z",
+    "startTimeDisplay": "02.06.2026 16:01:59",
+    "endTime": null,
+    "endTimeDisplay": null,
+    "durationSecs": 46,
+    "logs": [
+      {
+        "id": "1780405319722_vjb0k",
+        "time": "16:01:59",
+        "timestamp": "2026-06-02T13:01:59.720Z",
+        "msg": "Oturum başlatıldı: \"denememem\"",
+        "type": "system",
+        "gender": null,
+        "cartSize": 0
+      }
+    ],
+    "stats": {
+      "system": 1,
+      "navigation": 0,
+      "product": 0,
+      "cart": 0,
+      "search": 0,
+      "ui": 0
+    }
+  },
+  {
     "id": "sess_1778232036738",
     "name": "deneme",
     "notes": "",

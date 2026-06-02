@@ -1,5 +1,23 @@
 [
   {
+    "id": "1780405319722_vjb0k",
+    "time": "16:01:59",
+    "timestamp": "2026-06-02T13:01:59.720Z",
+    "msg": "Oturum başlatıldı: \"denememem\"",
+    "type": "system",
+    "gender": null,
+    "cartSize": 0
+  },
+  {
+    "id": "1780405289799_ld2sm",
+    "time": "16:01:29",
+    "timestamp": "2026-06-02T13:01:29.723Z",
+    "msg": "ShopX yüklendi – Cinsiyet seçim ekranı gösterildi",
+    "type": "system",
+    "gender": null,
+    "cartSize": 0
+  },
+  {
     "id": "1780399398275_zjio3",
     "time": "14:23:18",
     "timestamp": "2026-06-02T11:23:18.263Z",
