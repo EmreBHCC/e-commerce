@@ -1320,24 +1320,35 @@ img { max-width: 100%; display: block; }
   position: absolute;
   bottom: 8px;
   right: 8px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: auto;
+  min-width: 58px;
+  height: auto;
+  border-radius: 10px;
   background: rgba(255,255,255,0.95);
   border: 1px solid var(--border);
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 2px;
+  padding: 5px 6px;
   transition: all var(--transition);
   box-shadow: var(--shadow-xs);
   font-size: 0.9rem;
   opacity: 0;
   z-index: 2;
 }
+.product-fav-btn .btn-text {
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: #555;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
 
 .product-card:hover .product-fav-btn { opacity: 1; }
-.product-fav-btn:hover { background: #fff; transform: scale(1.14); box-shadow: var(--shadow-sm); }
+.product-fav-btn:hover { background: #fff; transform: scale(1.08); box-shadow: var(--shadow-sm); }
 .product-fav-btn.active { opacity: 1; }
 
 /* Card Body */
@@ -1752,8 +1763,8 @@ img { max-width: 100%; display: block; }
   background: var(--surface);
   border-radius: var(--radius-xl);
   z-index: 601;
-  width: 90%;
-  max-width: 780px;
+  width: 92%;
+  max-width: 960px;
   max-height: 90vh;
   overflow-y: auto;
   opacity: 0;
@@ -1790,22 +1801,29 @@ img { max-width: 100%; display: block; }
 
 .product-modal-inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.15fr 1fr;
   gap: 0;
 }
 
 .modal-img-side {
-  background: #f8f8f8;
+  background: #f3f4f8;
   border-radius: var(--radius-xl) 0 0 var(--radius-xl);
   overflow: hidden;
-  min-height: 400px;
+  min-height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 8rem;
+  padding: 24px;
 }
 
-.modal-img-side img { width: 100%; height: 100%; object-fit: cover; }
+.modal-img-side img {
+  width: 100%;
+  height: 100%;
+  max-height: 460px;
+  object-fit: contain;
+  border-radius: 8px;
+}
 
 .modal-info-side { padding: 36px 32px; }
 
@@ -1917,17 +1935,32 @@ img { max-width: 100%; display: block; }
 .modal-add-cart:hover { opacity: 0.9; transform: scale(1.01); }
 
 .modal-fav-btn {
-  padding: 15px 20px;
+  padding: 10px 16px;
   border: 2px solid var(--border);
   border-radius: var(--radius-sm);
   background: none;
   cursor: pointer;
   font-size: 1.2rem;
   transition: all var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 72px;
+}
+.modal-btn-icon { font-size: 1.2rem; line-height: 1; }
+.modal-btn-text {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .modal-fav-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+.modal-fav-btn:hover .modal-btn-text { color: var(--accent); }
 .modal-fav-btn.active { border-color: var(--accent); background: var(--accent-light); }
+.modal-fav-btn.active .modal-btn-text { color: var(--accent); }
 
 /* ============================================================
    FOOTER — Premium
@@ -4223,20 +4256,32 @@ img { max-width: 100%; display: block; }
 /* ── Karşılaştırma Butonu (ürün kart) ── */
 .product-compare-btn {
   position: absolute;
-  bottom: 44px; right: 8px;
-  width: 32px; height: 32px;
-  border-radius: 50%;
+  bottom: 8px; left: 8px;
+  width: auto;
+  min-width: 72px;
+  height: auto;
+  border-radius: 10px;
   background: rgba(255,255,255,.95);
   border: 1px solid var(--border);
   cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px;
+  padding: 5px 6px;
   transition: all var(--transition);
   box-shadow: var(--shadow-xs);
   font-size: .82rem; opacity: 0; z-index: 2;
 }
+.product-compare-btn .btn-text {
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: #555;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
 .product-card:hover .product-compare-btn { opacity: 1; }
-.product-compare-btn:hover { background: #fff; transform: scale(1.14); box-shadow: var(--shadow-sm); }
+.product-compare-btn:hover { background: #fff; transform: scale(1.08); box-shadow: var(--shadow-sm); }
 .product-compare-btn.active { opacity: 1; background: var(--accent-light); border-color: var(--accent); }
+.product-compare-btn.active .btn-text { color: var(--accent); }
 
 /* ── Karşılaştırma Floating Bar ── */
 .compare-bar {

@@ -46,7 +46,7 @@ ShopX, alışveriş bağımlılığı araştırmaları için tasarlanmış bir *
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        FRONTEND                             │
-│   HTML5 · CSS3 (4726 satır) · Vanilla JavaScript (3051 s.) │
+│   HTML5 · CSS3 (4771 satır) · Vanilla JavaScript (3263 s.) │
 │                    Socket.IO Client                         │
 ├─────────────────────────────────────────────────────────────┤
 │                        BACKEND                              │
@@ -114,7 +114,7 @@ State = {
   budgetLabel     → "low" | "medium" | "high" | "luxury"
   cart[]          → sepet ürünleri
   favorites[]     → favoriler
-  compareList[]   → karşılaştırma listesi (maks. 4)
+  compareList[]   → karşılaştırma listesi (maks. 3)
   membership      → "bronze" | "silver" | "gold" | "platinum"
   couponCode      → aktif kupon
   giftBalance     → hediye bakiyesi
@@ -123,6 +123,7 @@ State = {
   monthlyCredit   → kredi ödemesi
   monthlyDebt     → sabit giderler
   creditLimit     → hesaplanan limit
+  loggedIn        → oturum durumu (boolean)
 }
 ```
 
@@ -138,6 +139,7 @@ State = {
 - USD fiyatlar 38 katsayısıyla TRY'ye dönüştürülür
 - `PRODUCTS_CACHE` ile istemci taraflı önbellekleme yapılır
 - Kategori eşlemesi `DUMMYJSON_CAT_MAP` ile yönetilir
+- Her ürün için `thumbnail` (liste görünümü) ve `images[0]` (detay görünümü) ayrı ayrı saklanır
 
 ---
 
@@ -202,20 +204,20 @@ Kullanıcı Mesajı
 
 ### 4. Ürün Karşılaştırma
 
-Aynı anda en fazla 4 ürün yan yana karşılaştırılabilir.
+Aynı anda en fazla 3 ürün yan yana karşılaştırılabilir.
 
 ```
-┌──────────┬──────────┬──────────┬──────────┐
-│ Ürün  1  │ Ürün  2  │ Ürün  3  │ Ürün  4  │
-├──────────┼──────────┼──────────┼──────────┤
-│  Resim   │  Resim   │  Resim   │  Resim   │
-├──────────┼──────────┼──────────┼──────────┤
-│  Fiyat   │  Fiyat   │  Fiyat   │  Fiyat   │
-├──────────┼──────────┼──────────┼──────────┤
-│  Puan    │  Puan    │  Puan    │  Puan    │
-├──────────┼──────────┼──────────┼──────────┤
-│  Stok    │  Stok    │  Stok    │  Stok    │
-└──────────┴──────────┴──────────┴──────────┘
+┌──────────┬──────────┬──────────┐
+│ Ürün  1  │ Ürün  2  │ Ürün  3  │
+├──────────┼──────────┼──────────┤
+│  Resim   │  Resim   │  Resim   │
+├──────────┼──────────┼──────────┤
+│  Fiyat   │  Fiyat   │  Fiyat   │
+├──────────┼──────────┼──────────┤
+│  Puan    │  Puan    │  Puan    │
+├──────────┼──────────┼──────────┤
+│  Stok    │  Stok    │  Stok    │
+└──────────┴──────────┴──────────┘
 ```
 
 - `addToCompare(id)` — listeye ekle
@@ -248,6 +250,8 @@ _buildAIReviewHTML(product)
 ### 6. Üyelik & Kupon Sistemi
 
 **Üyelik Seviyeleri:**
+
+Üyelik seviyesi kullanıcı tarafından seçilemez; alışveriş geçmişine göre otomatik belirlenir. Hesap modalı seviyeyi bilgi amaçlı gösterir.
 
 | Seviye | İndirim | Ücretsiz Kargo | Rozet |
 |--------|---------|----------------|-------|
@@ -563,9 +567,9 @@ Sunucu başladığında tarayıcı otomatik açılır:
 e-commerce/
 │
 ├── server.py            # Flask + Socket.IO backend (284 satır)
-├── app.js               # Mağaza mantığı ve durum (3051 satır)
-├── index.html           # Mağaza arayüzü (728 satır)
-├── style.css            # Mağaza stilleri (4726 satır)
+├── app.js               # Mağaza mantığı ve durum (3263 satır)
+├── index.html           # Mağaza arayüzü (930 satır)
+├── style.css            # Mağaza stilleri (4771 satır)
 │
 ├── admin.html           # Admin panel arayüzü
 ├── admin.js             # Admin panel mantığı (861 satır)
@@ -596,7 +600,7 @@ e-commerce/
 | Alışveriş | Ürün karşılaştırma (4'e kadar) | ✅ |
 | Ödeme | 4 adımlı checkout | ✅ |
 | Ödeme | Kupon kodu sistemi | ✅ |
-| Ödeme | Üyelik indirimleri | ✅ |
+| Ödeme | Üyelik indirimleri (salt okunur, otomatik) | ✅ |
 | Ödeme | Hediye bakiyesi | ✅ |
 | Yapay Zeka | Alışveriş asistanı (chatbot) | ✅ |
 | Yapay Zeka | Ürün yorumu & puanlama | ✅ |

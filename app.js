@@ -29,6 +29,7 @@ const State = {
   giftBalance: 150,
   giftApplied: 0,
   compareList: [],
+  loggedIn: false,
 };
 
 // ── DATA ──────────────────────────────────────────────────
@@ -310,7 +311,8 @@ function transformDJProduct(p, gender) {
     brand:    p.brand || 'ShopX',
     price,
     oldPrice,
-    img:      p.thumbnail,   // Artık emoji değil, gerçek URL
+    img:      p.thumbnail,
+    fullImg:  (p.images && p.images.length > 0) ? p.images[0] : p.thumbnail,
     badge,
     rating:   Math.round(p.rating * 10) / 10,
     reviews,
@@ -334,7 +336,7 @@ async function fetchDJProducts(gender) {
     // Tüm kategorileri paralel olarak çek
     const results = await Promise.all(
       cats.map(cat =>
-        fetch(`https://dummyjson.com/products/category/${cat}?limit=12&select=id,title,description,price,discountPercentage,rating,stock,brand,category,thumbnail,reviews`)
+        fetch(`https://dummyjson.com/products/category/${cat}?limit=12&select=id,title,description,price,discountPercentage,rating,stock,brand,category,thumbnail,images,reviews`)
           .then(r => r.ok ? r.json() : { products: [] })
           .then(d => d.products || [])
           .catch(() => [])
@@ -640,6 +642,7 @@ function resetToInitial() {
   State.giftBalance = 150;
   State.giftApplied = 0;
   State.compareList = [];
+  State.loggedIn = false;
 
   // Tüm açık modal/overlay/drawer kapat
   const compareBar = document.getElementById('compare-bar');
@@ -992,6 +995,7 @@ function navClick(cat, label) {
 // ── CATEGORIES ────────────────────────────────────────────
 function buildCategories(cats) {
   const grid = document.getElementById('categories-grid');
+  if (!grid) return;
   grid.innerHTML = cats.map(c => `<div class="category-card" id="cat-${c.id}" onclick="categoryClick('${c.id}','${c.label}')" tabindex="0"><div class="cat-icon-wrap">${c.icon}</div><span class="cat-label">${c.label}</span></div>`).join('');
 }
 
@@ -1141,8 +1145,8 @@ function buildProductCard(p, section) {
     <div class="product-img-wrap">
       ${p.badge ? `<span class="product-badge badge-${p.badge}">${p.badge === 'sale' ? 'İndirim' : p.badge === 'new' ? 'Yeni' : 'Popüler'}</span>` : ''}
       ${discount ? `<span class="product-discount-badge">%${discount} İNDİRİM</span>` : ''}
-      <button class="product-fav-btn ${isFav ? 'active' : ''}" id="fav-btn-${p.id}" onclick="event.stopPropagation();toggleFavorite('${p.id}')" aria-label="Favorilere ekle">${isFav ? '❤️' : '🤍'}</button>
-      <button class="product-compare-btn ${isCompared ? 'active' : ''}" id="cmp-btn-${p.id}" onclick="event.stopPropagation();addToCompare('${p.id}')" title="Karşılaştır">⚖️</button>
+      <button class="product-fav-btn ${isFav ? 'active' : ''}" id="fav-btn-${p.id}" onclick="event.stopPropagation();toggleFavorite('${p.id}')" aria-label="Favorilere ekle"><span class="btn-icon">${isFav ? '❤️' : '🤍'}</span><span class="btn-text">Favori</span></button>
+      <button class="product-compare-btn ${isCompared ? 'active' : ''}" id="cmp-btn-${p.id}" onclick="event.stopPropagation();addToCompare('${p.id}')" title="Karşılaştır"><span class="btn-icon">⚖️</span><span class="btn-text">Karşılaştır</span></button>
       ${imgHtml}
     </div>
     ${oppLabel ? `<div class="product-opportunity">${oppLabel}</div>` : ''}
@@ -1188,7 +1192,7 @@ function openProduct(id) {
   const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
   const isFav = State.favorites.includes(p.id);
   const isCompared = State.compareList.includes(p.id);
-  const modalImgHtml = renderImg(p.img, p.name, '9rem');
+  const modalImgHtml = renderImg(p.fullImg || p.img, p.name, '9rem');
   document.getElementById('product-modal-inner').innerHTML = `
     <div class="modal-img-side">${modalImgHtml}</div>
     <div class="modal-info-side">
@@ -1231,8 +1235,8 @@ function openProduct(id) {
       </div>
       <div class="modal-actions">
         <button class="modal-add-cart" onclick="askPurposeThenAddFromModal()">🛒 Sepete Ekle</button>
-        <button class="modal-fav-btn ${isFav ? 'active' : ''}" id="modal-fav-btn" onclick="toggleFavorite('${p.id}',true)">${isFav ? '❤️' : '🤍'}</button>
-        <button class="modal-fav-btn ${isCompared ? 'active' : ''}" onclick="addToCompare('${p.id}')" title="Karşılaştırma listesine ekle">⚖️</button>
+        <button class="modal-fav-btn ${isFav ? 'active' : ''}" id="modal-fav-btn" onclick="toggleFavorite('${p.id}',true)"><span class="modal-btn-icon">${isFav ? '❤️' : '🤍'}</span><span class="modal-btn-text">Favori</span></button>
+        <button class="modal-fav-btn ${isCompared ? 'active' : ''}" id="modal-cmp-btn" onclick="addToCompare('${p.id}')"><span class="modal-btn-icon">⚖️</span><span class="modal-btn-text">Karşılaştır</span></button>
       </div>
       ${_buildAIReviewHTML(p)}
     </div>`;
@@ -1512,6 +1516,8 @@ function addToCompare(id) {
   State.compareList.push(id);
   const btn = document.getElementById(`cmp-btn-${id}`);
   if (btn) btn.classList.add('active');
+  const modalBtn = document.getElementById('modal-cmp-btn');
+  if (modalBtn && State.modalProduct && State.modalProduct.id === id) modalBtn.classList.add('active');
   _updateCompareBar();
   logAction(`Karşılaştırmaya eklendi: ${id}`, 'product');
 }
@@ -1520,6 +1526,8 @@ function removeFromCompare(id) {
   State.compareList = State.compareList.filter(x => x !== id);
   const btn = document.getElementById(`cmp-btn-${id}`);
   if (btn) btn.classList.remove('active');
+  const modalBtn = document.getElementById('modal-cmp-btn');
+  if (modalBtn && State.modalProduct && State.modalProduct.id === id) modalBtn.classList.remove('active');
   _updateCompareBar();
 }
 
@@ -1817,10 +1825,20 @@ function toggleFavorite(id, fromModal = false) {
 
 function updateFavBtn(id, isFav, fromModal) {
   const cardBtn = document.getElementById(`fav-btn-${id}`);
-  if (cardBtn) { cardBtn.innerHTML = isFav ? '❤️' : '🤍'; cardBtn.classList.toggle('active', isFav); }
+  if (cardBtn) {
+    const iconEl = cardBtn.querySelector('.btn-icon');
+    if (iconEl) iconEl.textContent = isFav ? '❤️' : '🤍';
+    else cardBtn.innerHTML = `<span class="btn-icon">${isFav ? '❤️' : '🤍'}</span><span class="btn-text">Favori</span>`;
+    cardBtn.classList.toggle('active', isFav);
+  }
   if (fromModal) {
     const mb = document.getElementById('modal-fav-btn');
-    if (mb) { mb.innerHTML = isFav ? '❤️' : '🤍'; mb.classList.toggle('active', isFav); }
+    if (mb) {
+      const iconEl = mb.querySelector('.modal-btn-icon');
+      if (iconEl) iconEl.textContent = isFav ? '❤️' : '🤍';
+      else mb.innerHTML = `<span class="modal-btn-icon">${isFav ? '❤️' : '🤍'}</span><span class="modal-btn-text">Favori</span>`;
+      mb.classList.toggle('active', isFav);
+    }
   }
 }
 
@@ -2884,37 +2902,78 @@ function openAccount() {
   m.style.display = 'block';
   document.getElementById('account-overlay').classList.add('active');
   setTimeout(() => m.classList.add('open'), 10);
-  document.getElementById('account-content').innerHTML = `
-    <h2 class="info-modal-title">👤 Hesabım</h2>
 
-    <div class="gift-balance-card">
-      <div class="gift-balance-info">
-        <span class="gift-balance-label">🎁 Hediye Param</span>
-        <span class="gift-balance-amount">${State.giftBalance.toLocaleString('tr-TR')} TL</span>
-        <span class="gift-balance-note">Sepette kullanılabilir</span>
+  const mem = MEMBERSHIPS[State.membership];
+
+  if (State.loggedIn) {
+    // Giriş yapılmış: üyelik bilgisini göster (seçilemez)
+    document.getElementById('account-content').innerHTML = `
+      <h2 class="info-modal-title">👤 Hesabım</h2>
+
+      <div class="gift-balance-card">
+        <div class="gift-balance-info">
+          <span class="gift-balance-label">🎁 Hediye Param</span>
+          <span class="gift-balance-amount">${State.giftBalance.toLocaleString('tr-TR')} TL</span>
+          <span class="gift-balance-note">Sepette kullanılabilir</span>
+        </div>
+        <span style="font-size:2.2rem">🎁</span>
       </div>
-      <span style="font-size:2.2rem">🎁</span>
-    </div>
 
-    <div class="membership-section">
-      <div class="membership-section-title">⭐ Üyelik Seviyem</div>
-      <div class="membership-cards">
-        ${Object.entries(MEMBERSHIPS).map(([key, val]) => `
-        <div class="membership-card ${State.membership === key ? 'active' : ''}" id="mem-card-${key}" onclick="selectMembership('${key}')">
-          <div class="membership-card-icon">${val.icon}</div>
-          <div class="membership-card-name">${val.label}</div>
-          <div class="membership-card-info">${val.discount > 0 ? `%${val.discount} indirim` : 'Temel üyelik'}${val.freeShipping ? ' · Ücretsiz kargo' : ''}</div>
-          <div class="membership-card-check">${State.membership === key ? '✓ Aktif' : ''}</div>
-        </div>`).join('')}
+      <div class="membership-section">
+        <div class="membership-section-title">⭐ Üyelik Seviyem</div>
+        <div style="background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px">
+          <span style="font-size:2.4rem">${mem.icon}</span>
+          <div>
+            <div style="font-weight:800;font-size:1.1rem">${mem.label} Üye</div>
+            <div style="font-size:.82rem;color:var(--text-muted);margin-top:3px">
+              ${mem.discount > 0 ? `%${mem.discount} alışveriş indirimi` : 'Temel üyelik'}
+              ${mem.freeShipping ? ' · Ücretsiz kargo' : ''}
+            </div>
+          </div>
+          <span style="margin-left:auto;background:var(--accent);color:#fff;font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:20px">Aktif</span>
+        </div>
+        <p style="font-size:.78rem;color:var(--text-muted);text-align:center;line-height:1.5">
+          Üyelik seviyeniz alışveriş geçmişinize göre otomatik belirlenir.<br>Daha fazla alışveriş yap, daha yüksek avantajlara ulaş!
+        </p>
+        <div class="membership-cards" style="pointer-events:none;opacity:.75;margin-top:10px">
+          ${Object.entries(MEMBERSHIPS).map(([key, val]) => `
+          <div class="membership-card ${State.membership === key ? 'active' : ''}" id="mem-card-${key}">
+            <div class="membership-card-icon">${val.icon}</div>
+            <div class="membership-card-name">${val.label}</div>
+            <div class="membership-card-info">${val.discount > 0 ? `%${val.discount} indirim` : 'Temel üyelik'}${val.freeShipping ? ' · Ücretsiz kargo' : ''}</div>
+            <div class="membership-card-check">${State.membership === key ? '✓ Aktif' : ''}</div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+  } else {
+    // Giriş yapılmamış: teaser + giriş formu
+    document.getElementById('account-content').innerHTML = `
+      <h2 class="info-modal-title">👤 Giriş Yap</h2>
+
+      <div class="membership-section" style="margin-bottom:20px">
+        <div class="membership-section-title">⭐ Üyelik Avantajları</div>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.5">
+          Üye olarak aşağıdaki avantajlardan yararlanabilirsiniz. Üyelik seviyeniz alışveriş geçmişinize göre otomatik belirlenir.
+        </p>
+        <div class="membership-cards" style="pointer-events:none">
+          ${Object.entries(MEMBERSHIPS).map(([key, val]) => `
+          <div class="membership-card" id="mem-card-${key}">
+            <div class="membership-card-icon">${val.icon}</div>
+            <div class="membership-card-name">${val.label}</div>
+            <div class="membership-card-info">${val.discount > 0 ? `%${val.discount} indirim` : 'Temel üyelik'}${val.freeShipping ? ' · Ücretsiz kargo' : ''}</div>
+            <div class="membership-card-check"></div>
+          </div>`).join('')}
+        </div>
       </div>
-    </div>
 
-    <div class="checkout-form" style="margin-top:4px">
-      <div class="form-group"><label class="form-label">E-posta</label><input class="form-input" placeholder="ornek@email.com" /></div>
-      <div class="form-group"><label class="form-label">Şifre</label><input class="form-input" type="password" placeholder="••••••••" /></div>
-    </div>
-    <button class="checkout-next-btn" onclick="fakeLogin()">Giriş Yap</button>
-    <div style="text-align:center;margin-top:12px;font-size:.82rem;color:var(--text-muted)">Hesabın yok mu? <a href="#" style="color:var(--accent);font-weight:700" onclick="showToast('Kayıt sayfası yakında!','info')">Üye Ol</a></div>`;
+      <div class="checkout-form" style="margin-top:4px">
+        <div class="form-group"><label class="form-label">E-posta</label><input class="form-input" id="login-email" placeholder="ornek@email.com" /></div>
+        <div class="form-group"><label class="form-label">Şifre</label><input class="form-input" id="login-pass" type="password" placeholder="••••••••" /></div>
+      </div>
+      <button class="checkout-next-btn" onclick="fakeLogin()">Giriş Yap</button>
+      <div style="text-align:center;margin-top:12px;font-size:.82rem;color:var(--text-muted)">Hesabın yok mu? <a href="#" style="color:var(--accent);font-weight:700" onclick="fakeRegister()">Üye Ol</a></div>`;
+  }
+
   document.body.style.overflow = 'hidden';
 }
 
@@ -2927,9 +2986,17 @@ function closeAccount() {
 }
 
 function fakeLogin() {
+  State.loggedIn = true;
   logAction('Giriş yapıldı (simülasyon)', 'system');
   closeAccount();
   showToast('✅ Giriş başarılı! Hoş geldiniz.', 'success');
+}
+
+function fakeRegister() {
+  State.loggedIn = true;
+  logAction('Kayıt olundu (simülasyon)', 'system');
+  closeAccount();
+  showToast('Hesabınız oluşturuldu! Bronz üyeliğiniz aktif.', 'success');
 }
 
 // ── BUDGET FILTER MODAL ───────────────────────────────────
@@ -3177,7 +3244,7 @@ Object.assign(window, {
   openHelp, closeHelp, switchHelpTab,
   openOrderTracking, closeOrderTracking, submitTracking,
   openInfoModal, closeInfoModal,
-  openAccount, closeAccount, fakeLogin,
+  openAccount, closeAccount, fakeLogin, fakeRegister,
   openBudgetFilterModal, closeBudgetFilterModal, updateBudget,
   askPurposeThenAdd, askPurposeThenAddFromModal, openPurposeModal, closePurposeModal, confirmPurpose, confirmCustomPurpose,
   openFinancialModal, closeFinancialModal, saveFinancial,
