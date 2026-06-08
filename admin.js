@@ -522,6 +522,7 @@ socket.on('heatmap_saved', (data) => {
   _insertHeatmapLogRow(sessName, files);
 
   showAdminToast(`👁 Göz takibi tamamlandı: ${files.length} dosya kaydedildi`, 'success');
+  _loadAndShowHistoricHeatmaps();
 });
 
 // ── INCOMING LOG HANDLER ───────────────────────────────
@@ -846,7 +847,59 @@ window.addEventListener('DOMContentLoaded', async () => {
     }, 1000);
   }
   // Socket.IO bağlantısı kurulunca logs_history olayı logs'u yükler
+
+  // Tarihi heatmap kayıtlarını yükle ve admin'de göster
+  _loadAndShowHistoricHeatmaps();
 });
+
+async function _loadAndShowHistoricHeatmaps() {
+  try {
+    const metas = await apiGet('/api/heatmaps');
+    if (!metas || !metas.length) return;
+
+    // Sessions cache'e heatmapFiles alanlarını ekle
+    metas.forEach(m => {
+      if (!m.png) return;
+      const sess = _sessionsCache.find(s => s.name === m.session);
+      if (sess) {
+        if (!sess.heatmapFiles) sess.heatmapFiles = [];
+        if (!sess.heatmapFiles.includes(m.png)) sess.heatmapFiles.push(m.png);
+      }
+    });
+    refreshSubjectList();
+
+    // Ayrı bir "Tarihi Kayıtlar" bölümü oluştur/güncelle
+    let section = document.getElementById('historic-heatmaps-section');
+    if (!section) {
+      section = document.createElement('div');
+      section.id = 'historic-heatmaps-section';
+      section.style.cssText = 'margin:16px 0;padding:16px;background:rgba(255,255,255,.04);border-radius:12px;border:1px solid rgba(255,255,255,.08)';
+      // subjects-right içine, oturum listesinin altına ekle
+      const target = document.getElementById('subj-list')?.closest('.subjects-right')
+        || document.getElementById('tab-subjects');
+      if (target) target.appendChild(section);
+      else document.body.appendChild(section);
+    }
+
+    section.innerHTML = `
+      <div style="font-size:.8rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px">
+        👁 Göz Takibi Kayıtları (${metas.length})
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        ${metas.map(m => `
+          <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:10px;min-width:180px;max-width:220px">
+            <div style="font-size:.75rem;color:#4fc3f7;font-weight:600;margin-bottom:6px">${m.session}</div>
+            <div style="font-size:.7rem;color:#64748b;margin-bottom:8px">${m.timestamp} · ${m.points} nokta</div>
+            <a href="/api/heatmap/${encodeURIComponent(m.png)}" target="_blank">
+              <img src="/api/heatmap/${encodeURIComponent(m.png)}" alt="Heatmap"
+                style="width:100%;border-radius:6px;display:block;border:1px solid rgba(255,255,255,.1)">
+            </a>
+          </div>`).join('')}
+      </div>`;
+  } catch (e) {
+    console.warn('[Heatmap] Tarihi kayıt yükleme hatası:', e);
+  }
+}
 
 // ── EXPOSE GLOBALS ────────────────────────────────────
 Object.assign(window, {
