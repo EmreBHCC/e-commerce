@@ -20,7 +20,8 @@ LOGS_FILE       = os.path.join(DATA_DIR, 'logs.json')
 SESS_FILE       = os.path.join(DATA_DIR, 'sessions.json')
 HEATMAPS_DIR    = os.path.join(DATA_DIR, 'heatmaps')
 EYETRACKER_FILE = os.path.join(BASE_DIR, 'eye-tracker.py')
-EYETRACKER_STOP = os.path.join(DATA_DIR, 'eyetracker_stop')
+EYETRACKER_STOP      = os.path.join(DATA_DIR, 'eyetracker_stop')
+EYETRACKER_CALIBRATE = os.path.join(DATA_DIR, 'eyetracker_calibrate')
 MAX_LOGS        = 1000
 
 os.makedirs(DATA_DIR, exist_ok=True)
@@ -43,6 +44,7 @@ def read_json(path, default=None):
 
 def write_json(path, data):
     with _lock:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
@@ -134,42 +136,85 @@ def start_eye_tracker(session_name):
         _eye_tracker_proc.terminate()
         try: _eye_tracker_proc.wait(timeout=3)
         except Exception: _eye_tracker_proc.kill()
-    # Eski stop sinyalini temizle
+    # Eski sinyalleri temizle
     try: os.remove(EYETRACKER_STOP)
     except FileNotFoundError: pass
+    try: os.remove(EYETRACKER_CALIBRATE)
+    except FileNotFoundError: pass
 
-    kwargs = {'creationflags': subprocess.CREATE_NEW_CONSOLE} if os.name == 'nt' else {}
+    if os.name == 'nt':
+        # I/O redirect YOK — DirectShow stdout'a bağlı Windows handles kullanıyor.
+        # Log dosyası eye-tracker.py içinden Python seviyesinde yazılıyor.
+        kwargs = {'creationflags': subprocess.CREATE_NEW_CONSOLE}
+    else:
+        kwargs = {}
     try:
         _eye_tracker_proc = subprocess.Popen(
             [sys.executable, EYETRACKER_FILE,
              '--session', session_name,
-             '--output-dir', HEATMAPS_DIR],
+             '--output-dir', os.path.join(DATA_DIR, _slug(session_name)),
+             '--headless'],
             **kwargs
         )
         print(f'[EyeTracker] Başlatıldı PID={_eye_tracker_proc.pid}')
+        _gaze_broadcaster_active = True
+        Thread(target=_broadcast_gaze, daemon=True).start()
         Thread(target=_watch_eye_tracker, args=(session_name,), daemon=True).start()
     except Exception as e:
         print(f'[EyeTracker] Başlatma hatası: {e}')
 
 def stop_eye_tracker():
+    global _gaze_broadcaster_active
+    _gaze_broadcaster_active = False
     try:
+        os.makedirs(DATA_DIR, exist_ok=True)
         with open(EYETRACKER_STOP, 'w') as f:
             f.write('stop')
         print('[EyeTracker] Durdurma sinyali yazıldı')
     except Exception as e:
         print(f'[EyeTracker] Sinyal hatası: {e}')
 
+_gaze_broadcaster_active = False
+
+def _broadcast_gaze():
+    """screen_position.txt'yi okuyup shop sayfasına gaze pozisyonunu yayınla."""
+    global _gaze_broadcaster_active
+    import time as _t
+    SCREEN_POS_FILE = os.path.join(BASE_DIR, 'screen_position.txt')
+    last_line = ''
+    while _gaze_broadcaster_active:
+        try:
+            with open(SCREEN_POS_FILE, 'r') as f:
+                line = f.read().strip()
+            if line and line != last_line:
+                parts = line.split(',')
+                if len(parts) == 2:
+                    x, y = int(parts[0]), int(parts[1])
+                    socketio.emit('gaze_position', {'x': x, 'y': y}, to='shop')
+                    last_line = line
+        except Exception:
+            pass
+        _t.sleep(0.05)  # ~20 fps
+
 def _watch_eye_tracker(session_name):
-    global _eye_tracker_proc
+    global _eye_tracker_proc, _gaze_broadcaster_active
     proc = _eye_tracker_proc
     if not proc:
         return
     proc.wait()
+    _gaze_broadcaster_active = False
     print('[EyeTracker] Süreç tamamlandı, heatmap taranıyor...')
     import time as _t; _t.sleep(0.8)  # dosya yazımı için bekle
 
-    prefix = _slug(session_name) + '_'
-    files = [f for f in os.listdir(HEATMAPS_DIR) if f.startswith(prefix) and f.endswith('.png')]
+    slug     = _slug(session_name)
+    sess_dir = os.path.join(DATA_DIR, slug)
+    prefix   = slug + '_'
+    if os.path.isdir(sess_dir):
+        # URL yolu: "d3/d3_20260609_003710.png" formatında gönder
+        files = [f"{slug}/{f}" for f in os.listdir(sess_dir)
+                 if f.startswith(prefix) and f.endswith('.png')]
+    else:
+        files = []
     if files:
         socketio.emit('heatmap_saved', {'session': session_name, 'files': files}, to='admin')
         print(f'[EyeTracker] Heatmap gönderildi: {files}')
@@ -211,6 +256,17 @@ def on_session_started(data):
     start_eye_tracker(_active_session['name'])
     print(f'[WS] Oturum başlatıldı: {_active_session["name"]}')
 
+@socketio.on('calibration_complete')
+def on_calibration_complete(data):
+    """Shop → Sunucu: 9-nokta kalibrasyonu tamamlandı, eye-tracker'a sinyal gönder"""
+    try:
+        os.makedirs(DATA_DIR, exist_ok=True)
+        with open(EYETRACKER_CALIBRATE, 'w') as f:
+            f.write('calibrate')
+        print('[EyeTracker] Kalibrasyon sinyali yazıldı')
+    except Exception as e:
+        print(f'[EyeTracker] Kalibrasyon sinyal hatası: {e}')
+
 @socketio.on('session_stopped')
 def on_session_stopped(data):
     """Admin → Sunucu: Oturum durduruldu — siteyi sıfırla"""
@@ -250,18 +306,38 @@ def on_ack(data):
 # ── HEATMAP SERVİSİ ───────────────────────────────────────
 @app.route('/api/heatmap/<path:filename>')
 def api_serve_heatmap(filename):
-    if '..' in filename or '/' in filename.replace('\\', '/').lstrip('/'):
+    # filename: "slug/file.png" veya "file.png" (eski format)
+    clean = filename.replace('\\', '/')
+    parts = clean.split('/')
+    if any(p == '..' for p in parts) or len(parts) > 2:
         return jsonify({'error': 'Geçersiz dosya adı'}), 400
-    return send_from_directory(HEATMAPS_DIR, filename)
+    if len(parts) == 2:
+        subdir, fname = parts
+        return send_from_directory(os.path.join(DATA_DIR, subdir), fname)
+    return send_from_directory(HEATMAPS_DIR, parts[0])
 
 @app.route('/api/heatmaps')
 def api_list_heatmaps():
     metas = []
-    for fname in os.listdir(HEATMAPS_DIR):
-        if fname.endswith('.json'):
+    # Hem eski data/heatmaps/ hem de yeni data/{denek}/ klasörlerini tara
+    search_dirs = [HEATMAPS_DIR]
+    if os.path.isdir(DATA_DIR):
+        for d in os.listdir(DATA_DIR):
+            full = os.path.join(DATA_DIR, d)
+            if os.path.isdir(full) and d not in ('heatmaps',):
+                search_dirs.append(full)
+    for sdir in search_dirs:
+        if not os.path.isdir(sdir): continue
+        for fname in os.listdir(sdir):
+            if not fname.endswith('.json'): continue
             try:
-                with open(os.path.join(HEATMAPS_DIR, fname), 'r', encoding='utf-8') as f:
-                    metas.append(json.load(f))
+                with open(os.path.join(sdir, fname), 'r', encoding='utf-8') as f:
+                    m = json.load(f)
+                    # PNG yolunu "slug/file.png" formatına çevir
+                    parent = os.path.basename(sdir)
+                    if parent != 'heatmaps' and m.get('png'):
+                        m['png'] = f"{parent}/{m['png']}"
+                    metas.append(m)
             except Exception:
                 pass
     return jsonify(sorted(metas, key=lambda x: x.get('timestamp', ''), reverse=True))

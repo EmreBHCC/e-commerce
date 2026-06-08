@@ -15,17 +15,47 @@ import re as _re
 
 import tkinter as tk
 
+def _hide_console():
+    """Kamera açıldıktan SONRA konsolu gizle (DirectShow visible window ister)."""
+    if os.name == 'nt':
+        try:
+            import ctypes
+            hwnd = ctypes.windll.kernel32.GetConsoleWindow()
+            if hwnd:
+                ctypes.windll.user32.ShowWindow(hwnd, 0)  # SW_HIDE
+        except Exception:
+            pass
+
 # ── CLI ARGÜMANLARI ──────────────────────────────────────────────
 _parser = argparse.ArgumentParser(add_help=False)
 _parser.add_argument('--session',    default='denek',  help='Oturum / denek adı')
 _parser.add_argument('--output-dir', dest='output_dir', default=None, help='Heatmap çıkış dizini')
+_parser.add_argument('--headless',   action='store_true', help='Debug pencerelerini gizle')
 _args, _ = _parser.parse_known_args()
+
+_HEADLESS = _args.headless
 
 _SESSION_NAME = _args.session
 _BASE_DIR_ET  = os.path.dirname(os.path.abspath(__file__))
 _OUTPUT_DIR   = _args.output_dir or os.path.join(_BASE_DIR_ET, 'data', 'heatmaps')
-_STOP_FILE    = os.path.join(_BASE_DIR_ET, 'data', 'eyetracker_stop')
+_STOP_FILE      = os.path.join(_BASE_DIR_ET, 'data', 'eyetracker_stop')
+_CALIBRATE_FILE = os.path.join(_BASE_DIR_ET, 'data', 'eyetracker_calibrate')
 os.makedirs(_OUTPUT_DIR, exist_ok=True)
+
+# stdout/stderr → log dosyası (DirectShow hazır olmadan önce YAPILMAZ;
+# kamera açılınca _redirect_output() çağrılacak)
+_LOG_FILE = os.path.join(_BASE_DIR_ET, 'data', 'eyetracker.log')
+_log_fh   = None
+
+def _redirect_output():
+    """Kamera açıldıktan sonra stdout/stderr'i log dosyasına yönlendir."""
+    global _log_fh
+    import sys
+    os.makedirs(os.path.dirname(_LOG_FILE), exist_ok=True)
+    _log_fh = open(_LOG_FILE, 'w', buffering=1, encoding='utf-8')
+    sys.stdout = _log_fh
+    sys.stderr = _log_fh
+
 print(f'[EyeTracker] Oturum: {_SESSION_NAME}  |  Çıkış: {_OUTPUT_DIR}')
 
 class GazeCursor:
@@ -220,7 +250,40 @@ face_mesh = mp_face_mesh.FaceMesh(
     min_tracking_confidence=0.5
 )
 
-cap = cv2.VideoCapture(0)
+def _open_camera():
+    """Kamerayı aç; DSHOW → MSMF → varsayılan sırayla dener.
+    Konsol penceresi DirectShow için açık kalır, başarı sonrası gizlenir."""
+    backends = [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY]
+    for backend in backends:
+        try:
+            c = cv2.VideoCapture(0, backend)
+        except Exception:
+            c = cv2.VideoCapture(0)
+        if not c.isOpened():
+            c.release()
+            continue
+        time.sleep(0.8)
+        for _ in range(10):
+            c.read()
+        ret, _ = c.read()
+        if ret:
+            w_ = int(c.get(cv2.CAP_PROP_FRAME_WIDTH))
+            h_ = int(c.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            # stdout/stderr → log, konsol gizle (DirectShow artık hazır)
+            _redirect_output()
+            _hide_console()
+            print(f'[EyeTracker] Kamera açıldı (backend={backend}): {w_}x{h_}')
+            return c
+        c.release()
+        time.sleep(0.3)
+    return None
+
+cap = _open_camera()
+if cap is None:
+    _redirect_output()   # hata mesajı log'a gitsin
+    print('[EyeTracker] HATA: Kamera açılamadı. Çıkılıyor.')
+    raise SystemExit(1)
+
 w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
@@ -408,21 +471,20 @@ def convert_gaze_to_screen_coordinates(combined_gaze_direction, calibration_offs
     pitch_rad = math.acos(np.clip(np.dot(reference_forward, yz_proj), -1.0, 1.0))
     if avg_direction[1] > 0:
         pitch_rad = -pitch_rad
-    yaw_deg = np.degrees(yaw_rad)
+    yaw_deg   = np.degrees(yaw_rad)
     pitch_deg = np.degrees(pitch_rad)
-    if yaw_deg < 0:
-        yaw_deg = -(yaw_deg)
-    elif yaw_deg > 0:
-        yaw_deg = -yaw_deg
-    raw_yaw_deg = yaw_deg
+    # Kamera görüntüsünde sağa bakınca iris görüntüde sola kayar (ayna etkisi).
+    # Bu flip kameranın ayna dönüşümünü düzeltir: sağa bak → cursor sağa gitsin.
+    yaw_deg = -yaw_deg
+    raw_yaw_deg   = yaw_deg
     raw_pitch_deg = pitch_deg
-    yawDegrees = 5 * 3
-    pitchDegrees = 2.0 * 2.5
-    yaw_deg += calibration_offset_yaw
+    yawDegrees   = 12.0   # yatay ±12° — tipik 50-60cm mesafede ekran kenarına karşılık gelir
+    pitchDegrees =  8.0   # dikey ±8°
+    yaw_deg   += calibration_offset_yaw
     pitch_deg += calibration_offset_pitch
-    screen_x = int(((yaw_deg + yawDegrees) / (2 * yawDegrees)) * MONITOR_WIDTH)
+    screen_x = int(((yaw_deg   + yawDegrees)   / (2 * yawDegrees))   * MONITOR_WIDTH)
     screen_y = int(((pitchDegrees - pitch_deg) / (2 * pitchDegrees)) * MONITOR_HEIGHT)
-    screen_x = max(10, min(screen_x, MONITOR_WIDTH - 10))
+    screen_x = max(10, min(screen_x, MONITOR_WIDTH  - 10))
     screen_y = max(10, min(screen_y, MONITOR_HEIGHT - 10))
     return screen_x, screen_y, raw_yaw_deg, raw_pitch_deg
 
@@ -441,7 +503,7 @@ def render_debug_view_orbit(
     monitor_normal=None,
     gaze_markers=None,
 ):
-    if head_center3d is None:
+    if head_center3d is None or _HEADLESS:
         return
 
     debug = np.zeros((h, w, 3), dtype=np.uint8)
@@ -650,7 +712,8 @@ def render_debug_view_orbit(
         color = (0, 220, 120) if "HEATMAP" in text else (200, 200, 200)
         cv2.putText(debug, text, (x0, y0 + i*line_height), font, font_scale, color, thick, cv2.LINE_AA)
 
-    cv2.imshow("Head/Eye Debug", debug)
+    if not _HEADLESS:
+        cv2.imshow("Head/Eye Debug", debug)
 
 
 def mouse_mover():
@@ -672,15 +735,33 @@ right_sphere_local_offset = None
 right_calibration_nose_scale = None
 
 gaze_visualizer = GazeCursor()
-
+gaze_visualizer.update_position(CENTER_X, CENTER_Y)
 
 _heatmap_frame_skip = 3
 _heatmap_frame_count = 0
 
+# Otomatik kalibrasyon – yüz algılandıktan AUTO_CALIB_FRAMES kare sonra
+AUTO_CALIB_FRAMES = 90  # ~3 saniye (kullanıcının overlay'e bakması için)
+_auto_calib_counter = 0
+_auto_calibrated = False
+
 while cap.isOpened():
+    # Stop sinyali – loop başında kontrol et
+    if os.path.exists(_STOP_FILE):
+        print('[EyeTracker] Durdurma sinyali alındı.')
+        break
+
     ret, frame = cap.read()
     if not ret:
-        break
+        # Geçici hata olabilir, 3 kez yeniden dene
+        for _retry in range(3):
+            time.sleep(0.05)
+            ret, frame = cap.read()
+            if ret:
+                break
+        if not ret:
+            print('[EyeTracker] Kamera karesi okunamadı, çıkılıyor.')
+            break
 
     combined_dir = None
 
@@ -698,6 +779,47 @@ while cap.isOpened():
             frame, face_landmarks, nose_indices, R_ref_nose, color=(0,255,0), size=80)
 
         base_radius = 20
+
+        # ── Otomatik kalibrasyon ──────────────────────────────
+        if not _auto_calibrated and not (left_sphere_locked and right_sphere_locked):
+            _auto_calib_counter += 1
+            if _auto_calib_counter >= AUTO_CALIB_FRAMES:
+                _auto_calibrated = True
+                try:
+                    iris_3d_left_tmp  = np.array([left_iris.x  * w, left_iris.y  * h, left_iris.z  * w])
+                    iris_3d_right_tmp = np.array([right_iris.x * w, right_iris.y * h, right_iris.z * w])
+                    cam_dir_local = R_final.T @ np.array([0, 0, 1])
+                    ns = compute_scale(nose_points_3d)
+
+                    left_sphere_local_offset = R_final.T @ (iris_3d_left_tmp - head_center) + base_radius * cam_dir_local
+                    left_calibration_nose_scale = ns
+                    left_sphere_locked = True
+
+                    right_sphere_local_offset = R_final.T @ (iris_3d_right_tmp - head_center) + base_radius * cam_dir_local
+                    right_calibration_nose_scale = ns
+                    right_sphere_locked = True
+
+                    swl = head_center + R_final @ left_sphere_local_offset
+                    swr = head_center + R_final @ right_sphere_local_offset
+                    ld = iris_3d_left_tmp  - swl; ld /= (np.linalg.norm(ld) + 1e-9)
+                    rd = iris_3d_right_tmp - swr; rd /= (np.linalg.norm(rd) + 1e-9)
+                    fwd = (ld + rd) * 0.5
+                    fwd /= (np.linalg.norm(fwd) + 1e-9)
+                    go  = (swl + swr) / 2
+                    monitor_corners, monitor_center_w, monitor_normal_w, units_per_cm = create_monitor_plane(
+                        head_center, R_final, face_landmarks, w, h, forward_hint=fwd, gaze_origin=go, gaze_dir=fwd)
+                    debug_world_frozen  = True
+                    orbit_pivot_frozen  = monitor_center_w.copy()
+
+                    cc = (ld + rd) / 2; cc /= (np.linalg.norm(cc) + 1e-9)
+                    _, _, ry, rp = convert_gaze_to_screen_coordinates(cc, 0, 0)
+                    calibration_offset_yaw   = -ry
+                    calibration_offset_pitch = -rp
+                    print('[AutoCalib] Otomatik kalibrasyon tamamlandı.')
+                except Exception as _ac_err:
+                    print(f'[AutoCalib] Hata: {_ac_err}')
+                    _auto_calibrated = False
+                    _auto_calib_counter = AUTO_CALIB_FRAMES - 10
 
         x_iris_l = int(left_iris.x * w)
         y_iris_l = int(left_iris.y * h)
@@ -752,7 +874,7 @@ while cap.isOpened():
                 gaze_heatmap.add_point(screen_x, screen_y)
             gaze_heatmap.apply_decay()
 
-            if gaze_heatmap.show_preview:
+            if gaze_heatmap.show_preview and not _HEADLESS:
                 gaze_heatmap.show_preview_window()
 
             if mouse_control_enabled:
@@ -818,19 +940,33 @@ while cap.isOpened():
 
     frame = gaze_heatmap.overlay_on_frame(frame)
 
-    cv2.imshow("Integrated Eye Tracking", frame)
+    if not _HEADLESS:
+        cv2.imshow("Integrated Eye Tracking", frame)
 
     if keyboard.is_pressed('f7'):
         mouse_control_enabled = not mouse_control_enabled
         print(f"[Mouse Control] {'Enabled' if mouse_control_enabled else 'Disabled'}")
         time.sleep(0.3)
 
-    key = cv2.waitKey(1) & 0xFF
+    key = cv2.waitKey(1) & 0xFF if not _HEADLESS else 0xFF
 
-    # Sunucudan durdurma sinyali geldi mi?
-    if os.path.exists(_STOP_FILE):
-        print('[EyeTracker] Durdurma sinyali alındı, çıkılıyor...')
-        break
+    # Sunucudan kalibrasyon sinyali geldi mi? (merkez dot tıklandı = kullanıcı merkeze bakıyor)
+    if os.path.exists(_CALIBRATE_FILE):
+        try:
+            os.remove(_CALIBRATE_FILE)
+        except FileNotFoundError:
+            pass
+        if (left_sphere_locked and right_sphere_locked
+                and 'avg_combined_direction' in locals()
+                and avg_combined_direction is not None):
+            try:
+                _, _, raw_yaw, raw_pitch = convert_gaze_to_screen_coordinates(
+                    avg_combined_direction, 0, 0)
+                calibration_offset_yaw   = -raw_yaw
+                calibration_offset_pitch = -raw_pitch
+                print(f'[Calib] Merkez kalibrasyonu: yaw_off={calibration_offset_yaw:.2f} pitch_off={calibration_offset_pitch:.2f}')
+            except Exception as _ce:
+                print(f'[Calib] Hata: {_ce}')
 
     if key == ord('q'):
         break
@@ -960,7 +1096,8 @@ while cap.isOpened():
             print("[Marker] Monitor/gaze not ready.")
 
 cap.release()
-cv2.destroyAllWindows()
+if not _HEADLESS:
+    cv2.destroyAllWindows()
 
 # ── OTOMATİK KAYDET ───────────────────────────────────────────
 _ts   = time.strftime('%Y%m%d_%H%M%S')
@@ -984,7 +1121,8 @@ if len(gaze_heatmap.raw_points) > 10:
 else:
     print('[EyeTracker] Yeterli gaze noktası yok, kayıt atlandı.')
 
-try:
-    os.remove(_STOP_FILE)
-except FileNotFoundError:
-    pass
+for _sig in (_STOP_FILE, _CALIBRATE_FILE):
+    try:
+        os.remove(_sig)
+    except FileNotFoundError:
+        pass

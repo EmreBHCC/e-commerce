@@ -429,6 +429,7 @@ socket.on('command', (data) => {
     case 'SESSION_STARTED':
       _showNoSessionWarning(false);
       logAction(`Oturum başlatıldı: "${data.name || ''}"`, 'system');
+      etShowCalibration();
       break;
     case 'SESSION_STOPPED':
       resetToInitial();
@@ -440,6 +441,150 @@ socket.on('command', (data) => {
 
 // Canlılık sinyali – 3 saniyede bir
 setInterval(() => socket.emit('heartbeat'), 3000);
+
+// ── EYE-TRACKER KALİBRASYON ──────────────────────────
+// Aktif dot indeksleri: dot-3 ve dot-5 kaldırıldı
+const ET_DOT_IDS    = [4, 0, 1, 2, 6, 7, 8]; // tıklama SIRASI: önce merkez
+const ET_TOTAL      = ET_DOT_IDS.length;       // 7
+const _etClicks     = {};                       // {idx: clickCount}
+const ET_CLICKS_NEEDED = 5;
+let _etCountdownTimer = null;
+
+function etShowCalibration() {
+  ET_DOT_IDS.forEach(i => {
+    _etClicks[i] = 0;
+    const dot = document.getElementById('et-dot-' + i);
+    if (!dot) return;
+    dot.classList.remove('et-dot-done', 'et-dot-active');
+    dot.textContent = '';
+    if (i === 4) {
+      dot.classList.remove('et-dot-locked');
+      dot.classList.add('et-dot-center');
+      dot.style.pointerEvents = 'auto';
+      dot.textContent = ET_CLICKS_NEEDED;
+    } else {
+      dot.classList.add('et-dot-locked');
+      dot.style.pointerEvents = 'none';
+    }
+  });
+
+  const doneEl = document.getElementById('et-calib-done');
+  if (doneEl) doneEl.textContent = '0';
+
+  document.getElementById('et-countdown-screen').style.display = 'block';
+  document.getElementById('et-dot-screen').style.display = 'none';
+  document.getElementById('et-calib-overlay').style.display = 'block';
+
+  let secs = 3;
+  const numEl = document.getElementById('et-cd-num');
+  if (numEl) numEl.textContent = secs;
+
+  if (_etCountdownTimer) clearInterval(_etCountdownTimer);
+  _etCountdownTimer = setInterval(() => {
+    secs--;
+    if (secs > 0) {
+      if (numEl) numEl.textContent = secs;
+    } else {
+      clearInterval(_etCountdownTimer);
+      _etCountdownTimer = null;
+      _etUnlockDots();
+    }
+  }, 1000);
+}
+
+function _etUnlockDots() {
+  document.getElementById('et-countdown-screen').style.display = 'none';
+  document.getElementById('et-dot-screen').style.display = 'block';
+  ET_DOT_IDS.forEach(i => {
+    const dot = document.getElementById('et-dot-' + i);
+    if (!dot) return;
+    dot.classList.remove('et-dot-locked');
+    dot.style.pointerEvents = 'auto';
+    dot.style.opacity = '';
+    if (i !== 4) dot.textContent = ET_CLICKS_NEEDED;
+  });
+}
+
+function etDotClick(idx) {
+  if (!ET_DOT_IDS.includes(idx)) return;
+  if ((_etClicks[idx] || 0) >= ET_CLICKS_NEEDED) return;
+  const dot = document.getElementById('et-dot-' + idx);
+  if (!dot || dot.classList.contains('et-dot-locked')) return;
+  dot.classList.remove('et-dot-center');
+  _etClicks[idx] = (_etClicks[idx] || 0) + 1;
+
+  dot.classList.add('et-dot-active');
+  setTimeout(() => dot.classList.remove('et-dot-active'), 400);
+
+  if (_etClicks[idx] >= ET_CLICKS_NEEDED) {
+    dot.textContent = '';
+    dot.classList.add('et-dot-done');
+    const done = ET_DOT_IDS.filter(i => (_etClicks[i] || 0) >= ET_CLICKS_NEEDED).length;
+    const doneEl = document.getElementById('et-calib-done');
+    if (doneEl) doneEl.textContent = done;
+
+    // Merkez tamamlandı → offset kalibrasyonu tetikle
+    if (idx === 4) socket.emit('calibration_complete', { centerOnly: true });
+
+    if (done === ET_TOTAL) setTimeout(etFinishCalibration, 600);
+  } else {
+    dot.textContent = ET_CLICKS_NEEDED - _etClicks[idx];
+  }
+}
+
+function etFinishCalibration() {
+  document.getElementById('et-calib-overlay').style.display = 'none';
+  socket.emit('calibration_complete', {});
+  logAction('Eye-tracker kalibrasyonu tamamlandı', 'system');
+}
+
+// ── TARAYICI GAZE CURSOR ─────────────────────────────
+(function () {
+  let _gc = null;
+
+  function _getGazeCursor() {
+    if (!_gc) {
+      _gc = document.createElement('div');
+      _gc.id = 'browser-gaze-cursor';
+      _gc.style.cssText = [
+        'position:fixed',
+        'width:36px',
+        'height:36px',
+        'border-radius:50%',
+        'border:3px solid cyan',
+        'background:rgba(255,0,0,0.25)',
+        'pointer-events:none',
+        'z-index:2147483647',
+        'transform:translate(-50%,-50%)',
+        'display:none',
+        'transition:left .05s linear,top .05s linear',
+      ].join(';');
+      document.body.appendChild(_gc);
+    }
+    return _gc;
+  }
+
+  socket.on('gaze_position', function (data) {
+    const el = _getGazeCursor();
+    // eye-tracker ekran koordinatları → tarayıcı viewport koordinatları
+    const winLeft  = window.screenX  ?? window.screenLeft ?? 0;
+    const winTop   = window.screenY  ?? window.screenTop  ?? 0;
+    const topChrome = window.outerHeight - window.innerHeight; // tab bar + adres çubuğu
+    const bx = data.x - winLeft;
+    const by = data.y - winTop - topChrome;
+    el.style.left    = Math.max(0, bx) + 'px';
+    el.style.top     = Math.max(0, by) + 'px';
+    el.style.display = 'block';
+  });
+
+  // Session bitince gaze cursor gizle
+  socket.on('command', function (data) {
+    if (data && data.cmd === 'SESSION_STOPPED') {
+      const el = document.getElementById('browser-gaze-cursor');
+      if (el) el.style.display = 'none';
+    }
+  });
+})();
 
 // ── NO-SESSION WARNING BANNER ─────────────────────────
 function _showNoSessionWarning(show) {
