@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """ShopX Backend – Flask + Socket.IO"""
 
 import json
@@ -13,7 +12,6 @@ from threading import Lock, Thread, Timer
 from flask import Flask, jsonify, request, send_from_directory
 from flask_socketio import SocketIO, emit, join_room
 
-# ── CONFIG ────────────────────────────────────────────────
 BASE_DIR        = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR        = os.path.join(BASE_DIR, 'data')
 LOGS_FILE       = os.path.join(DATA_DIR, 'logs.json')
@@ -32,7 +30,6 @@ app.config['SECRET_KEY'] = 'shopx-secret-2026'
 socketio  = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
 _lock     = Lock()
 
-# ── JSON HELPERS ──────────────────────────────────────────
 def read_json(path, default=None):
     if default is None:
         default = []
@@ -48,7 +45,6 @@ def write_json(path, data):
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
-# ── STATIC DOSYALAR ───────────────────────────────────────
 @app.route('/')
 def serve_index():
     return send_from_directory(BASE_DIR, 'index.html')
@@ -58,7 +54,6 @@ def serve_index():
 def serve_admin():
     return send_from_directory(BASE_DIR, 'admin.html')
 
-# ── REST: LOGLAR ──────────────────────────────────────────
 @app.route('/api/logs', methods=['GET'])
 def api_get_logs():
     limit = int(request.args.get('limit', 500))
@@ -70,7 +65,6 @@ def api_clear_logs():
     socketio.emit('logs_cleared', to='admin')
     return jsonify({'ok': True})
 
-# ── REST: OTURUMLAR ───────────────────────────────────────
 @app.route('/api/sessions', methods=['GET'])
 def api_get_sessions():
     return jsonify(read_json(SESS_FILE))
@@ -121,30 +115,24 @@ def api_export_all():
         'logs':       read_json(LOGS_FILE),
     })
 
-# ── AKTİF OTURUM TAKİBİ ──────────────────────────────────
 _active_session   = {'active': False, 'name': None}
 _eye_tracker_proc = None
 
-# ── GÖZ TAKİBİ YÖNETİMİ ──────────────────────────────────
 def _slug(name):
     return re.sub(r'[^\w]', '_', name)[:20].strip('_') or 'denek'
 
 def start_eye_tracker(session_name):
     global _eye_tracker_proc
-    # Eski süreci temizle
     if _eye_tracker_proc and _eye_tracker_proc.poll() is None:
         _eye_tracker_proc.terminate()
         try: _eye_tracker_proc.wait(timeout=3)
         except Exception: _eye_tracker_proc.kill()
-    # Eski sinyalleri temizle
     try: os.remove(EYETRACKER_STOP)
     except FileNotFoundError: pass
     try: os.remove(EYETRACKER_CALIBRATE)
     except FileNotFoundError: pass
 
     if os.name == 'nt':
-        # I/O redirect YOK — DirectShow stdout'a bağlı Windows handles kullanıyor.
-        # Log dosyası eye-tracker.py içinden Python seviyesinde yazılıyor.
         kwargs = {'creationflags': subprocess.CREATE_NEW_CONSOLE}
     else:
         kwargs = {}
@@ -194,7 +182,7 @@ def _broadcast_gaze():
                     last_line = line
         except Exception:
             pass
-        _t.sleep(0.05)  # ~20 fps
+        _t.sleep(0.05)
 
 def _watch_eye_tracker(session_name):
     global _eye_tracker_proc, _gaze_broadcaster_active
@@ -204,13 +192,12 @@ def _watch_eye_tracker(session_name):
     proc.wait()
     _gaze_broadcaster_active = False
     print('[EyeTracker] Süreç tamamlandı, heatmap taranıyor...')
-    import time as _t; _t.sleep(0.8)  # dosya yazımı için bekle
+    import time as _t; _t.sleep(0.8)
 
     slug     = _slug(session_name)
     sess_dir = os.path.join(DATA_DIR, slug)
     prefix   = slug + '_'
     if os.path.isdir(sess_dir):
-        # URL yolu: "d3/d3_20260609_003710.png" formatında gönder
         files = [f"{slug}/{f}" for f in os.listdir(sess_dir)
                  if f.startswith(prefix) and f.endswith('.png')]
     else:
@@ -221,7 +208,6 @@ def _watch_eye_tracker(session_name):
     else:
         print('[EyeTracker] Heatmap bulunamadı.')
 
-# ── SOCKET.IO ─────────────────────────────────────────────
 @socketio.on('connect')
 def on_connect():
     print(f'[WS] bağlandı: {request.sid}')
@@ -238,11 +224,9 @@ def on_identify(data):
     join_room(role)
     if role == 'shop':
         emit('shop_connected', {'sid': request.sid}, to='admin')
-        # Yeni bağlanan shop'a mevcut oturum durumunu bildir
         emit('session_status', _active_session)
         print(f'[WS] shop kimliği doğrulandı: {request.sid}')
     elif role == 'admin':
-        # Bağlanan admin'e son 300 logu gönder
         logs = read_json(LOGS_FILE)[:300]
         emit('logs_history', logs)
         print(f'[WS] admin kimliği doğrulandı: {request.sid}')
@@ -285,7 +269,6 @@ def on_log(entry):
     if len(logs) > MAX_LOGS:
         logs = logs[:MAX_LOGS]
     write_json(LOGS_FILE, logs)
-    # Tüm admin istemcilerine ilet
     emit('log', entry, to='admin')
 
 @socketio.on('heartbeat')
@@ -303,10 +286,8 @@ def on_ack(data):
     """Shop → Sunucu → Admin: komut onayı"""
     emit('ack', data, to='admin')
 
-# ── HEATMAP SERVİSİ ───────────────────────────────────────
 @app.route('/api/heatmap/<path:filename>')
 def api_serve_heatmap(filename):
-    # filename: "slug/file.png" veya "file.png" (eski format)
     clean = filename.replace('\\', '/')
     parts = clean.split('/')
     if any(p == '..' for p in parts) or len(parts) > 2:
@@ -319,7 +300,6 @@ def api_serve_heatmap(filename):
 @app.route('/api/heatmaps')
 def api_list_heatmaps():
     metas = []
-    # Hem eski data/heatmaps/ hem de yeni data/{denek}/ klasörlerini tara
     search_dirs = [HEATMAPS_DIR]
     if os.path.isdir(DATA_DIR):
         for d in os.listdir(DATA_DIR):
@@ -333,7 +313,6 @@ def api_list_heatmaps():
             try:
                 with open(os.path.join(sdir, fname), 'r', encoding='utf-8') as f:
                     m = json.load(f)
-                    # PNG yolunu "slug/file.png" formatına çevir
                     parent = os.path.basename(sdir)
                     if parent != 'heatmaps' and m.get('png'):
                         m['png'] = f"{parent}/{m['png']}"
@@ -342,7 +321,6 @@ def api_list_heatmaps():
                 pass
     return jsonify(sorted(metas, key=lambda x: x.get('timestamp', ''), reverse=True))
 
-# ── BAŞLAT ────────────────────────────────────────────────
 def _open_browser():
     webbrowser.open('http://localhost:5000')
     webbrowser.open_new_tab('http://localhost:5000/admin')

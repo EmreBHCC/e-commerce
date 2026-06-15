@@ -16,23 +16,19 @@
 
 <body>
 
-    <!-- ===================== GENDER SELECTION SCREEN ===================== -->
     <div id="gender-screen" class="gender-screen">
 
-        <!-- Tema Toggle -->
         <button class="gs-theme-toggle" id="gs-theme-toggle" onclick="toggleGenderTheme()" aria-label="Tema değiştir">
             <span class="toggle-icon" id="toggle-icon">☀️</span>
             <span id="toggle-label">Açık Tema</span>
         </button>
 
-        <!-- Logo -->
         <div class="gs-logo">
             <span class="gs-logo-icon">🛍</span>
             <span class="gs-logo-text">Shop<strong>X</strong></span>
         </div>
         <p class="gs-tagline">Sana özel alışveriş deneyimi için kategori seç</p>
 
-        <!-- Trust stats bar -->
         <div class="gs-stats">
             <div class="gs-stat">
                 <span class="gs-stat-num">10M+</span>
@@ -55,11 +51,9 @@
             </div>
         </div>
 
-        <!-- STEP 1: Gender -->
         <div id="gender-step-1" class="gender-step">
             <div class="gender-cards">
 
-                <!-- KADIN -->
                 <button type="button" class="gender-card female" id="btn-female" onclick="selectGender('female')"
                     aria-label="Kadın kategorisine gir">
                     <span class="gc-shape gc-s1"></span>
@@ -79,7 +73,6 @@
                     </span>
                 </button>
 
-                <!-- ERKEK -->
                 <button type="button" class="gender-card male" id="btn-male" onclick="selectGender('male')"
                     aria-label="Erkek kategorisine gir">
                     <span class="gc-shape gc-s1"></span>
@@ -102,14 +95,12 @@
             </div>
         </div>
 
-        <!-- STEP 2: Budget + Financial Profile -->
         <div id="gender-step-2" class="gender-step hidden">
             <div class="budget-screen">
                 <div class="budget-icon" id="budget-gender-icon">💳</div>
                 <h2 class="budget-title">Finansal Profilin 👋</h2>
                 <p class="budget-subtitle">Harcama limitin aylık gelirine göre otomatik hesaplanır</p>
 
-                <!-- Financial Profile -->
                 <div class="gs-financial-section">
                     <div class="gs-fin-header">
                         <span class="gs-fin-icon">📊</span>
@@ -168,10 +159,8 @@
 
     </div>
 
-    <!-- ===================== MAIN SHOP SCREEN ===================== -->
     <div id="shop-screen" class="shop-screen hidden">
 
-        <!-- HEADER -->
         <header class="header" id="main-header">
             <div class="header-top">
                 <div class="container">
@@ -253,7 +242,6 @@
                 </div>
             </div>
 
-            <!-- NAVIGATION -->
             <nav class="nav" id="main-nav" aria-label="Ana Menü">
                 <div class="container">
                     <ul class="nav-list" id="nav-list"></ul>
@@ -261,9 +249,8 @@
             </nav>
         </header>
 
-        <!-- MAIN CONTENT -->
         <main class="main-content" id="main-content">
-            <!-- HOME VIEW -->
+            
             <div id="home-view">
                 <section class="hero-section" id="hero-section">
                     <div class="banner-slider" id="banner-slider">
@@ -326,7 +313,6 @@
                     </div>
                 </section>
 
-                <!-- BUDGET BANNER -->
                 <section class="budget-banner-section" id="budget-banner-section">
                     <div class="container">
                         <div class="budget-banner" id="budget-banner-box" onclick="openBudgetFilterModal()">
@@ -341,7 +327,6 @@
                 </section>
             </div>
 
-            <!-- CATEGORY / SEARCH RESULTS VIEW -->
             <div id="category-view" class="hidden">
                 <div class="container">
                     <div class="category-view-header">
@@ -365,7 +350,6 @@
             </div>
         </main>
 
-        <!-- FOOTER -->
         <footer class="footer" id="main-footer">
             <div class="container">
                 <div class="footer-grid">
@@ -417,9 +401,8 @@
             </div>
         </footer>
 
-    </div><!-- end shop-screen -->
+    </div>
 
-    <!-- ===================== CART DRAWER ===================== -->
     <div class="drawer-overlay" id="cart-overlay" onclick="closeCart()"></div>
     <aside class="drawer" id="cart-drawer" aria-label="Sepetim">
         <div class="drawer-header">
@@ -455,7 +438,6 @@
         </div>
     </aside>
 
-    <!-- ===================== FAVORITES DRAWER ===================== -->
     <div class="drawer-overlay" id="fav-overlay" onclick="closeFavorites()"></div>
     <aside class="drawer" id="fav-drawer" aria-label="Favorilerim">
         <div class="drawer-header">
@@ -472,14 +454,12 @@
         </div>
     </aside>
 
-    <!-- ===================== PRODUCT MODAL ===================== -->
     <div class="modal-overlay" id="product-overlay" onclick="closeProduct()"></div>
     <div class="product-modal" id="product-modal" role="dialog">
         <button class="modal-close" id="product-modal-close" onclick="closeProduct()">✕</button>
         <div class="product-modal-inner" id="product-modal-inner"></div>
     </div>
 
-    <!-- ===================== CHECKOUT MODAL ===================== -->
     <div class="modal-overlay" id="checkout-overlay" onclick="closeCheckout()"></div>
     <div class="checkout-modal" id="checkout-modal" role="dialog" aria-label="Ödeme" style="display:none">
         <button class="modal-close" id="checkout-close" onclick="closeCheckout()">✕</button>
@@ -501,7 +481,6 @@
         </div>
     </div>
 
-    <!-- ===================== HELP MODAL ===================== -->
     <div class="modal-overlay" id="help-overlay" onclick="closeHelp()"></div>
     <div class="help-modal" id="help-modal" role="dialog" aria-label="Yardım" style="display:none">
         <button class="modal-close" onclick="closeHelp()">✕</button>
@@ -520,49 +499,42 @@
         </div>
     </div>
 
-    <!-- ===================== ORDER TRACKING MODAL ===================== -->
     <div class="modal-overlay" id="tracking-overlay" onclick="closeOrderTracking()"></div>
     <div class="info-modal" id="tracking-modal" role="dialog" style="display:none">
         <button class="modal-close" onclick="closeOrderTracking()">✕</button>
         <div id="tracking-content"></div>
     </div>
 
-    <!-- ===================== INFO MODAL ===================== -->
     <div class="modal-overlay" id="info-overlay" onclick="closeInfoModal()"></div>
     <div class="info-modal" id="info-modal" role="dialog" style="display:none">
         <button class="modal-close" onclick="closeInfoModal()">✕</button>
         <div id="info-content"></div>
     </div>
 
-    <!-- ===================== ACCOUNT MODAL ===================== -->
     <div class="modal-overlay" id="account-overlay" onclick="closeAccount()"></div>
     <div class="info-modal" id="account-modal" role="dialog" style="display:none">
         <button class="modal-close" onclick="closeAccount()">✕</button>
         <div id="account-content"></div>
     </div>
 
-    <!-- ===================== BUDGET FILTER MODAL ===================== -->
     <div class="modal-overlay" id="budget-filter-overlay" onclick="closeBudgetFilterModal()"></div>
     <div class="info-modal" id="budget-filter-modal" role="dialog" style="display:none">
         <button class="modal-close" onclick="closeBudgetFilterModal()">✕</button>
         <div id="budget-filter-content"></div>
     </div>
 
-    <!-- ===================== PURPOSE MODAL ===================== -->
     <div class="modal-overlay" id="purpose-overlay" onclick="closePurposeModal()"></div>
     <div class="purpose-modal info-modal" id="purpose-modal" role="dialog" style="display:none">
         <button class="modal-close" onclick="closePurposeModal()">✕</button>
         <div id="purpose-content"></div>
     </div>
 
-    <!-- ===================== FINANCIAL MODAL ===================== -->
     <div class="modal-overlay" id="financial-overlay" onclick="closeFinancialModal()"></div>
     <div class="info-modal" id="financial-modal" role="dialog" style="display:none">
         <button class="modal-close" onclick="closeFinancialModal()">✕</button>
         <div id="financial-content"></div>
     </div>
 
-    <!-- ===================== FLASH SALE POPUP ===================== -->
     <div class="flash-popup" id="flash-popup" style="display:none">
         <div class="flash-popup-header">
             <span class="flash-popup-tag">⚡ FLAŞ İNDİRİM</span>
@@ -576,7 +548,6 @@
         </div>
     </div>
 
-    <!-- ===================== LOG PANEL (HIDDEN – dev only) ===================== -->
     <div class="log-panel" id="log-panel" style="display:none">
         <div class="log-panel-header">
             <div class="log-panel-title">
@@ -608,7 +579,6 @@
         </div>
     </div>
 
-    <!-- ===================== COMPARE FLOATING BAR ===================== -->
     <div class="compare-bar" id="compare-bar" style="display:none">
         <div class="compare-bar-inner">
             <span class="compare-bar-label">⚖️ Karşılaştır (<span id="compare-count">0</span>/3)</span>
@@ -620,19 +590,16 @@
         </div>
     </div>
 
-    <!-- ===================== COMPARE MODAL ===================== -->
     <div class="modal-overlay" id="compare-overlay" onclick="closeCompareModal()"></div>
     <div class="compare-modal" id="compare-modal" role="dialog" style="display:none">
         <button class="modal-close" onclick="closeCompareModal()">✕</button>
         <div id="compare-content"></div>
     </div>
 
-    <!-- ===================== BUDGET TRACKER BAR ===================== -->
     <div id="budget-tracker-bar" class="budget-tracker-bar">
         <div class="btb-handle"></div>
         <div class="btb-inner">
 
-            <!-- Normal / uyarı durumu -->
             <div class="btb-progress-state" id="btb-progress-state">
                 <div class="btb-top-row">
                     <div class="btb-left">
@@ -653,7 +620,6 @@
                 <div class="btb-credit-line" id="btb-credit-line" style="display:none"></div>
             </div>
 
-            <!-- Limit aşıldı durumu -->
             <div class="btb-exceeded-state" id="btb-exceeded-state">
                 <div class="btb-warn-left">
                     <div class="btb-warn-badge">⚠️</div>
@@ -675,7 +641,6 @@
         </div>
     </div>
 
-    <!-- ===================== BUDGET UPGRADE MODAL ===================== -->
     <div class="modal-overlay" id="budget-upgrade-overlay" onclick="closeBudgetUpgradeModal()"></div>
     <div class="budget-upgrade-modal" id="budget-upgrade-modal" style="display:none">
         <div class="bum-handle"></div>
@@ -683,10 +648,8 @@
         <div id="budget-upgrade-content"></div>
     </div>
 
-    <!-- TOAST -->
     <div class="toast-container" id="toast-container"></div>
 
-    <!-- ===================== SANAL ASİSTAN ===================== -->
     <button class="va-toggle" id="va-toggle" onclick="toggleAssistant()" aria-label="Sanal Asistan">
         <span class="va-toggle-icon">💬</span>
         <span class="va-toggle-label">Asistan</span>
@@ -715,10 +678,8 @@
         </div>
     </div>
 
-    <!-- ===================== EYE-TRACKER KALİBRASYON OVERLAY ===================== -->
     <div id="et-calib-overlay" style="display:none">
 
-        <!-- Geri sayım ekranı (ilk 3 sn) -->
         <div id="et-countdown-screen">
             <div class="et-cd-title">Göz Takibi Kalibrasyonu</div>
             <div class="et-cd-msg">Lütfen <strong>ekranın ortasına</strong> bakın</div>
@@ -726,7 +687,6 @@
             <div class="et-cd-sub">Göz takibi sistemi kalibre ediliyor…</div>
         </div>
 
-        <!-- Nokta tıklama talimatları (geri sayım biter) -->
         <div id="et-dot-screen" style="display:none">
             <div class="et-calib-inner">
                 <div class="et-calib-logo">Eye Tracker <span>Calibration</span></div>
@@ -734,7 +694,7 @@
                     <p>Her noktaya <strong>5 kez</strong> tıklayın — tıklarken o noktaya bakın.</p>
                     <p class="et-calib-sub">Nokta sarıya dönünce tamamdır.</p>
                 </div>
-                <!-- Önerilen sıra: merkez → üst (sol/orta/sağ) → alt (sol/orta/sağ) -->
+                
                 <div class="et-order-guide">
                     <div class="et-og-cell">2</div><div class="et-og-cell">3</div><div class="et-og-cell">4</div>
                     <div class="et-og-empty"></div><div class="et-og-center">★1</div><div class="et-og-empty"></div>
@@ -746,7 +706,6 @@
             </div>
         </div>
 
-        <!-- 7 Kalibrasyon noktası: merkez + üst satır + alt satır -->
         <div class="et-dot et-dot-locked" id="et-dot-0" onclick="etDotClick(0)" style="left:5%;top:8%"></div>
         <div class="et-dot et-dot-locked" id="et-dot-1" onclick="etDotClick(1)" style="left:50%;top:8%"></div>
         <div class="et-dot et-dot-locked" id="et-dot-2" onclick="etDotClick(2)" style="left:95%;top:8%"></div>
@@ -754,7 +713,7 @@
         <div class="et-dot et-dot-locked" id="et-dot-6" onclick="etDotClick(6)" style="left:5%;top:92%"></div>
         <div class="et-dot et-dot-locked" id="et-dot-7" onclick="etDotClick(7)" style="left:50%;top:92%"></div>
         <div class="et-dot et-dot-locked" id="et-dot-8" onclick="etDotClick(8)" style="left:95%;top:92%"></div>
-        <!-- dot-3 ve dot-5 (orta sol/sağ) kaldırıldı -->
+        
     </div>
 
     <style>

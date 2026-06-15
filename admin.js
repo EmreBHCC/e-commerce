@@ -1,10 +1,7 @@
-/* ── admin.js – ShopX Admin Control Panel ── */
 
-// ── SOCKET.IO ─────────────────────────────────────────
 const socket = io();
-const API = '';   // aynı origin, prefix yok
+const API = '';   
 
-// ── API HELPERS ───────────────────────────────────────
 async function apiGet(path) {
   const res = await fetch(API + path);
   if (!res.ok) throw new Error(`GET ${path} → ${res.status}`);
@@ -26,7 +23,6 @@ async function apiDelete(path) {
   return res.json();
 }
 
-// ── STATE ─────────────────────────────────────────────
 const Admin = {
   logs: [],
   logFilter: 'all',
@@ -34,13 +30,11 @@ const Admin = {
   sessionStart: Date.now(),
   notifCount: 0,
   stats: { system: 0, navigation: 0, product: 0, cart: 0, search: 0, ui: 0 },
-  // Subject session management
-  activeSessionId: null,   // ID of the currently running subject session
+  
+  activeSessionId: null,   
   activeSessionTimer: null,
 };
 
-// ── OTURUM ÖNBELLEK + REST HELPERS ────────────────────
-// Senkron okumalar için bellek önbelleği; yazımlar sunucuya gider
 let _sessionsCache = [];
 
 function loadSessions() {
@@ -55,7 +49,7 @@ function upsertSession(session) {
   const idx = _sessionsCache.findIndex(s => s.id === session.id);
   if (idx >= 0) _sessionsCache[idx] = session;
   else _sessionsCache.unshift(session);
-  // Sunucuya asenkron kaydet (fire-and-forget)
+  
   apiPut(`/api/sessions/${session.id}`, session).catch(e => console.warn('upsertSession error:', e));
 }
 
@@ -67,8 +61,6 @@ async function _loadSessionsFromServer() {
     _sessionsCache = [];
   }
 }
-
-// ── SUBJECT SESSION MANAGEMENT ─────────────────────────
 
 function startSubjectSession() {
   const nameInput = document.getElementById('subj-name');
@@ -82,9 +74,8 @@ function startSubjectSession() {
     return;
   }
 
-  // Stop existing active session first
   if (Admin.activeSessionId) {
-    stopSubjectSession(true); // silent stop
+    stopSubjectSession(true); 
   }
 
   const now = new Date();
@@ -105,16 +96,13 @@ function startSubjectSession() {
   upsertSession(session);
   Admin.activeSessionId = session.id;
 
-  // Clear form
   if (nameInput) nameInput.value = '';
   if (notesInput) notesInput.value = '';
 
-  // Update UI
   updateActiveSessionUI(session);
   refreshSubjectList();
   updateActiveBadge(name);
 
-  // Start elapsed timer
   clearInterval(Admin.activeSessionTimer);
   Admin.activeSessionTimer = setInterval(() => {
     if (!Admin.activeSessionId) return;
@@ -129,12 +117,11 @@ function startSubjectSession() {
     }
     const lc = document.getElementById('active-sess-logcount');
     if (lc) lc.textContent = sess.logs.length;
-    // Persist elapsed time periodically
+    
     upsertSession(sess);
-    refreshSubjectListSilent(); // update duration in list without full re-render
+    refreshSubjectListSilent(); 
   }, 1000);
 
-  // Sunucuya ve shop'a bildir
   socket.emit('session_started', { name });
 
   showAdminToast(`▶ "${name}" oturumu başlatıldı`, 'success');
@@ -162,7 +149,6 @@ function stopSubjectSession(silent = false) {
   const stoppedName = sess?.name || Admin.activeSessionId;
   Admin.activeSessionId = null;
 
-  // Update UI
   const card = document.getElementById('active-session-card');
   if (card) card.style.display = 'none';
   const bar = document.getElementById('active-subject-bar');
@@ -172,7 +158,7 @@ function stopSubjectSession(silent = false) {
 
   refreshSubjectList();
   if (!silent) {
-    // Sunucuya ve shop'a bildir — site sıfırlanacak
+    
     socket.emit('session_stopped', {});
     showAdminToast(`⏹ "${stoppedName}" oturumu durduruldu — site sıfırlanıyor`, 'info');
   }
@@ -198,7 +184,6 @@ function updateActiveBadge(name) {
   if (nameEl) nameEl.textContent = name;
 }
 
-// ── LOG ROUTING TO ACTIVE SESSION ─────────────────────
 function appendLogToActiveSession(entry) {
   if (!Admin.activeSessionId) return;
   const sess = getSession(Admin.activeSessionId);
@@ -208,7 +193,6 @@ function appendLogToActiveSession(entry) {
   upsertSession(sess);
 }
 
-// ── SESSION LIST RENDERING ─────────────────────────────
 function refreshSubjectList() {
   const sessions = loadSessions();
   const list = document.getElementById('subj-list');
@@ -272,13 +256,13 @@ function refreshSubjectList() {
 }
 
 function refreshSubjectListSilent() {
-  // Only update duration and log count for active session row, no full re-render
+  
   if (!Admin.activeSessionId) return;
   const sess = getSession(Admin.activeSessionId);
   if (!sess) return;
   const item = document.getElementById(`sessitem-${sess.id}`);
   if (!item) return;
-  // Update log count span if it exists
+  
   const metaSpans = item.querySelectorAll('.sess-item-meta span');
   if (metaSpans.length >= 4) {
     metaSpans[2].textContent = `⏱ ${formatDuration(sess.durationSecs || 0)}`;
@@ -303,7 +287,6 @@ function clearAllSessions() {
   showAdminToast('🗑 Tüm oturumlar silindi', 'info');
 }
 
-// ── SESSION DETAIL MODAL ──────────────────────────────
 function viewSessionDetail(id) {
   const sess = getSession(id);
   if (!sess) return;
@@ -358,7 +341,6 @@ function viewSessionDetail(id) {
   modal.style.display = 'flex';
 }
 
-// ── EXPORT ────────────────────────────────────────────
 function exportSession(id) {
   const sess = getSession(id);
   if (!sess) return;
@@ -409,7 +391,6 @@ function exportAllSessionsCSV() {
   showAdminToast(`📊 CSV indirildi`, 'success');
 }
 
-// ── DOWNLOAD HELPERS ──────────────────────────────────
 function downloadJSON(obj, filename) {
   const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
@@ -420,7 +401,7 @@ function downloadJSON(obj, filename) {
 }
 
 function downloadText(text, filename, mime = 'text/plain') {
-  // Add BOM for CSV to handle Turkish characters in Excel
+  
   const bom = mime.includes('csv') ? '\uFEFF' : '';
   const blob = new Blob([bom + text], { type: mime + ';charset=utf-8' });
   const a = document.createElement('a');
@@ -442,7 +423,6 @@ function formatDuration(secs) {
   return `${String(m).padStart(2,'0')}dk ${String(s).padStart(2,'0')}sn`;
 }
 
-// ── SOCKET.IO: GELEN OLAYLAR ──────────────────────────
 socket.on('connect', () => {
   socket.emit('identify', { role: 'admin' });
   showAdminToast('🟢 Sunucuya bağlandı', 'success');
@@ -506,11 +486,10 @@ socket.on('sessions_updated', async () => {
 
 socket.on('heatmap_saved', (data) => {
   const { session: sessName, files } = data;
-  // Eye-tracker durumu güncelle
+  
   const etEl = document.getElementById('active-sess-eyetracker');
   if (etEl) etEl.innerHTML = `<span style="color:#94a3b8">⏹ Kaydedildi</span>`;
 
-  // Oturuma heatmap dosyalarını kaydet
   const sess = _sessionsCache.find(s => s.name === sessName);
   if (sess) {
     sess.heatmapFiles = files;
@@ -518,31 +497,26 @@ socket.on('heatmap_saved', (data) => {
     refreshSubjectList();
   }
 
-  // Log akışına görsel satır ekle
   _insertHeatmapLogRow(sessName, files);
 
   showAdminToast(`👁 Göz takibi tamamlandı: ${files.length} dosya kaydedildi`, 'success');
   _loadAndShowHistoricHeatmaps();
 });
 
-// ── INCOMING LOG HANDLER ───────────────────────────────
 function handleIncomingLog(entry) {
   if (!entry) return;
 
-  // Hide empty state
   const emptyEl = document.getElementById('log-empty');
   if (emptyEl) emptyEl.style.display = 'none';
 
   Admin.logs.unshift(entry);
   if (Admin.stats[entry.type] !== undefined) Admin.stats[entry.type]++;
 
-  // Aktif oturuma log ekle
   appendLogToActiveSession(entry);
 
   renderLogRow(entry);
   updateCounters();
 
-  // Notification badge
   Admin.notifCount++;
   const nc = document.getElementById('notif-count');
   if (nc) {
@@ -563,7 +537,6 @@ function renderLogRow(entry) {
   const genderClass = entry.gender === 'female' ? 'female' : entry.gender === 'male' ? 'male' : 'none';
   const genderLabel = entry.gender === 'female' ? '👩' : entry.gender === 'male' ? '👨' : '–';
 
-  // Show active session indicator
   const sessTag = Admin.activeSessionId
     ? `<span class="sess-tag">🧪</span>`
     : '';
@@ -582,7 +555,6 @@ function renderLogRow(entry) {
   if (autoScroll?.checked) stream.scrollTop = 0;
 }
 
-// ── SOCKET.IO: KOMUT GÖNDER ───────────────────────────
 function sendCommand(cmd, data = {}) {
   socket.emit('command', { cmd, ...data });
   showAdminToast(`📡 Komut gönderildi: ${cmd}`, 'info');
@@ -604,8 +576,6 @@ function sendCustomPopup() {
   showAdminToast('📢 Popup gönderildi', 'success');
 }
 
-
-// ── FILTER ────────────────────────────────────────────
 function applyFilter(type, btn) {
   Admin.logFilter = type;
   document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -615,7 +585,6 @@ function applyFilter(type, btn) {
   });
 }
 
-// ── TABS ──────────────────────────────────────────────
 function switchTab(tab) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -636,7 +605,6 @@ function switchTab(tab) {
   if (tab === 'subjects') refreshSubjectList();
 }
 
-// ── STATS ─────────────────────────────────────────────
 function updateStats() {
   const s = Admin.stats;
   const total = Admin.logs.length;
@@ -670,7 +638,6 @@ function updateStats() {
   }
 }
 
-// ── TIMELINE ──────────────────────────────────────────
 function updateTimeline(entry) {
   const tl = document.getElementById('timeline');
   if (!tl) return;
@@ -681,7 +648,6 @@ function updateTimeline(entry) {
   while (tl.children.length > 20) tl.removeChild(tl.lastChild);
 }
 
-// ── HEATMAP LOG SATIRI ────────────────────────────────────
 function _insertHeatmapLogRow(sessName, files) {
   const stream = document.getElementById('log-stream');
   if (!stream) return;
@@ -708,7 +674,6 @@ function _insertHeatmapLogRow(sessName, files) {
   stream.insertBefore(div, stream.firstChild);
 }
 
-// ── COUNTERS ──────────────────────────────────────────
 function updateCounters() {
   const total = Admin.logs.length;
   document.getElementById('admin-log-count').textContent = total;
@@ -719,11 +684,10 @@ function updateCounters() {
   }
 }
 
-// ── CLEAR LIVE LOGS ────────────────────────────────────
 function clearAllLogs() {
   Admin.logs = [];
   Admin.stats = { system: 0, navigation: 0, product: 0, cart: 0, search: 0, ui: 0 };
-  // Sunucudaki logları temizle
+  
   apiPost('/api/logs/clear', {}).catch(e => console.warn('clearAllLogs error:', e));
   const stream = document.getElementById('log-stream');
   if (stream) {
@@ -740,10 +704,6 @@ function clearAllLogs() {
   showAdminToast('🗑 Canlı log akışı temizlendi', 'info');
 }
 
-// Log kalıcılığı artık sunucu tarafından yönetilmektedir.
-// Bağlanıldığında 'logs_history' olayı ile geçmiş loglar yüklenir.
-
-// ── CONNECTION STATUS ──────────────────────────────────
 function setConnected(val) {
   Admin.connected = val;
   const dot = document.getElementById('status-dot');
@@ -770,7 +730,6 @@ function resetHeartbeatTimer() {
   heartbeatTimeout = setTimeout(() => setConnected(false), 8000);
 }
 
-// ── SESSION TIMER ─────────────────────────────────────
 setInterval(() => {
   const elapsed = Math.floor((Date.now() - Admin.sessionStart) / 1000);
   const m = Math.floor(elapsed / 60), s = elapsed % 60;
@@ -778,14 +737,12 @@ setInterval(() => {
   if (el) el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }, 1000);
 
-// ── NOTIF BELL ─────────────────────────────────────────
 function clearNotifBadge() {
   Admin.notifCount = 0;
   const nc = document.getElementById('notif-count');
   if (nc) nc.style.display = 'none';
 }
 
-// ── ADMIN TOAST ────────────────────────────────────────
 function showAdminToast(msg, type = 'info') {
   let container = document.getElementById('admin-toast-container');
   if (!container) {
@@ -804,7 +761,6 @@ function showAdminToast(msg, type = 'info') {
   }, 3000);
 }
 
-// ── UTILS ─────────────────────────────────────────────
 function escHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')

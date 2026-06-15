@@ -22,11 +22,10 @@ def _hide_console():
             import ctypes
             hwnd = ctypes.windll.kernel32.GetConsoleWindow()
             if hwnd:
-                ctypes.windll.user32.ShowWindow(hwnd, 0)  # SW_HIDE
+                ctypes.windll.user32.ShowWindow(hwnd, 0)
         except Exception:
             pass
 
-# ── CLI ARGÜMANLARI ──────────────────────────────────────────────
 _parser = argparse.ArgumentParser(add_help=False)
 _parser.add_argument('--session',    default='denek',  help='Oturum / denek adı')
 _parser.add_argument('--output-dir', dest='output_dir', default=None, help='Heatmap çıkış dizini')
@@ -42,8 +41,6 @@ _STOP_FILE      = os.path.join(_BASE_DIR_ET, 'data', 'eyetracker_stop')
 _CALIBRATE_FILE = os.path.join(_BASE_DIR_ET, 'data', 'eyetracker_calibrate')
 os.makedirs(_OUTPUT_DIR, exist_ok=True)
 
-# stdout/stderr → log dosyası (DirectShow hazır olmadan önce YAPILMAZ;
-# kamera açılınca _redirect_output() çağrılacak)
 _LOG_FILE = os.path.join(_BASE_DIR_ET, 'data', 'eyetracker.log')
 _log_fh   = None
 
@@ -79,9 +76,6 @@ class GazeCursor:
         self.root.geometry(f"+{int(x)}+{int(y)}")
         self.root.update()
 
-
-
-# HEATMAP SINIFI - Gaze noktalarını biriktirir ve heatmap üretir
 class GazeHeatmap:
     def __init__(self, width, height, decay=0.998, blur_size=61, max_points=5000):
         """
@@ -146,7 +140,6 @@ class GazeHeatmap:
         blended[mask3] = cv2.addWeighted(frame, 1 - self.alpha, colored, self.alpha, 0)[mask3]
         return blended
 
-
     def show_preview_window(self, win_w=400, win_h=300):
         """Küçük ayrı önizleme penceresi."""
         colored = self._build_colored()
@@ -188,7 +181,6 @@ class GazeHeatmap:
         self.raw_points.clear()
         print("[Heatmap] Sıfırlandı.")
 
-
 MONITOR_WIDTH, MONITOR_HEIGHT = pyautogui.size()
 CENTER_X = MONITOR_WIDTH // 2
 CENTER_Y = MONITOR_HEIGHT // 2
@@ -196,30 +188,24 @@ mouse_control_enabled = False
 filter_length = 25
 gaze_length = 350
 
-# Orbit camera state for the debug view
 orbit_yaw   = -151.0
 orbit_pitch = 00.0
 orbit_radius = 1500.0
 orbit_fov_deg = 50.0
 
-# Debug-view world freeze
 debug_world_frozen = False
 orbit_pivot_frozen = None
 
-# Stored gaze markers on the monitor plane
 gaze_markers = []
 
-#3D monitor plane state (world space)
 monitor_corners = None
 monitor_center_w = None
 monitor_normal_w = None
 units_per_cm = None
 
-# Shared mouse target position
 mouse_target = [CENTER_X, CENTER_Y]
 mouse_lock = threading.Lock()
 
-# Calibration offsets for screen mapping
 calibration_offset_yaw = 0
 calibration_offset_pitch = 0
 
@@ -231,7 +217,6 @@ R_ref_nose = [None]
 R_ref_forehead = [None]
 calibration_nose_scale = None
 
-# === Heatmap nesnesi ===
 gaze_heatmap = GazeHeatmap(
     width=MONITOR_WIDTH,
     height=MONITOR_HEIGHT,
@@ -240,7 +225,6 @@ gaze_heatmap = GazeHeatmap(
     max_points=10000
 )
 
-# Initialize MediaPipe FaceMesh
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(
     static_image_mode=False,
@@ -269,7 +253,6 @@ def _open_camera():
         if ret:
             w_ = int(c.get(cv2.CAP_PROP_FRAME_WIDTH))
             h_ = int(c.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            # stdout/stderr → log, konsol gizle (DirectShow artık hazır)
             _redirect_output()
             _hide_console()
             print(f'[EyeTracker] Kamera açıldı (backend={backend}): {w_}x{h_}')
@@ -280,7 +263,7 @@ def _open_camera():
 
 cap = _open_camera()
 if cap is None:
-    _redirect_output()   # hata mesajı log'a gitsin
+    _redirect_output()
     print('[EyeTracker] HATA: Kamera açılamadı. Çıkılıyor.')
     raise SystemExit(1)
 
@@ -312,7 +295,6 @@ def _normalize(v):
 
 def _focal_px(width, fov_deg):
     return 0.5 * width / math.tan(math.radians(fov_deg) * 0.5)
-
 
 def create_monitor_plane(head_center, R_final, face_landmarks, w, h,
                          forward_hint=None, gaze_origin=None, gaze_dir=None):
@@ -362,7 +344,6 @@ def create_monitor_plane(head_center, R_final, face_landmarks, w, h,
     normal_w = head_forward / (np.linalg.norm(head_forward) + 1e-9)
     return [p0, p1, p2, p3], center_w, normal_w, upc
 
-
 def update_orbit_from_keys():
     global orbit_yaw, orbit_pitch, orbit_radius
     yaw_step   = math.radians(1.5)
@@ -386,7 +367,6 @@ def update_orbit_from_keys():
         print(f"[Orbit Debug] yaw={math.degrees(orbit_yaw):.2f}°, "
               f"pitch={math.degrees(orbit_pitch):.2f}°, "
               f"radius={orbit_radius:.2f}, fov={orbit_fov_deg:.1f}°")
-
 
 def compute_scale(points_3d):
     n = len(points_3d)
@@ -473,13 +453,11 @@ def convert_gaze_to_screen_coordinates(combined_gaze_direction, calibration_offs
         pitch_rad = -pitch_rad
     yaw_deg   = np.degrees(yaw_rad)
     pitch_deg = np.degrees(pitch_rad)
-    # Kamera görüntüsünde sağa bakınca iris görüntüde sola kayar (ayna etkisi).
-    # Bu flip kameranın ayna dönüşümünü düzeltir: sağa bak → cursor sağa gitsin.
     yaw_deg = -yaw_deg
     raw_yaw_deg   = yaw_deg
     raw_pitch_deg = pitch_deg
-    yawDegrees   = 12.0   # yatay ±12° — tipik 50-60cm mesafede ekran kenarına karşılık gelir
-    pitchDegrees =  8.0   # dikey ±8°
+    yawDegrees   = 12.0
+    pitchDegrees =  8.0
     yaw_deg   += calibration_offset_yaw
     pitch_deg += calibration_offset_pitch
     screen_x = int(((yaw_deg   + yawDegrees)   / (2 * yawDegrees))   * MONITOR_WIDTH)
@@ -689,7 +667,6 @@ def render_debug_view_orbit(
                                 r_px = int(max(1, np.linalg.norm(np.array(projR[0]) - np.array(center_px))))
                                 cv2.circle(debug, center_px, r_px, (0,255,255), 2, lineType=cv2.LINE_AA)
 
-    # --- Yardım metni (H tuşları eklendi) ---
     help_text = [
         "C = calibrate screen center",
         "J/L/I/K = orbit yaw/pitch",
@@ -715,7 +692,6 @@ def render_debug_view_orbit(
     if not _HEADLESS:
         cv2.imshow("Head/Eye Debug", debug)
 
-
 def mouse_mover():
     while True:
         if mouse_control_enabled:
@@ -740,20 +716,17 @@ gaze_visualizer.update_position(CENTER_X, CENTER_Y)
 _heatmap_frame_skip = 3
 _heatmap_frame_count = 0
 
-# Otomatik kalibrasyon – yüz algılandıktan AUTO_CALIB_FRAMES kare sonra
-AUTO_CALIB_FRAMES = 90  # ~3 saniye (kullanıcının overlay'e bakması için)
+AUTO_CALIB_FRAMES = 90
 _auto_calib_counter = 0
 _auto_calibrated = False
 
 while cap.isOpened():
-    # Stop sinyali – loop başında kontrol et
     if os.path.exists(_STOP_FILE):
         print('[EyeTracker] Durdurma sinyali alındı.')
         break
 
     ret, frame = cap.read()
     if not ret:
-        # Geçici hata olabilir, 3 kez yeniden dene
         for _retry in range(3):
             time.sleep(0.05)
             ret, frame = cap.read()
@@ -780,7 +753,6 @@ while cap.isOpened():
 
         base_radius = 20
 
-        # ── Otomatik kalibrasyon ──────────────────────────────
         if not _auto_calibrated and not (left_sphere_locked and right_sphere_locked):
             _auto_calib_counter += 1
             if _auto_calib_counter >= AUTO_CALIB_FRAMES:
@@ -950,7 +922,6 @@ while cap.isOpened():
 
     key = cv2.waitKey(1) & 0xFF if not _HEADLESS else 0xFF
 
-    # Sunucudan kalibrasyon sinyali geldi mi? (merkez dot tıklandı = kullanıcı merkeze bakıyor)
     if os.path.exists(_CALIBRATE_FILE):
         try:
             os.remove(_CALIBRATE_FILE)
@@ -971,15 +942,11 @@ while cap.isOpened():
     if key == ord('q'):
         break
 
-
-    # HEATMAP KLAVYE KONTROLLERI
     elif key == ord('h'):
-        # Overlay aç/kapat (kamera görüntüsü üzerinde)
         gaze_heatmap.visible = not gaze_heatmap.visible
         print(f"[Heatmap] Overlay {'açık' if gaze_heatmap.visible else 'kapalı'}")
 
     elif key == ord('p'):
-        # Küçük önizleme penceresi aç/kapat
         gaze_heatmap.show_preview = not gaze_heatmap.show_preview
         if not gaze_heatmap.show_preview:
             cv2.destroyWindow("Gaze Heatmap Preview")
@@ -1099,7 +1066,6 @@ cap.release()
 if not _HEADLESS:
     cv2.destroyAllWindows()
 
-# ── OTOMATİK KAYDET ───────────────────────────────────────────
 _ts   = time.strftime('%Y%m%d_%H%M%S')
 _slug = _re.sub(r'[^\w]', '_', _SESSION_NAME)[:20].strip('_') or 'denek'
 _png  = os.path.join(_OUTPUT_DIR, f'{_slug}_{_ts}.png')

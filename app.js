@@ -1,6 +1,4 @@
-/* ShopX – app.js */
 
-// ── STATE ──────────────────────────────────────────────────
 const State = {
   gender: null, budget: null, budgetLabel: '',
   cart: [], favorites: [], logs: [],
@@ -15,15 +13,15 @@ const State = {
   flashPopupInterval: null, flashPopupTimer: null, flashPopupSecs: 0,
   logoClickCount: 0, logoClickTimer: null,
   searchTimeout: null, helpCurrentTab: 'faq',
-  // Finansal profil
+  
   salary: 0, monthlyCredit: 0, monthlyDebt: 0, creditLimit: 0,
-  // Bütçe seçim geçici state
+  
   _pendingBudget: null, _pendingBudgetLabel: '',
-  // Teslimat bilgileri (ödeme adımında kart adı için)
+  
   deliveryName: '',
-  // Amaç bildirisi
+  
   pendingCartId: null, pendingCartQty: 1, pendingFromModal: false,
-  // Yeni özellikler
+  
   couponCode: null,
   membership: 'bronze',
   giftBalance: 150,
@@ -32,23 +30,9 @@ const State = {
   loggedIn: false,
 };
 
-// ── DATA ──────────────────────────────────────────────────
-// Not: products dizileri yedek olarak tutulur.
-// Gerçek ürünler DummyJSON API'den çekilir (PRODUCTS_CACHE).
-// nav, categories, banners, promos burada tanımlıdır —
-// category id'leri DUMMYJSON_CAT_MAP ile tam eşleşmeli.
 const DATA = {
   female: {
-    // ── NAV ──
-    // DummyJSON'dan gelen female kategorileri:
-    //   elbise (womens-dresses + tops)
-    //   ayakkabi (womens-shoes)
-    //   canta (womens-bags)
-    //   makyaj (beauty)
-    //   cilt (skin-care)
-    //   parfum (fragrances)
-    //   taki (womens-jewellery + womens-watches + sunglasses)
-    //   spor (sports-accessories)
+    
     nav: [
       { label: 'Tümü',              cat: 'tumu' },
       { label: 'Elbise & Üstler',   cat: 'elbise' },
@@ -61,7 +45,7 @@ const DATA = {
       { label: 'Spor',              cat: 'spor' },
       { label: '🔥 İndirim',        cat: 'indirim', sale: true },
     ],
-    // ── KATEGORİ DAİRELERİ ──
+    
     categories: [
       { icon: '👗', label: 'Elbise',        id: 'elbise'   },
       { icon: '👠', label: 'Ayakkabı',      id: 'ayakkabi' },
@@ -72,19 +56,19 @@ const DATA = {
       { icon: '💍', label: 'Takı',          id: 'taki'     },
       { icon: '🏃‍♀️', label: 'Spor',       id: 'spor'     },
     ],
-    // ── BANNER ──
+    
     banners: [
       { bg: 'linear-gradient(135deg,#6a0735 0%,#c2187a 50%,#ff9ec6 100%)', label: 'YENİ SEZON 2026',   title: 'İlkbahar<br>Koleksiyonu',     sub: 'Elbise, üstler ve daha fazlası',  cta: 'Keşfet',          emoji: '👗', cat: 'elbise'   },
       { bg: 'linear-gradient(135deg,#0d47a1 0%,#7b1fa2 50%,#e91e8c 100%)', label: 'AKSESUAR FIRSATLARI', title: 'Çanta & Takı<br>Koleksiyonu', sub: 'Büyük indirimler sizi bekliyor', cta: 'Alışverişe Başla', emoji: '👜', cat: 'canta'    },
       { bg: 'linear-gradient(135deg,#1b5e20 0%,#388e3c 50%,#a5d6a7 100%)', label: 'GÜZELLİK DÜNYASI',  title: 'Premium<br>Cilt Bakımı',      sub: 'Dünyaca ünlü markalar burada',    cta: 'Ürünlere Bak',    emoji: '🧴', cat: 'cilt'     },
     ],
-    // ── PROMO ──
+    
     promos: [
       { bg: 'linear-gradient(135deg,#880e4f,#c2187a)',  title: 'Yeni Elbiseler',      desc: 'Bu sezonun en trend modelleri', cat: 'elbise'   },
       { bg: 'linear-gradient(135deg,#4a148c,#7b1fa2)',  title: 'Güzellik Fırsatları', desc: 'Makyaj ve cilt bakımında büyük indirim', cat: 'makyaj'   },
       { bg: 'linear-gradient(135deg,#bf360c,#e64a19)',  title: 'Takı & Aksesuar',    desc: 'Çanta, takı ve gözlük kampanyaları', cat: 'taki'     },
     ],
-    // ── YEDEK ÜRÜNLER (DummyJSON çalışmazsa kullanılır) ──
+    
     products: [
       { id: 'f1',  name: 'Çiçekli Midi Elbise',       brand: 'Zara',         price: 649,  oldPrice: 1099, img: '👗', badge: 'sale', rating: 4.7, reviews: 342,  desc: 'Şık çiçek baskısı, body-fit kesim, %100 viskon.',        cat: 'elbise'   },
       { id: 'f2',  name: 'Deri Makyaj Çantası',        brand: 'Aldo',         price: 289,  oldPrice: 459,  img: '👜', badge: 'hot',  rating: 4.5, reviews: 217,  desc: 'İtalyan deri görünümlü, altın aplike detaylı.',           cat: 'canta'    },
@@ -100,14 +84,7 @@ const DATA = {
   },
 
   male: {
-    // ── NAV ──
-    // DummyJSON'dan gelen male kategorileri:
-    //   gomlek (mens-shirts + tops)
-    //   spor-ayak (mens-shoes)
-    //   saat (mens-watches + sunglasses)
-    //   telefon (smartphones)
-    //   gaming (laptops + mobile-accessories + tablets)
-    //   outdoor (sports-accessories)
+    
     nav: [
       { label: 'Tümü',                cat: 'tumu' },
       { label: 'Gömlek & Üstler',     cat: 'gomlek'   },
@@ -119,7 +96,7 @@ const DATA = {
       { label: 'Outdoor & Spor',      cat: 'outdoor'  },
       { label: '🔥 Kampanyalar',      cat: 'kampanya', sale: true },
     ],
-    // ── KATEGORİ DAİRELERİ ──
+    
     categories: [
       { icon: '👕', label: 'Gömlek & Üstler',    id: 'gomlek'    },
       { icon: '👟', label: 'Ayakkabı',            id: 'spor-ayak' },
@@ -130,19 +107,19 @@ const DATA = {
       { icon: '🏕️', label: 'Outdoor & Spor',     id: 'outdoor'   },
       { icon: '😎', label: 'Güneş Gözlüğü',      id: 'gozluk'    },
     ],
-    // ── BANNER ──
+    
     banners: [
       { bg: 'linear-gradient(135deg,#0a1f4e 0%,#1565c0 50%,#039be5 100%)', label: 'YENİ SEZON 2026',  title: 'Erkek<br>Koleksiyonu',       sub: 'Gömlek, üstler ve daha fazlası',  cta: 'Keşfet',          emoji: '👕', cat: 'gomlek'    },
       { bg: 'linear-gradient(135deg,#1a237e 0%,#283593 50%,#1976d2 100%)', label: 'TEKNOLOJİ FIRSATI', title: 'Telefon &<br>Gaming Dünyası', sub: 'En iyi donanımlar burada',        cta: 'Mağazaya Git',    emoji: '📱', cat: 'telefon'   },
       { bg: 'linear-gradient(135deg,#1b1b2e 0%,#004d40 50%,#00695c 100%)', label: 'OUTDOOR SEZONU',   title: 'Spor &<br>Outdoor Ekipmanları', sub: 'Profesyonel outdoor markaları', cta: 'İncele',          emoji: '🏕️', cat: 'outdoor'  },
     ],
-    // ── PROMO ──
+    
     promos: [
       { bg: 'linear-gradient(135deg,#1a237e,#1565c0)',  title: 'Gaming & Laptop',   desc: 'Donanımda büyük fırsatlar',      cat: 'gaming'    },
       { bg: 'linear-gradient(135deg,#263238,#37474f)',  title: 'Akıllı Telefonlar', desc: 'En yeni modeller, en iyi fiyat', cat: 'telefon'   },
       { bg: 'linear-gradient(135deg,#004d40,#00695c)',  title: 'Outdoor & Spor',    desc: 'Yeni sezon ekipmanları',         cat: 'outdoor'   },
     ],
-    // ── YEDEK ÜRÜNLER ──
+    
     products: [
       { id: 'm1',  name: 'Slim Fit Denim Pantolon',     brand: 'Levi\'s',   price: 799,  oldPrice: 1099, img: '👖', badge: 'sale', rating: 4.8, reviews: 1023, desc: 'Slim fit, stretch denim, 5 cep model.',              cat: 'gomlek'    },
       { id: 'm2',  name: 'Gaming Kulaklık 7.1',         brand: 'Razer',     price: 1599, oldPrice: 2199, img: '🎧', badge: 'hot',  rating: 4.9, reviews: 756,  desc: 'USB 7.1 surround, RGB aydınlatma.',                  cat: 'gaming'    },
@@ -158,15 +135,13 @@ const DATA = {
   },
 };
 
-// Budget price limits
 const BUDGET_LIMITS = { low: [0, 500], medium: [500, 1500], high: [1500, 3500], luxury: [3500, 99999], any: [0, 99999] };
 
-// ── DİNAMİK KARGO EŞİĞİ ──────────────────────────────────
 function calcFreeShipThreshold() {
   const products = getProducts(State.gender);
   if (!products || products.length === 0) return 150;
   const avg = products.reduce((s, p) => s + p.price, 0) / products.length;
-  // Ortalama fiyatın ~%80'i, 100 TL'nin katlarına yuvarlanır
+  
   return Math.max(150, Math.round(avg * 0.8 / 100) * 100);
 }
 
@@ -174,7 +149,7 @@ function calcShippingCost() {
   const products = getProducts(State.gender);
   if (!products || products.length === 0) return 29.90;
   const avg = products.reduce((s, p) => s + p.price, 0) / products.length;
-  // Ortalama fiyatın ~%2.5'i, 5 TL'nin katlarına yuvarlanır (15–99 TL arası)
+  
   return Math.min(99, Math.max(15, Math.round(avg * 0.025 / 5) * 5));
 }
 
@@ -186,7 +161,6 @@ function updateShippingTopbar() {
   el.textContent = `🚚 ${threshold.toLocaleString('tr-TR')} TL üzeri ücretsiz kargo (altı ${cost} TL)`;
 }
 
-// ── ÜYELİK SEVİYELERİ ────────────────────────────────────
 const MEMBERSHIPS = {
   bronze:   { label: 'Bronz',  icon: '🥉', discount: 0,  freeShipping: false, cls: 'mem-bronze'   },
   silver:   { label: 'Gümüş', icon: '🥈', discount: 5,  freeShipping: false, cls: 'mem-silver'   },
@@ -194,7 +168,6 @@ const MEMBERSHIPS = {
   platinum: { label: 'Platin', icon: '💎', discount: 15, freeShipping: true,  cls: 'mem-platinum' },
 };
 
-// ── KUPON KODLARI ─────────────────────────────────────────
 const COUPONS = {
   'SHOPX10':   { type: 'percent',  value: 10, label: '%10 İndirim Kuponu'         },
   'ILKALIS20': { type: 'percent',  value: 20, label: '%20 İlk Alışveriş İndirimi' },
@@ -203,7 +176,6 @@ const COUPONS = {
   'SHOPX5':    { type: 'percent',  value: 5,  label: '%5 Ek İndirim'              },
 };
 
-// ── HARCAMA KADEMELERİ ────────────────────────────────────
 const SPEND_TIERS = [
   { min: 500,  discount: 3,  freeShipping: false, label: '%3 indirim'                   },
   { min: 1000, discount: 5,  freeShipping: false, label: '%5 indirim'                   },
@@ -211,9 +183,6 @@ const SPEND_TIERS = [
   { min: 3000, discount: 10, freeShipping: true,  label: '%10 indirim + ücretsiz kargo' },
 ];
 
-// ── GÖRSEL YARDIMCISI ────────────────────────────────────
-// URL ise <img>, değilse emoji span döndürür.
-// emojiSize: emoji için font-size (ör. '2rem')
 function renderImg(img, alt, emojiSize) {
   if (img && (img.startsWith('http') || img.startsWith('/'))) {
     return `<img src="${img}" alt="${alt || ''}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍',style:'font-size:${emojiSize||'2rem'};display:flex;align-items:center;justify-content:center;width:100%;height:100%;'}))">`;
@@ -221,10 +190,6 @@ function renderImg(img, alt, emojiSize) {
   return `<span style="font-size:${emojiSize||'2rem'};display:flex;align-items:center;justify-content:center;width:100%;height:100%;">${img || '🛍'}</span>`;
 }
 
-// ── DUMMYJSON ENTEGRASYONU ────────────────────────────────
-
-// DummyJSON kategori → uygulama içi kategori eşlemesi
-// Female ve male ayrı eşlemeler — aynı DummyJSON kategorisi farklı iç kategorilere gidebilir
 const DUMMYJSON_CAT_MAP = {
   female: {
     'womens-dresses':    'elbise',
@@ -233,7 +198,7 @@ const DUMMYJSON_CAT_MAP = {
     'womens-bags':       'canta',
     'beauty':            'makyaj',
     'skin-care':         'cilt',
-    'fragrances':        'parfum',   // nav ve category id ile eşleşmeli
+    'fragrances':        'parfum',   
     'womens-jewellery':  'taki',
     'womens-watches':    'taki',
     'sports-accessories':'spor',
@@ -252,8 +217,6 @@ const DUMMYJSON_CAT_MAP = {
   },
 };
 
-// Kadın için çekilecek DummyJSON kategorileri
-// (DUMMYJSON_CAT_MAP.female ile tam örtüşmeli)
 const FEMALE_CATS = [
   'womens-dresses', 'tops',
   'womens-shoes',
@@ -266,8 +229,6 @@ const FEMALE_CATS = [
   'sunglasses',
 ];
 
-// Erkek için çekilecek DummyJSON kategorileri
-// (DUMMYJSON_CAT_MAP.male ile tam örtüşmeli)
 const MALE_CATS = [
   'mens-shirts',
   'mens-shoes',
@@ -278,29 +239,24 @@ const MALE_CATS = [
   'sports-accessories',
 ];
 
-const USD_TO_TRY = 38; // 1 USD ≈ 38 TL
+const USD_TO_TRY = 38; 
 
-// DummyJSON ürününü uygulama formatına dönüştür
 function transformDJProduct(p, gender) {
   const catMap = DUMMYJSON_CAT_MAP[gender];
   const cat = catMap[p.category] || (gender === 'female' ? 'elbise' : 'gomlek');
 
-  // Fiyatı TL'ye çevir, 10'a yuvarla
   const price = Math.round((p.price * USD_TO_TRY) / 10) * 10;
 
-  // İndirimli ürünlerde orijinal fiyatı hesapla
   let oldPrice = null;
   if (p.discountPercentage && p.discountPercentage > 4) {
     oldPrice = Math.round((price / (1 - p.discountPercentage / 100)) / 10) * 10;
   }
 
-  // Badge belirle
   let badge = null;
   if (p.discountPercentage >= 20)    badge = 'sale';
   else if (p.stock <= 20)            badge = 'hot';
   else if (p.id % 7 === 0)           badge = 'new';
 
-  // Gerçekçi görünen yorum sayısı
   const reviews = (p.reviews && p.reviews.length > 0)
     ? p.reviews.length * 47 + p.stock * 11
     : p.stock * 23 + 80;
@@ -321,19 +277,17 @@ function transformDJProduct(p, gender) {
   };
 }
 
-// Ürün önbelleği – bir kez çek, her seferinde yeniden istek atma
 const PRODUCTS_CACHE = { female: null, male: null };
 
-// Belirli bir cinsiyet için DummyJSON'dan ürün çek
 async function fetchDJProducts(gender) {
-  if (PRODUCTS_CACHE[gender]) return PRODUCTS_CACHE[gender];  // Önbellekten dön
+  if (PRODUCTS_CACHE[gender]) return PRODUCTS_CACHE[gender];  
 
   const cats = gender === 'female' ? FEMALE_CATS : MALE_CATS;
 
-  showProductsSkeleton();  // Yükleniyor göstergesi
+  showProductsSkeleton();  
 
   try {
-    // Tüm kategorileri paralel olarak çek
+    
     const results = await Promise.all(
       cats.map(cat =>
         fetch(`https://dummyjson.com/products/category/${cat}?limit=12&select=id,title,description,price,discountPercentage,rating,stock,brand,category,thumbnail,images,reviews`)
@@ -343,10 +297,8 @@ async function fetchDJProducts(gender) {
       )
     );
 
-    // Düzleştir ve dönüştür
     const all = results.flat().map(p => transformDJProduct(p, gender));
 
-    // Tekrarları temizle (id bazında)
     const seen = new Set();
     const unique = all.filter(p => { if (seen.has(p.id)) return false; seen.add(p.id); return true; });
 
@@ -356,16 +308,14 @@ async function fetchDJProducts(gender) {
 
   } catch (err) {
     logAction(`DummyJSON hatası: ${err.message} — yerel veri kullanılıyor`, 'system');
-    return DATA[gender].products;  // Hata olursa yerel veriye dön
+    return DATA[gender].products;  
   }
 }
 
-// Bir cinsiyet için aktif ürün listesini döndür (önbellek veya yerel)
 function getProducts(gender) {
   return PRODUCTS_CACHE[gender] || DATA[gender].products;
 }
 
-// ── SKELETON LOADER ───────────────────────────────────────
 function showProductsSkeleton() {
   const skeletonCard = `
     <div class="product-card skeleton-card">
@@ -387,7 +337,6 @@ function hideProductsSkeleton() {
   document.querySelectorAll('.skeleton-card').forEach(el => el.remove());
 }
 
-// ── SOCKET.IO BAĞLANTISI ─────────────────────────────────
 const socket = io();
 
 socket.on('connect', () => {
@@ -399,12 +348,10 @@ socket.on('disconnect', () => {
   console.log('[ShopX] Sunucu bağlantısı kesildi');
 });
 
-// Admin panelinden oturum durumu bildirimi
 socket.on('session_status', (data) => {
   _showNoSessionWarning(!data?.active);
 });
 
-// Admin panelinden gelen uzak komutları dinle
 socket.on('command', (data) => {
   const { cmd } = data;
   switch (cmd) {
@@ -441,14 +388,11 @@ socket.on('command', (data) => {
   socket.emit('ack', { cmd });
 });
 
-// Canlılık sinyali – 3 saniyede bir
 setInterval(() => socket.emit('heartbeat'), 3000);
 
-// ── EYE-TRACKER KALİBRASYON ──────────────────────────
-// Aktif dot indeksleri: dot-3 ve dot-5 kaldırıldı
-const ET_DOT_IDS    = [4, 0, 1, 2, 6, 7, 8]; // tıklama SIRASI: önce merkez
-const ET_TOTAL      = ET_DOT_IDS.length;       // 7
-const _etClicks     = {};                       // {idx: clickCount}
+const ET_DOT_IDS    = [4, 0, 1, 2, 6, 7, 8]; 
+const ET_TOTAL      = ET_DOT_IDS.length;       
+const _etClicks     = {};                       
 const ET_CLICKS_NEEDED = 5;
 let _etCountdownTimer = null;
 
@@ -525,7 +469,6 @@ function etDotClick(idx) {
     const doneEl = document.getElementById('et-calib-done');
     if (doneEl) doneEl.textContent = done;
 
-    // Merkez tamamlandı → offset kalibrasyonu tetikle
     if (idx === 4) socket.emit('calibration_complete', { centerOnly: true });
 
     if (done === ET_TOTAL) setTimeout(etFinishCalibration, 600);
@@ -540,7 +483,6 @@ function etFinishCalibration() {
   logAction('Eye-tracker kalibrasyonu tamamlandı', 'system');
 }
 
-// ── TARAYICI GAZE CURSOR ─────────────────────────────
 (function () {
   let _gc = null;
 
@@ -568,10 +510,10 @@ function etFinishCalibration() {
 
   socket.on('gaze_position', function (data) {
     const el = _getGazeCursor();
-    // eye-tracker ekran koordinatları → tarayıcı viewport koordinatları
+    
     const winLeft  = window.screenX  ?? window.screenLeft ?? 0;
     const winTop   = window.screenY  ?? window.screenTop  ?? 0;
-    const topChrome = window.outerHeight - window.innerHeight; // tab bar + adres çubuğu
+    const topChrome = window.outerHeight - window.innerHeight; 
     const bx = data.x - winLeft;
     const by = data.y - winTop - topChrome;
     el.style.left    = Math.max(0, bx) + 'px';
@@ -579,7 +521,6 @@ function etFinishCalibration() {
     el.style.display = 'block';
   });
 
-  // Session bitince gaze cursor gizle
   socket.on('command', function (data) {
     if (data && data.cmd === 'SESSION_STOPPED') {
       const el = document.getElementById('browser-gaze-cursor');
@@ -588,7 +529,6 @@ function etFinishCalibration() {
   });
 })();
 
-// ── NO-SESSION WARNING BANNER ─────────────────────────
 function _showNoSessionWarning(show) {
   let banner = document.getElementById('no-session-banner');
   if (!banner) {
@@ -605,9 +545,8 @@ function _showNoSessionWarning(show) {
   banner.style.display = show ? 'flex' : 'none';
 }
 
-// ── SITE RESET (oturum bittiğinde) ────────────────────
 function resetToInitial() {
-  // Tüm interval/timer temizle
+  
   clearInterval(State.bannerInterval);
   clearInterval(State.countdownInterval);
   clearInterval(State.flashPopupInterval);
@@ -615,7 +554,6 @@ function resetToInitial() {
   clearTimeout(State.searchTimeout);
   clearTimeout(State.logoClickTimer);
 
-  // State sıfırla
   State.gender = null;
   State.budget = null;
   State.budgetLabel = '';
@@ -644,7 +582,6 @@ function resetToInitial() {
   State.compareList = [];
   State.loggedIn = false;
 
-  // Tüm açık modal/overlay/drawer kapat
   const compareBar = document.getElementById('compare-bar');
   if (compareBar) compareBar.style.display = 'none';
   const memBadge = document.getElementById('mem-badge-header');
@@ -662,26 +599,21 @@ function resetToInitial() {
     el.style.display = 'none';
   });
 
-  // Overlay'leri kapat
   document.querySelectorAll('.modal-overlay, .drawer-overlay, .purpose-overlay, #purpose-overlay')
     .forEach(el => el.classList.remove('active'));
 
-  // Body class & overflow sıfırla
   document.body.className = '';
   document.body.style.overflow = '';
   document.getElementById('gender-screen')?.classList.remove('step2-mode');
 
-  // Ürün önbelleğini sıfırla (yeni denek farklı ürünler görsün)
   if (typeof PRODUCTS_CACHE !== 'undefined') {
     PRODUCTS_CACHE.female = null;
     PRODUCTS_CACHE.male = null;
   }
 
-  // Sepet ve favori UI güncelle
   updateCartUI();
   updateFavUI();
 
-  // Cinsiyet ekranını göster
   document.getElementById('gender-step-1').classList.remove('hidden');
   document.getElementById('gender-step-2').classList.add('hidden');
 
@@ -704,13 +636,11 @@ function resetToInitial() {
     }, 20);
   }, 350);
 
-  // Uyarı bannerini göster
   _showNoSessionWarning(true);
 
   logAction('Site sıfırlandı – yeni denek için hazır', 'system');
 }
 
-// ── OFFLINE OVERLAY ───────────────────────────────────
 function _showOfflineOverlay(show) {
   let overlay = document.getElementById('admin-offline-overlay');
   if (!overlay) {
@@ -742,7 +672,6 @@ function _showOfflineOverlay(show) {
   else logAction('✅ Simüle: İnternet bağlantısı geri geldi', 'system');
 }
 
-// ── CUSTOM ADMIN POPUP ────────────────────────────────
 function _showCustomAdminPopup(title, body) {
   let popup = document.getElementById('admin-custom-popup');
   if (!popup) {
@@ -767,7 +696,6 @@ function _showCustomAdminPopup(title, body) {
   logAction(`Admin popup gösterildi: ${title}`, 'system');
 }
 
-// ── LOGGER ────────────────────────────────────────────────
 function getLogType(msg) {
   const m = msg.toLowerCase();
   if (m.includes('sepet') || m.includes('ödeme') || m.includes('cart')) return 'cart';
@@ -786,7 +714,7 @@ function logAction(msg, type) {
   State.logs.unshift(entry);
   renderLogEntry(entry);
   updateLogCount();
-  // 📡 Sunucuya gönder → admin'e ilet
+  
   socket.emit('log', entry);
 }
 
@@ -806,32 +734,29 @@ function updateLogCount() {
   if (el) el.textContent = `${State.logs.length} log kaydı`;
 }
 
-// ── GENDER SELECTION ──────────────────────────────────────
 function selectGender(gender) {
   State.gender = gender;
   logAction(`Cinsiyet seçimi: ${gender === 'female' ? 'Kadın' : 'Erkek'}`, 'system');
-  // Logo / tagline / stats'ı gizle — step 2 tüm ekrana sığsın
+  
   document.getElementById('gender-screen').classList.add('step2-mode');
   document.getElementById('gender-step-1').classList.add('hidden');
   document.getElementById('budget-gender-icon').textContent = gender === 'female' ? '👩' : '👨';
   document.getElementById('gender-step-2').classList.remove('hidden');
 }
 
-// Bütçe butonunu vurgula (anında geçiş yapmaz)
 function highlightBudget(val, label) {
   State._pendingBudget = val;
   State._pendingBudgetLabel = label;
   document.querySelectorAll('.budget-btn').forEach(btn => btn.classList.remove('selected'));
   const map = { low: 'budget-1', medium: 'budget-2', high: 'budget-3', luxury: 'budget-4' };
   if (map[val]) document.getElementById(map[val])?.classList.add('selected');
-  // "Alışverişe Başla" butonunu aktif et
+  
   const btn = document.getElementById('budget-confirm-btn');
   if (btn) { btn.classList.add('active'); }
 }
 
-// "Alışverişe Başla" butonundan çağrılır
 function goToShopFromBudget() {
-  // Finansal profil oku ve kaydet (slider değerleri)
+  
   const salary = parseFloat(document.getElementById('gs-fin-salary')?.value) || 0;
   const credit = parseFloat(document.getElementById('gs-fin-credit')?.value) || 0;
   const debt   = parseFloat(document.getElementById('gs-fin-debt')?.value)   || 0;
@@ -883,7 +808,7 @@ function switchGender() {
   clearInterval(State.flashPopupInterval); clearInterval(State.flashPopupTimer);
   State.gender = null; State.budget = null; State.currentBannerSlide = 0;
   State._pendingBudget = null; State._pendingBudgetLabel = '';
-  // Bütçe butonlarını ve finansal alanları sıfırla
+  
   document.querySelectorAll('.budget-btn').forEach(b => b.classList.remove('selected'));
   const confirmBtn = document.getElementById('budget-confirm-btn');
   if (confirmBtn) confirmBtn.classList.remove('active');
@@ -909,11 +834,9 @@ function switchGender() {
   }, 350);
 }
 
-// ── SHOP INIT ─────────────────────────────────────────────
 async function initShop() {
   const d = DATA[State.gender];
 
-  // Statik kısımları hemen kur (nav, kategori, banner, promo)
   buildNav(d.nav);
   buildCategories(d.categories);
   buildBanners(d.banners);
@@ -928,10 +851,8 @@ async function initShop() {
 
   logAction(`Mağaza yükleniyor – ${State.gender === 'female' ? 'Kadın' : 'Erkek'} | Bütçe: ${State.budgetLabel || 'Belirtilmedi'}`, 'system');
 
-  // Ürünleri DummyJSON'dan çek (skeleton gösterilerek)
   const products = await fetchDJProducts(State.gender);
 
-  // Skeleton'ları temizle ve gerçek ürünleri yükle
   buildFlashProducts(products.slice(0, 5));
   buildRecommendedProducts(getFilteredByBudget(products).slice(0, 5));
   buildMoreProducts(products.slice(5, 15));
@@ -965,7 +886,6 @@ function updateBudgetBanner() {
   }
 }
 
-// ── NAV ───────────────────────────────────────────────────
 function buildNav(items) {
   const list = document.getElementById('nav-list');
   list.innerHTML = items.map(item => `<li><a href="#" id="nav-${item.cat}" ${item.sale ? 'class="sale-tag"' : ''} onclick="navClick('${item.cat}','${item.label}'); return false;">${item.label}</a></li>`).join('');
@@ -979,20 +899,19 @@ function navClick(cat, label) {
   const products = getProducts(State.gender);
   let filtered;
   if (cat === 'tumu') {
-    // "Tümü" — tüm ürünleri göster
+    
     filtered = products;
   } else if (cat === 'indirim' || cat === 'kampanya') {
-    // İndirimli ürünler
+    
     filtered = products.filter(p => p.badge === 'sale' || p.oldPrice);
   } else {
-    // Belirli kategori
+    
     filtered = products.filter(p => p.cat === cat);
   }
   if (filtered.length === 0) filtered = products;
   showCategoryPage(cat, label, filtered);
 }
 
-// ── CATEGORIES ────────────────────────────────────────────
 function buildCategories(cats) {
   const grid = document.getElementById('categories-grid');
   if (!grid) return;
@@ -1007,7 +926,6 @@ function categoryClick(id, label) {
   showCategoryPage(id, label, filtered);
 }
 
-// ── CATEGORY PAGE VIEW ────────────────────────────────────
 function showCategoryPage(cat, title, products) {
   if (!products) {
     const all = getProducts(State.gender);
@@ -1057,7 +975,6 @@ function goHome() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── BANNERS ───────────────────────────────────────────────
 function buildBanners(banners) {
   const slidesEl = document.getElementById('banner-slides');
   const dotsEl = document.getElementById('slider-dots');
@@ -1096,8 +1013,6 @@ function startBannerAuto() {
   State.bannerInterval = setInterval(() => { State.currentBannerSlide = (State.currentBannerSlide + 1) % State.bannerTotal; applyBannerSlide(); }, 5000);
 }
 
-// ── PRODUCT CARD ──────────────────────────────────────────
-// Onaylı / süper satıcı rozeti
 const VERIFIED_BRANDS = new Set([
   'Nike','Adidas','Samsung','Sony','Apple','Zara','MAC','CeraVe',
   "L'Oréal",'Chanel','Razer','Corsair','Logitech','Garmin',
@@ -1120,11 +1035,10 @@ function getOpportunityLabel(p, section) {
   return null;
 }
 
-// Üyelik avantaj şeridi (ürün kartı alt kısmı)
 function getMemberBenefit(price) {
   const mem = MEMBERSHIPS[State.membership];
   if (mem.discount === 0) {
-    // Bronz: upgrade teşviki
+    
     return `<div class="product-member-strip member-upgrade">🥈 Üye ol → <strong>%5</strong> indirim kazan</div>`;
   }
   const memberPrice = Math.round(price * (1 - mem.discount / 100));
@@ -1183,7 +1097,6 @@ function buildPromos(promos) {
   document.getElementById('promo-grid').innerHTML = promos.map(p => `<div class="promo-card" style="background:${p.bg}" onclick="showCategoryPage('${p.cat}','${p.title}'); return false;"><h3>${p.title}</h3><p>${p.desc}</p></div>`).join('');
 }
 
-// ── PRODUCT MODAL ─────────────────────────────────────────
 function openProduct(id) {
   const p = getProducts(State.gender).find(x => x.id === id);
   if (!p) return;
@@ -1275,7 +1188,6 @@ function askPurposeThenAddFromModal() {
   openPurposeModal(State.modalProduct);
 }
 
-// ── CART ──────────────────────────────────────────────────
 function addToCart(id, showToastFlag = true) {
   const p = getProducts(State.gender).find(x => x.id === id);
   if (!p) return;
@@ -1302,7 +1214,6 @@ function changeQty(id, dir) {
   updateCartUI(); renderCartItems();
 }
 
-// ── SEPET TOPLAMI HESAPLAMA ───────────────────────────────
 function calcCartTotals() {
   const subtotal = State.cart.reduce((s, i) => s + i.product.price * i.qty, 0);
   const mem = MEMBERSHIPS[State.membership];
@@ -1346,7 +1257,6 @@ function updateCartUI() {
   const st = document.getElementById('cart-subtotal');
   if (st) st.textContent = t.subtotal.toLocaleString('tr-TR') + ' TL';
 
-  // İndirim satırları
   const dr = document.getElementById('cart-discount-rows');
   if (dr) {
     let rows = '';
@@ -1375,7 +1285,6 @@ function updateCartUI() {
   _renderTierBanner(t);
   _renderGiftSection(t);
 
-  // Kupon durumu koruma
   if (State.couponCode && COUPONS[State.couponCode]) {
     const status = document.getElementById('coupon-status');
     if (status && !status.querySelector('.coupon-ok')) {
@@ -1384,7 +1293,6 @@ function updateCartUI() {
     }
   }
 
-  // Finansal etki göstergesi
   const fi = document.getElementById('cart-financial-impact');
   if (fi) {
     const net = State.salary - State.monthlyCredit - State.monthlyDebt;
@@ -1407,7 +1315,6 @@ function _renderTierBanner(t) {
   const shipCost  = calcShippingCost();
   const nextTier  = SPEND_TIERS.find(tier => t.subtotal < tier.min);
 
-  // Kargo ücretsizliği için eksik tutar (üyelik/kuponla zaten ücretsizse gösterme)
   const shipNeeded = !t.freeShipping && t.subtotal < threshold
     ? `<div class="tier-banner-msg" style="color:rgba(255,255,255,.65)">🚚 <strong>${(threshold - t.subtotal).toLocaleString('tr-TR')} TL</strong> daha ekle → kargo ücretsiz (şu an: ${shipCost} TL)</div>`
     : '';
@@ -1439,7 +1346,6 @@ function _renderGiftSection(t) {
   }
 }
 
-// ── KUPON FONKSİYONLARI ────────────────────────────────────
 function applyCoupon() {
   const input = document.getElementById('coupon-input');
   const code = input ? input.value.trim().toUpperCase() : '';
@@ -1466,7 +1372,6 @@ function removeCoupon() {
   logAction('Kupon kaldırıldı', 'cart');
 }
 
-// ── HEDİYE PARA FONKSİYONLARI ────────────────────────────
 function applyGiftBalance() {
   if (State.giftBalance <= 0) return;
   State.giftApplied = State.giftBalance;
@@ -1481,7 +1386,6 @@ function removeGiftBalance() {
   logAction('Hediye para kaldırıldı', 'cart');
 }
 
-// ── ÜYELİK FONKSİYONLARI ─────────────────────────────────
 function selectMembership(level) {
   State.membership = level;
   const mem = MEMBERSHIPS[level];
@@ -1509,7 +1413,6 @@ function _updateMembershipBadge() {
   badge.style.display = State.membership === 'bronze' ? 'none' : '';
 }
 
-// ── KARŞILAŞTIRMA FONKSİYONLARI ──────────────────────────
 function addToCompare(id) {
   if (State.compareList.includes(id)) { removeFromCompare(id); return; }
   if (State.compareList.length >= 3) { showToast('Maksimum 3 ürün karşılaştırabilirsiniz', 'info'); return; }
@@ -1600,7 +1503,6 @@ function closeCompareModal() {
   document.body.style.overflow = '';
 }
 
-// ── BUDGET TRACKER BAR ────────────────────────────────────
 function updateBudgetBar() {
   const bar = document.getElementById('budget-tracker-bar');
   if (!bar) return;
@@ -1609,7 +1511,6 @@ function updateBudgetBar() {
   const creditLimit = State.creditLimit;
   const totalPrice  = State.cart.reduce((s, i) => s + i.product.price * i.qty, 0);
 
-  // Bar yalnızca finansal veri girilmişse ve sepet doluysa görünür
   const hasNet    = netIncome > 0;
   const hasCredit = creditLimit > 0;
 
@@ -1622,7 +1523,6 @@ function updateBudgetBar() {
   bar.classList.add('btb-visible');
   document.getElementById('main-content').style.paddingBottom = '72px';
 
-  // Birincil limit: net gelir (varsa), yoksa kredi limiti
   const primaryLimit = hasNet ? netIncome : creditLimit;
   const pct          = Math.min(100, Math.round((totalPrice / primaryLimit) * 100));
   const exceeded     = totalPrice > primaryLimit;
@@ -1671,7 +1571,6 @@ function updateBudgetBar() {
     document.getElementById('btb-pct').textContent = `%${pct}`;
   }
 
-  // Kredi limiti alt satırı
   const creditLine = document.getElementById('btb-credit-line');
   if (creditLine) {
     if (hasCredit && hasNet) {
@@ -1805,7 +1704,6 @@ function closeCart() {
   logAction('Sepet kapatıldı', 'cart');
 }
 
-// ── FAVORITES ─────────────────────────────────────────────
 function toggleFavorite(id, fromModal = false) {
   const p = getProducts(State.gender).find(x => x.id === id);
   if (!p) return;
@@ -1882,7 +1780,6 @@ function closeFavorites() {
   logAction('Favoriler kapatıldı', 'ui');
 }
 
-// ── SEARCH ────────────────────────────────────────────────
 function handleSearchInput(value) {
   clearTimeout(State.searchTimeout);
   const sugBox = document.getElementById('search-suggestions');
@@ -1918,7 +1815,6 @@ function doSearch() {
   document.getElementById('search-input').value = '';
 }
 
-// ── CHECKOUT SIMULATION ───────────────────────────────────
 function openCheckout() {
   if (State.cart.length === 0) { showToast('⚠️ Sepetiniz boş!', 'error'); return; }
   closeCart();
@@ -2008,7 +1904,6 @@ function renderCheckoutStep(step) {
       pct > 25  ? '💡 Dikkatli harcama bölgesi' :
                   '✅ Bütçe içinde';
 
-    // Kayıtlı kart üret
     const card = _generateSavedCard();
 
     body.innerHTML = `
@@ -2143,23 +2038,19 @@ function clearCartAfterOrder() {
   showToast('🎉 Alışverişiniz tamamlandı!', 'success');
 }
 
-// ── SAVED CARD GENERATOR ─────────────────────────────────
 function _generateSavedCard() {
   const salary = State.salary;
   const credit = State.monthlyCredit;
   const debt   = State.monthlyDebt;
 
-  // Kart markasını maaşa göre belirle
   let brandName, brandKey;
   if (salary >= 30000)      { brandName = 'American Express'; brandKey = 'amex'; }
   else if (salary >= 15000) { brandName = 'Mastercard';       brandKey = 'mc';   }
   else                      { brandName = 'Visa';             brandKey = 'visa'; }
 
-  // Son 4 hane (maaştan deterministik üret)
   const seed  = Math.abs(salary * 37 + 4217);
   const last4 = String((seed % 9000) + 1000);
 
-  // Kart limiti: kullanıcı girdiyse onu kullan, yoksa maaştan hesapla
   const cardLimit = State.creditLimit > 0
     ? State.creditLimit
     : credit > 0
@@ -2168,7 +2059,6 @@ function _generateSavedCard() {
   const used      = Math.round(debt * 3 / 1000) * 1000;
   const available = Math.max(0, cardLimit - used);
 
-  // Son kullanma tarihi (3 yıl ilerisi)
   const now     = new Date();
   const expMon  = String(now.getMonth() + 1).padStart(2, '0');
   const expYear = String(now.getFullYear() + 3).slice(-2);
@@ -2179,9 +2069,8 @@ function _generateSavedCard() {
   return { brandName, brandKey, last4, cardLimit, available, expiry, name };
 }
 
-// ── FLASH SALE POPUP ──────────────────────────────────────
 function startFlashPopups() {
-  // First popup after 20 seconds, then random 45-90s intervals
+  
   setTimeout(() => showFlashPopup(), 20000);
   State.flashPopupInterval = setInterval(() => {
     const wait = 45000 + Math.random() * 45000;
@@ -2247,7 +2136,6 @@ function closeFlashPopup() {
   logAction('Flaş indirim pop-up kapatıldı', 'ui');
 }
 
-// ── HELP MODAL ────────────────────────────────────────────
 function openHelp() {
   logAction('Yardım merkezi açıldı', 'ui');
   const m = document.getElementById('help-modal');
@@ -2296,7 +2184,6 @@ function renderHelpContent(tab) {
   }
 }
 
-// ── ORDER TRACKING ────────────────────────────────────────
 function openOrderTracking() {
   logAction('Sipariş takibi açıldı', 'ui');
   const modal = document.getElementById('tracking-modal');
@@ -2336,7 +2223,6 @@ function submitTracking() {
     </div>`;
 }
 
-// ── INFO MODAL ────────────────────────────────────────────
 const INFO_CONTENT = {
   about: { title: '🏢 Hakkımızda', body: '<p>ShopX, 2020 yılında kurulan Türkiye\'nin hızla büyüyen e-ticaret platformudur. 10 milyon ürün, 50 bin satıcı ve 15 milyonun üzerinde kayıtlı kullanıcı ile hizmet veriyoruz.</p><h4>Misyonumuz</h4><p>En iyi alışveriş deneyimini en uygun fiyatlarla sunmak.</p>' },
   career: { title: '💼 Kariyer', body: '<p>ShopX ailesine katılmak ister misiniz? Teknoloji, pazarlama, lojistik ve müşteri hizmetleri alanlarında açık pozisyonlarımız var.</p><h4>Başvuru</h4><p>kariyer@shopx.com.tr adresine CV\'nizi gönderin.</p>' },
@@ -2369,7 +2255,6 @@ function closeInfoModal() {
   document.body.style.overflow = '';
 }
 
-// ── PURCHASE PURPOSE ──────────────────────────────────────
 const PURPOSE_OPTIONS = [
   { id: 'need',    label: 'İhtiyacım var',               icon: '✅' },
   { id: 'deal',    label: 'İndirimde gördüm',             icon: '🏷️' },
@@ -2458,7 +2343,6 @@ function confirmCustomPurpose() {
   confirmPurpose('custom', val);
 }
 
-// ── FINANCIAL PROFILE ─────────────────────────────────────
 function openFinancialModal() {
   logAction('Finansal profil açıldı', 'ui');
   const m = document.getElementById('financial-modal');
@@ -2516,7 +2400,6 @@ function saveFinancial() {
   showToast('✅ Finansal profil kaydedildi', 'success');
 }
 
-// ── AI ÜRÜN ANALİZİ ───────────────────────────────────────
 function _generateAIReview(p) {
   const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
 
@@ -2605,8 +2488,6 @@ function _buildAIReviewHTML(p) {
   </div>`;
 }
 
-// ── SANAL ASİSTAN ─────────────────────────────────────────
-// ── SANAL ASİSTAN – Dinamik Yanıtlar ──────────────────────
 function _vaStats() {
   const products = getProducts(State.gender);
   if (!products || products.length === 0) return null;
@@ -2629,7 +2510,6 @@ function _vaStats() {
   const mostSold   = [...products].sort((a, b) => b.reviews - a.reviews).slice(0, 3);
   const cheapest   = [...products].sort((a, b) => a.price - b.price).slice(0, 3);
 
-  // Kaç ürün alınca kargo ücretsiz?
   const unitsForFreeShip = Math.ceil(150 / avgPrice);
   const mem = MEMBERSHIPS[State.membership];
 
@@ -2746,7 +2626,6 @@ function _buildVAResponses() {
   ];
 }
 
-// Anahtar kelime → soru id eşlemesi
 const VA_KEYWORDS = [
   { keys: ['kargo','kargo','teslimat','ücretsiz kargo','nakliye'], id: 'kargo'  },
   { keys: ['indirim','kampanya','fırsat','ucuz','sale','indirimli','iskonto'], id: 'indirim' },
@@ -2860,7 +2739,6 @@ function sendVAMessage() {
 
   const typing = _vaTyping();
 
-  // Kimlik sorusu kontrolü
   if (VA_SELF_INTRO_KEYS.some(k => text.includes(k))) {
     setTimeout(() => {
       if (typing) typing.remove();
@@ -2875,7 +2753,6 @@ function sendVAMessage() {
     return;
   }
 
-  // Anahtar kelime eşleştirme
   let matchedId = null;
   for (const entry of VA_KEYWORDS) {
     if (entry.keys.some(k => text.includes(k))) { matchedId = entry.id; break; }
@@ -2888,14 +2765,13 @@ function sendVAMessage() {
       const item = responses.find(x => x.id === matchedId);
       if (item) { _vaAddMsg('bot', item.a); setTimeout(_vaShowQuickReplies, 350); return; }
     }
-    // Konu dışı sorularda üzgün fallback
+    
     const sad = VA_SAD_RESPONSES[Math.floor(Math.random() * VA_SAD_RESPONSES.length)];
     _vaAddMsg('bot', sad, 'va-sad');
     setTimeout(_vaShowQuickReplies, 400);
   }, 900);
 }
 
-// ── ACCOUNT MODAL ─────────────────────────────────────────
 function openAccount() {
   logAction('Hesabım açıldı', 'ui');
   const m = document.getElementById('account-modal');
@@ -2906,7 +2782,7 @@ function openAccount() {
   const mem = MEMBERSHIPS[State.membership];
 
   if (State.loggedIn) {
-    // Giriş yapılmış: üyelik bilgisini göster (seçilemez)
+    
     document.getElementById('account-content').innerHTML = `
       <h2 class="info-modal-title">👤 Hesabım</h2>
 
@@ -2946,7 +2822,7 @@ function openAccount() {
         </div>
       </div>`;
   } else {
-    // Giriş yapılmamış: teaser + giriş formu
+    
     document.getElementById('account-content').innerHTML = `
       <h2 class="info-modal-title">👤 Giriş Yap</h2>
 
@@ -2999,7 +2875,6 @@ function fakeRegister() {
   showToast('Hesabınız oluşturuldu! Bronz üyeliğiniz aktif.', 'success');
 }
 
-// ── BUDGET FILTER MODAL ───────────────────────────────────
 function openBudgetFilterModal() {
   logAction('Bütçe güncelleme modalı açıldı', 'ui');
   const m = document.getElementById('budget-filter-modal');
@@ -3036,7 +2911,6 @@ function updateBudget(val, label) {
   showToast(`💰 Bütçe "${label}" olarak güncellendi`, 'success');
 }
 
-// ── LOG PANEL (hidden access) ──────────────────────────────
 function openLogPanel() {
   State.logOpen = true;
   const p = document.getElementById('log-panel');
@@ -3084,7 +2958,6 @@ function exportLogs() {
   showToast('📥 Aktivite raporu indirildi', 'success');
 }
 
-// ── LOGO SECRET CLICK ─────────────────────────────────────
 function handleLogoClick() {
   logAction('Logo tıklandı', 'navigation');
   goHome();
@@ -3097,7 +2970,6 @@ function handleLogoClick() {
   }
 }
 
-// ── TIMERS ────────────────────────────────────────────────
 function startCountdown() {
   clearInterval(State.countdownInterval);
   State.countdownInterval = setInterval(() => {
@@ -3119,7 +2991,6 @@ function startSessionTimer() {
   }, 1000);
 }
 
-// ── TOAST ─────────────────────────────────────────────────
 function showToast(msg, type = 'info') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
@@ -3129,7 +3000,6 @@ function showToast(msg, type = 'info') {
   setTimeout(() => { toast.classList.add('toast-out'); toast.addEventListener('animationend', () => toast.remove()); }, 3200);
 }
 
-// ── KEYBOARD ──────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeProduct(); closeCart(); closeFavorites();
@@ -3138,7 +3008,7 @@ document.addEventListener('keydown', e => {
     closeFlashPopup();
     document.getElementById('search-suggestions').style.display = 'none';
   }
-  // Secret: Ctrl+Shift+L opens log panel
+  
   if (e.key === 'L' && e.ctrlKey && e.shiftKey) {
     e.preventDefault();
     State.logOpen ? closeLogPanel() : openLogPanel();
@@ -3152,7 +3022,6 @@ document.addEventListener('click', e => {
   }
 });
 
-// ── PAGE VISIBILITY ───────────────────────────────────────
 document.addEventListener('visibilitychange', () => {
   if (State.gender) logAction(document.hidden ? 'Kullanıcı sayfadan ayrıldı' : 'Kullanıcı sayfaya geri döndü', 'system');
 });
@@ -3167,7 +3036,6 @@ window.addEventListener('scroll', () => {
   }
 }, { passive: true });
 
-// ── HOVER LOG ─────────────────────────────────────────────
 const _hoverStart = {};
 document.addEventListener('mouseover', e => {
   const card = e.target.closest('.product-card');
@@ -3191,8 +3059,6 @@ document.addEventListener('mouseout', e => {
   }
 }, { passive: true });
 
-// ── INIT ──────────────────────────────────────────────────
-// ── SLIDER YARDIMCISİ ─────────────────────────────────────
 function updateSlider(el, valId) {
   const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
   el.style.setProperty('--fill', pct + '%');
@@ -3200,7 +3066,6 @@ function updateSlider(el, valId) {
   if (valEl) valEl.textContent = parseInt(el.value).toLocaleString('tr-TR') + ' TL';
 }
 
-// ── GENDER SCREEN TEMA TOGGLE ─────────────────────────────
 function toggleGenderTheme() {
   const screen = document.getElementById('gender-screen');
   const icon   = document.getElementById('toggle-icon');
@@ -3226,11 +3091,10 @@ function _applyGenderTheme() {
 window.addEventListener('DOMContentLoaded', () => {
   _applyGenderTheme();
   logAction('ShopX yüklendi – Cinsiyet seçim ekranı gösterildi', 'system');
-  // Sunucu yanıt verene kadar uyarıyı göster; session_status gelince güncellenir
+  
   _showNoSessionWarning(true);
 });
 
-// ── EXPOSE GLOBALS (for HTML onclick handlers) ─────────────
 Object.assign(window, {
   selectGender, highlightBudget, goToShopFromBudget, selectBudget, switchGender,
   navClick, categoryClick, showCategoryPage, goHome, sortProducts,
