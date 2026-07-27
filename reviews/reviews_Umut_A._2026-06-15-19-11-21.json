@@ -1,0 +1,279 @@
+{
+  "exportedAt": "2026-06-15T19:11:21.080Z",
+  "participant": {
+    "name": "Umut A.",
+    "gender": "male"
+  },
+  "reviews": [
+    {
+      "productId": "dj_87",
+      "productName": "Men Check Shirt",
+      "brand": "Urban Chic",
+      "reviewer": "Murat Ceylan",
+      "reviewerGender": "male",
+      "rating": 2,
+      "comment": "Fp bu paraya bu kadar",
+      "tags": [
+        "Fiyat/Performans",
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T19:02:49.699Z"
+    },
+    {
+      "productId": "dj_78",
+      "productName": "Apple MacBook Pro 14 Inch Space Grey",
+      "brand": "Apple",
+      "reviewer": "Mahmut Küçük",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Beklentilerimi karşıladı, iş için aldım. Tavsiye ederim",
+      "tags": [
+        "Beğendim",
+        "Şık",
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-15T19:03:38.175Z"
+    },
+    {
+      "productId": "dj_109",
+      "productName": "Monopod",
+      "brand": "TechGear",
+      "reviewer": "Güngör Tekin",
+      "reviewerGender": "male",
+      "rating": 2,
+      "comment": "Kargo çok geç geldi, ürünler de eksikti. Pişmanlık",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T19:04:17.324Z"
+    },
+    {
+      "productId": "dj_152",
+      "productName": "Tennis Racket",
+      "brand": "sports-accessories",
+      "reviewer": "Kadir Sezer",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "3 oynayışta raket eskidi, malzemesi çok kalitesiz",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T19:04:55.003Z"
+    },
+    {
+      "productId": "dj_156",
+      "productName": "Green and Black Glasses",
+      "brand": "Fashion Shades",
+      "reviewer": "Rabia Polat",
+      "reviewerGender": "female",
+      "rating": 1,
+      "comment": "Bu parayı hak etmez, milyoncuda satılan 10 liralık gözlükler gibi",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-15T19:05:22.689Z"
+    },
+    {
+      "productId": "dj_149",
+      "productName": "Iron Golf",
+      "brand": "sports-accessories",
+      "reviewer": "Kamil Sağlam",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Golf için ideal. Kaliteli ve sağlam",
+      "tags": [
+        "Beğendim",
+        "Fiyat/Performans",
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T19:05:53.309Z"
+    },
+    {
+      "productId": "dj_137",
+      "productName": "American Football",
+      "brand": "sports-accessories",
+      "reviewer": "Haluk Demirci",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "Kullanılmış ürün geldi, iade edeceğim",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T19:06:15.429Z"
+    },
+    {
+      "productId": "dj_142",
+      "productName": "Cricket Ball",
+      "brand": "sports-accessories",
+      "reviewer": "Derviş Uslu",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "İdare eder",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T19:06:31.149Z"
+    },
+    {
+      "productId": "dj_104",
+      "productName": "Apple iPhone Charger",
+      "brand": "Apple",
+      "reviewer": "Gizem Uysal",
+      "reviewerGender": "female",
+      "rating": 2,
+      "comment": "Orijinal değil gibi ama kullanışlı. Kablosu aşındı",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T19:06:58.555Z"
+    },
+    {
+      "productId": "dj_108",
+      "productName": "iPhone 12 Silicone Case with MagSafe Plum",
+      "brand": "Apple",
+      "reviewer": "Arda Peker",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "İdare edwe",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T19:07:06.579Z"
+    },
+    {
+      "productId": "dj_161",
+      "productName": "Samsung Galaxy Tab White",
+      "brand": "Samsung",
+      "reviewer": "Nuray Durmuş",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Şık ve kaliteli. Üniversite için aldım, gayet yeterli ve kullanışlı",
+      "tags": [
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Şık"
+      ],
+      "timestamp": "2026-06-15T19:07:35.744Z"
+    },
+    {
+      "productId": "dj_105",
+      "productName": "Apple MagSafe Battery Pack",
+      "brand": "Apple",
+      "reviewer": "Burak Aydın",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "Rezalet, 1 yıldız bile fazla",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T19:07:54.724Z"
+    },
+    {
+      "productId": "dj_81",
+      "productName": "Lenovo Yoga 920",
+      "brand": "Lenovo",
+      "reviewer": "Ertuğrul Yıldız",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Günlük işlerin için gayet güzel ve iyi. Performans olarak sorun yaşamadım zaten oyun oynayan biri değilim",
+      "tags": [
+        "Kaliteli",
+        "Şık"
+      ],
+      "timestamp": "2026-06-15T19:08:35.460Z"
+    },
+    {
+      "productId": "dj_155",
+      "productName": "Classic Sun Glasses",
+      "brand": "Fashion Shades",
+      "reviewer": "Nihat Şahin",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "Rezalet, camları çizikti. İade için uğraşmaya bile değmez",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T19:09:06.179Z"
+    },
+    {
+      "productId": "dj_98",
+      "productName": "Rolex Submariner Watch",
+      "brand": "Rolex",
+      "reviewer": "Yusuf Uçar",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Aşırı güzel",
+      "tags": [
+        "Pahalı",
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-15T19:09:15.500Z"
+    },
+    {
+      "productId": "dj_124",
+      "productName": "iPhone X",
+      "brand": "Apple",
+      "reviewer": "Kaan Karakaya",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "Eh işte, aşırı ısınma ve donma sorunu yaşıyorum",
+      "tags": [
+        "Beklentiyi Karşılamadı",
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-15T19:09:41.408Z"
+    },
+    {
+      "productId": "dj_127",
+      "productName": "Oppo K1",
+      "brand": "Oppo",
+      "reviewer": "Filiz Özdemir",
+      "reviewerGender": "female",
+      "rating": 3,
+      "comment": "Telefon şarj olmuyor",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T19:09:56.830Z"
+    },
+    {
+      "productId": "dj_82",
+      "productName": "New DELL XPS 13 9300 Laptop",
+      "brand": "Dell",
+      "reviewer": "Erhan Özkan",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "Güzel kaliteli vir cihaza benziyor. Arkadaşımda var siparişim gelsin yorumu güncelleyeceğim",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T19:10:35.293Z"
+    },
+    {
+      "productId": "dj_157",
+      "productName": "Party Glasses",
+      "brand": "Fashion Fun",
+      "reviewer": "Çiğdem Vural",
+      "reviewerGender": "female",
+      "rating": 3,
+      "comment": "Eğlence ve parti için ideal",
+      "tags": [
+        "Şık"
+      ],
+      "timestamp": "2026-06-15T19:10:50.451Z"
+    },
+    {
+      "productId": "dj_103",
+      "productName": "Apple HomePod Mini Cosmic Grey",
+      "brand": "Apple",
+      "reviewer": "Jale Güler",
+      "reviewerGender": "female",
+      "rating": 2,
+      "comment": "Kullanılmış ya da iade edilmiş ürün gönderilmiş",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T19:11:17.998Z"
+    }
+  ]
+}

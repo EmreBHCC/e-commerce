@@ -1,0 +1,278 @@
+{
+  "exportedAt": "2026-06-16T00:08:27.261Z",
+  "participant": {
+    "name": "Dilara",
+    "gender": "female"
+  },
+  "reviews": [
+    {
+      "productId": "dj_173",
+      "productName": "Heshe Women's Leather Bag",
+      "brand": "Heshe",
+      "reviewer": "İrem Durmuş",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Arkadaşımın önerisiyle almıstım çok beğendim renk kalite tam istediğim gibiydi",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-15T23:42:08.038Z"
+    },
+    {
+      "productId": "dj_119",
+      "productName": "Olay Ultra Moisture Shea Butter Body Wash",
+      "brand": "Olay",
+      "reviewer": "Zeki Işık",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Vücuduma iyi geldi beğendin fp ürün",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T23:46:04.561Z"
+    },
+    {
+      "productId": "dj_185",
+      "productName": "Black & Brown Slipper",
+      "brand": "Comfort Trends",
+      "reviewer": "Ertuğrul Başar",
+      "reviewerGender": "male",
+      "rating": 2,
+      "comment": "Kendi numaramı almama rağmen büyük geldi  beğenmedim",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T23:46:52.576Z"
+    },
+    {
+      "productId": "dj_178",
+      "productName": "Corset Leather With Skirt",
+      "brand": "womens-dresses",
+      "reviewer": "Hasan Sarıkaya",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Mezuniyet için almıstım kaliteli geldi",
+      "tags": [
+        "Kaliteli",
+        "Şık"
+      ],
+      "timestamp": "2026-06-15T23:47:55.243Z"
+    },
+    {
+      "productId": "dj_163",
+      "productName": "Girl Summer Dress",
+      "brand": "tops",
+      "reviewer": "Serap Kurt",
+      "reviewerGender": "female",
+      "rating": 1,
+      "comment": "Annem için almıstım hiç beğenemedim kalitesiz bir kumaşı var",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T23:48:41.501Z"
+    },
+    {
+      "productId": "dj_1",
+      "productName": "Essence Mascara Lash Princess",
+      "brand": "Essence",
+      "reviewer": "Ülkü Akın",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Kirpiklerimi tek tek ayırdı tavsiye ederim herkese",
+      "tags": [
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-15T23:50:07.783Z"
+    },
+    {
+      "productId": "dj_4",
+      "productName": "Red Lipstick",
+      "brand": "Chic Cosmetics",
+      "reviewer": "Tayfun Yalçın",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Rengi tam istediğim gibi bitince tekrar alacağım",
+      "tags": [
+        "Tekrar Alırım"
+      ],
+      "timestamp": "2026-06-15T23:50:59.858Z"
+    },
+    {
+      "productId": "dj_193",
+      "productName": "Watch Gold for Women",
+      "brand": "Fashion Gold",
+      "reviewer": "Duygu Sönmez",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Erkek arkadaşıma aldım doğum günü için çok beğendik",
+      "tags": [
+        "Şık"
+      ],
+      "timestamp": "2026-06-15T23:51:43.296Z"
+    },
+    {
+      "productId": "dj_187",
+      "productName": "Golden Shoes Woman",
+      "brand": "Fashion Diva",
+      "reviewer": "Ferda Fidancı",
+      "reviewerGender": "female",
+      "rating": 1,
+      "comment": "Sevmedim istediğim gibi gelmedi",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T23:52:53.084Z"
+    },
+    {
+      "productId": "dj_2",
+      "productName": "Eyeshadow Palette with Mirror",
+      "brand": "Glamour Beauty",
+      "reviewer": "Tuba Saraç",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Renkleri görseldeki gibi, pigmentli, tavsiye edilirr",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-15T23:55:33.800Z"
+    },
+    {
+      "productId": "dj_139",
+      "productName": "Baseball Glove",
+      "brand": "sports-accessories",
+      "reviewer": "Ümit Küçük",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Çok rahat, derisi ve dikişleri çok iyi",
+      "tags": [
+        "Beğendim",
+        "Kaliteli",
+        "Şık"
+      ],
+      "timestamp": "2026-06-15T23:57:07.095Z"
+    },
+    {
+      "productId": "dj_6",
+      "productName": "Calvin Klein CK One",
+      "brand": "Calvin Klein",
+      "reviewer": "Zeliha Turhan",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Kalıcı tende durdukça güzelleşen bir kokusu var.",
+      "tags": [
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-15T23:58:13.419Z"
+    },
+    {
+      "productId": "dj_164",
+      "productName": "Gray Dress",
+      "brand": "tops",
+      "reviewer": "Şahin Gürbüz",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Vücuta güzel oturan kumaşı güzel bir elbise tavsiye ederim.",
+      "tags": [
+        "Şık"
+      ],
+      "timestamp": "2026-06-15T23:59:15.500Z"
+    },
+    {
+      "productId": "dj_10",
+      "productName": "Gucci Bloom Eau de",
+      "brand": "Gucci",
+      "reviewer": "Jale Yılmaz",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Kaliteli, kokusu kalıcı ancak biraz ağır",
+      "tags": [
+        "Beğendim",
+        "Pahalı",
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-16T00:00:00.856Z"
+    },
+    {
+      "productId": "dj_9",
+      "productName": "Dolce Shine Eau de",
+      "brand": "Dolce & Gabbana",
+      "reviewer": "Nuray Toprak",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Ferah, orta kalıcılıkta, çiçeksi kokusuyla tüm yazımın kokusu olduu",
+      "tags": [
+        "Beğendim",
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Şık"
+      ],
+      "timestamp": "2026-06-16T00:01:12.310Z"
+    },
+    {
+      "productId": "dj_166",
+      "productName": "Tartan Dress",
+      "brand": "tops",
+      "reviewer": "Barış Taş",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "Beğendim ama çok her zaman tercih edeceğim bir stil değil",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-16T00:02:40.996Z"
+    },
+    {
+      "productId": "dj_182",
+      "productName": "Green Crystal Earring",
+      "brand": "womens-jewellery",
+      "reviewer": "Esra Özen",
+      "reviewerGender": "female",
+      "rating": 3,
+      "comment": "Demir kısmı hemen kararma yaptı",
+      "tags": [
+        "Kaliteli",
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-16T00:03:56.617Z"
+    },
+    {
+      "productId": "dj_184",
+      "productName": "Tropical Earring",
+      "brand": "womens-jewellery",
+      "reviewer": "Ümit Köksal",
+      "reviewerGender": "female",
+      "rating": 1,
+      "comment": "İstediğim gibi gelmedi boyutu beğklediğimden büyük geldi sevmedim",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-16T00:04:58.646Z"
+    },
+    {
+      "productId": "dj_147",
+      "productName": "Football",
+      "brand": "sports-accessories",
+      "reviewer": "Duygu Öztürk",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Çocuklar için aldım fiyat performans alınır",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-16T00:05:26.029Z"
+    },
+    {
+      "productId": "dj_191",
+      "productName": "Rolex Cellini Moonphase",
+      "brand": "Rolex",
+      "reviewer": "Gülay Ceylan",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Eşime hediye aldım kaliteli alabilirsiniz",
+      "tags": [
+        "Şık"
+      ],
+      "timestamp": "2026-06-16T00:07:30.706Z"
+    }
+  ]
+}

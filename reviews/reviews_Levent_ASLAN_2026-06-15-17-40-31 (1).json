@@ -1,0 +1,279 @@
+{
+  "exportedAt": "2026-06-15T17:40:31.811Z",
+  "participant": {
+    "name": "Levent ASLAN",
+    "gender": "male"
+  },
+  "reviews": [
+    {
+      "productId": "dj_134",
+      "productName": "Vivo S1",
+      "brand": "Vivo",
+      "reviewer": "Bahar Durmuş",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Benzer fiyatlarda ürünler var f/p bir ürün vergi indiriminden yararlanılabilir.",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T17:22:24.925Z"
+    },
+    {
+      "productId": "dj_124",
+      "productName": "iPhone X",
+      "brand": "Apple",
+      "reviewer": "İsmail Dönmez",
+      "reviewerGender": "male",
+      "rating": 2,
+      "comment": "Bu fiyata alınabilecek bir ürün değil popüler kültür kölelerinin tercihi. Ayrıca Güncelleme durumu almamasıyla birlikte eski bir cihaz daha iyi ürünler mevcut.",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-15T17:23:20.771Z"
+    },
+    {
+      "productId": "dj_146",
+      "productName": "Feather Shuttlecock",
+      "brand": "sports-accessories",
+      "reviewer": "Selma Dinç",
+      "reviewerGender": "female",
+      "rating": 1,
+      "comment": "İlk kullanımda direkt yırtıldı önermem.",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T17:30:58.285Z"
+    },
+    {
+      "productId": "dj_99",
+      "productName": "Amazon Echo Plus",
+      "brand": "Amazon",
+      "reviewer": "Gürsel Erdem",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "kaliteli ama pahalı bir ürün",
+      "tags": [
+        "Fiyat/Performans",
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-15T17:31:57.260Z"
+    },
+    {
+      "productId": "dj_82",
+      "productName": "New DELL XPS 13 9300 Laptop",
+      "brand": "Dell",
+      "reviewer": "Kadir Güneş",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Isınma sorunu olmasa güzel makina fiyatı bir tık daha düşük olsa %100 tercih edilebilir",
+      "tags": [
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-15T17:33:13.636Z"
+    },
+    {
+      "productId": "dj_110",
+      "productName": "Selfie Lamp with iPhone",
+      "brand": "GadgetMaster",
+      "reviewer": "Fatma Küçük",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Ucuz ve influencer olmak isteyenler için paha biçilemez bir ürün kesinlikle öneririm keşke rgb özelliğide olsa.",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T17:33:58.497Z"
+    },
+    {
+      "productId": "dj_83",
+      "productName": "Blue & Black Check Shirt",
+      "brand": "Fashion Trends",
+      "reviewer": "Hayri Ceylan",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "bu fiyata bu gömleği almayın daha iyi seçenekler var",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-15T17:34:22.831Z"
+    },
+    {
+      "productId": "dj_160",
+      "productName": "Samsung Galaxy Tab S8 Plus Grey",
+      "brand": "Samsung",
+      "reviewer": "Arda Yılmaz",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "bu fiyata bunu alacağıma s9 pro FE alırım daha iyi",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-15T17:34:55.051Z"
+    },
+    {
+      "productId": "dj_109",
+      "productName": "Monopod",
+      "brand": "TechGear",
+      "reviewer": "Caner Ersoy",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "telefonu taşımasında sıkıntı yok fakat fiyatı kaliteli olmasına rağmen bir tık yüksek",
+      "tags": [
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-15T17:35:26.081Z"
+    },
+    {
+      "productId": "dj_148",
+      "productName": "Golf Ball",
+      "brand": "sports-accessories",
+      "reviewer": "Rasim Taş",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "Türkiyede golft oynayan Baledan başka kimse yoktur btw",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T17:35:48.883Z"
+    },
+    {
+      "productId": "dj_135",
+      "productName": "Vivo V9",
+      "brand": "Vivo",
+      "reviewer": "İsmet Nalçacı",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "f/p bir ürün ama vergi indiriminden yararlanılamadığı için çok önermem",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T17:36:17.409Z"
+    },
+    {
+      "productId": "dj_137",
+      "productName": "American Football",
+      "brand": "sports-accessories",
+      "reviewer": "Polat Özkaya",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "hayatımda hiç elime almadım bu fiyatı hakediyor diyenle aramı açarım",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-15T17:36:36.906Z"
+    },
+    {
+      "productId": "dj_84",
+      "productName": "Gigabyte Aorus Men Tshirt",
+      "brand": "Gigabyte",
+      "reviewer": "Hayri Uçar",
+      "reviewerGender": "male",
+      "rating": 2,
+      "comment": "siz bence sadece bilgisayar üretin",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-15T17:37:04.890Z"
+    },
+    {
+      "productId": "dj_141",
+      "productName": "Basketball Rim",
+      "brand": "sports-accessories",
+      "reviewer": "Bekir Yücel",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "spor salonum için aldım gayet beğenildi öneririm",
+      "tags": [
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-15T17:37:24.942Z"
+    },
+    {
+      "productId": "dj_86",
+      "productName": "Man Short Sleeve Shirt",
+      "brand": "Casual Comfort",
+      "reviewer": "İsmet Akgün",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "Bilecik sokaklarında tommy edasında geziyorum herkes bana bakmasa gayet güzel bir ürün",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-15T17:37:55.640Z"
+    },
+    {
+      "productId": "dj_89",
+      "productName": "Nike Baseball Cleats",
+      "brand": "Nike",
+      "reviewer": "Haluk Kurt",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "Şık ama normal hayatta kullanılmaz o yüzden 1 yıldız veriyorum",
+      "tags": [
+        "Şık"
+      ],
+      "timestamp": "2026-06-15T17:38:51.410Z"
+    },
+    {
+      "productId": "dj_145",
+      "productName": "Cricket Wicket",
+      "brand": "sports-accessories",
+      "reviewer": "Kadir Uzun",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "gayet başarılı",
+      "tags": [
+        "Kaliteli",
+        "Şık",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-15T17:39:12.266Z"
+    },
+    {
+      "productId": "dj_97",
+      "productName": "Rolex Datejust",
+      "brand": "Rolex",
+      "reviewer": "Bekir Tatar",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "hayalim ama çok pahalı...",
+      "tags": [
+        "Pahalı",
+        "Şık",
+        "Beğendim",
+        "Tavsiye Ederim",
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-15T17:39:39.646Z"
+    },
+    {
+      "productId": "dj_153",
+      "productName": "Volleyball",
+      "brand": "sports-accessories",
+      "reviewer": "İsmail Şahin",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "arkadaşlara oynamak için aldım gayet güzel ama keşke farklı renkleri olsaydı",
+      "tags": [
+        "Beğendim",
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T17:39:56.830Z"
+    },
+    {
+      "productId": "dj_102",
+      "productName": "Apple Airpower Wireless Charger",
+      "brand": "Apple",
+      "reviewer": "Erhan Taşkın",
+      "reviewerGender": "male",
+      "rating": 2,
+      "comment": "başka bir sitede daha ucuz halini görmüştüm",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-15T17:40:16.492Z"
+    }
+  ]
+}

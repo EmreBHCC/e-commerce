@@ -1,0 +1,296 @@
+{
+  "exportedAt": "2026-06-09T00:07:04.244Z",
+  "participant": {
+    "name": "emre",
+    "gender": "male"
+  },
+  "reviews": [
+    {
+      "productId": "dj_129",
+      "productName": "Realme X",
+      "brand": "Realme",
+      "reviewer": "Murat Çelik",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "çok güzel bir telefon baya başarılı buldum",
+      "tags": [
+        "Fiyat/Performans",
+        "Tekrar Alırım",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-08T23:56:09.594Z"
+    },
+    {
+      "productId": "dj_124",
+      "productName": "iPhone X",
+      "brand": "Apple",
+      "reviewer": "İsmet Vural",
+      "reviewerGender": "male",
+      "rating": 2,
+      "comment": "fiyat performans değil iphone isteyene",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-08T23:56:27.637Z"
+    },
+    {
+      "productId": "dj_85",
+      "productName": "Man Plaid Shirt",
+      "brand": "Classic Wear",
+      "reviewer": "Suat Keskin",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "kareli deseni beklediğim gibi gelmedi",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-08T23:56:50.732Z"
+    },
+    {
+      "productId": "dj_154",
+      "productName": "Black Sun Glasses",
+      "brand": "Fashion Shades",
+      "reviewer": "Fatma Özcan",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "rahat ve konforlu bir seçenek benzerlerini göre de ucuz",
+      "tags": [
+        "Kaliteli",
+        "Şık",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-08T23:57:28.655Z"
+    },
+    {
+      "productId": "dj_79",
+      "productName": "Asus Zenbook Pro Dual Screen Laptop",
+      "brand": "Asus",
+      "reviewer": "Sema Peker",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "fiyatını karşılayacak bir laptop indirimdeyken aldığıma sevindim",
+      "tags": [
+        "Kaliteli",
+        "Tavsiye Ederim",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-08T23:58:00.696Z"
+    },
+    {
+      "productId": "dj_108",
+      "productName": "iPhone 12 Silicone Case with MagSafe Plum",
+      "brand": "Apple",
+      "reviewer": "Fikri Kaya",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "fiaytına göre bir iphone parası yeterince ucuz",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-08T23:58:26.921Z"
+    },
+    {
+      "productId": "dj_160",
+      "productName": "Samsung Galaxy Tab S8 Plus Grey",
+      "brand": "Samsung",
+      "reviewer": "Altan Sarıkaya",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Sıklığı beni çok etkiledi performans isteyenler başka yere gitsin. Parasına değer.",
+      "tags": [
+        "Şık",
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-08T23:59:10.972Z"
+    },
+    {
+      "productId": "dj_161",
+      "productName": "Samsung Galaxy Tab White",
+      "brand": "Samsung",
+      "reviewer": "Burak Topal",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Kardeşim için tekrar alıyorum bayağı performanslı bir ürün",
+      "tags": [
+        "Kaliteli",
+        "Fiyat/Performans",
+        "Tekrar Alırım"
+      ],
+      "timestamp": "2026-06-08T23:59:55.041Z"
+    },
+    {
+      "productId": "dj_137",
+      "productName": "American Football",
+      "brand": "sports-accessories",
+      "reviewer": "Özge Fidancı",
+      "reviewerGender": "female",
+      "rating": 1,
+      "comment": "Sevemedim.",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-09T00:00:07.880Z"
+    },
+    {
+      "productId": "dj_156",
+      "productName": "Green and Black Glasses",
+      "brand": "Fashion Shades",
+      "reviewer": "Adem Ercan",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Fiyatını hak eden fiyakalı bir gözlük.",
+      "tags": [
+        "Kaliteli",
+        "Beğendim",
+        "Şık",
+        "Pahalı",
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-09T00:00:35.992Z"
+    },
+    {
+      "productId": "dj_96",
+      "productName": "Rolex Cellini Moonphase",
+      "brand": "Rolex",
+      "reviewer": "Kemal Balcı",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "Kalite ve şıklıkta üstüne yok.",
+      "tags": [
+        "Kaliteli",
+        "Şık",
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-09T00:00:54.084Z"
+    },
+    {
+      "productId": "dj_127",
+      "productName": "Oppo K1",
+      "brand": "Oppo",
+      "reviewer": "Ülkü Ünlü",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Benim tüm işlerimi görüoo yaaniii, sizi bilemem.",
+      "tags": [
+        "Tavsiye Ederim",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-09T00:01:34.907Z"
+    },
+    {
+      "productId": "dj_83",
+      "productName": "Blue & Black Check Shirt",
+      "brand": "Fashion Trends",
+      "reviewer": "İhsan Yücel",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Gömlek diyince aklıma gelen gömleği karşılıo, kaynımın düğününe de böylesi yakışır.",
+      "tags": [
+        "Beğendim",
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Tavsiye Ederim",
+        "Tekrar Alırım"
+      ],
+      "timestamp": "2026-06-09T00:02:31.660Z"
+    },
+    {
+      "productId": "dj_90",
+      "productName": "Puma Future Rider Trainers",
+      "brand": "Puma",
+      "reviewer": "Erhan Ateş",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Hafta sonları yapacağım koşuda ayaklarım rahatlasın istediğim için aldım. 10 numara 5 yıldız ürün.",
+      "tags": [
+        "Kaliteli",
+        "Fiyat/Performans",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-09T00:03:17.302Z"
+    },
+    {
+      "productId": "dj_97",
+      "productName": "Rolex Datejust",
+      "brand": "Rolex",
+      "reviewer": "Mahmut Karakaya",
+      "reviewerGender": "male",
+      "rating": 1,
+      "comment": "Fiyatını hak etmio. Gösteriş düşkünleri kapış kapı almaya devam etsin",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-09T00:03:47.684Z"
+    },
+    {
+      "productId": "dj_132",
+      "productName": "Samsung Galaxy S8",
+      "brand": "Samsung",
+      "reviewer": "Kemal Altın",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Telefonumla ayı çekiyorum o bile net çıkıyor alacak olan herkese öneririm.",
+      "tags": [
+        "Şık",
+        "Kaliteli",
+        "Tavsiye Ederim",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-09T00:04:27.018Z"
+    },
+    {
+      "productId": "dj_82",
+      "productName": "New DELL XPS 13 9300 Laptop",
+      "brand": "Dell",
+      "reviewer": "Ömer Şahin",
+      "reviewerGender": "male",
+      "rating": 2,
+      "comment": "Geldiğinde ekran kartını görmüyordu, ayrıca ekranında çizik vardı, iade etmek zorunda kaldım. Mutsuzum.",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-09T00:05:27.740Z"
+    },
+    {
+      "productId": "dj_109",
+      "productName": "Monopod",
+      "brand": "TechGear",
+      "reviewer": "Bülent Saraç",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "İşimi görüyor",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-09T00:05:39.324Z"
+    },
+    {
+      "productId": "dj_122",
+      "productName": "iPhone 6",
+      "brand": "Apple",
+      "reviewer": "Uğur Küçük",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "Biraz  eski model olsa da iphone iphonedur. Hoşuma gitti",
+      "tags": [
+        "Şık",
+        "Kaliteli",
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-09T00:06:27.351Z"
+    },
+    {
+      "productId": "dj_92",
+      "productName": "Sports Sneakers Off White Red",
+      "brand": "Off White",
+      "reviewer": "Perihan Akın",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Rengi beni yansıttığını düşündüğüm için aldım çok hoşuma gitti",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-09T00:06:59.811Z"
+    }
+  ]
+}

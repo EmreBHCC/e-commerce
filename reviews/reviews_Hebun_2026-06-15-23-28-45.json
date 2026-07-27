@@ -1,0 +1,269 @@
+{
+  "exportedAt": "2026-06-15T23:28:45.213Z",
+  "participant": {
+    "name": "Hebun",
+    "gender": "female"
+  },
+  "reviews": [
+    {
+      "productId": "dj_118",
+      "productName": "Attitude Super Leaves Hand Soap",
+      "brand": "Attitude",
+      "reviewer": "Adem Karakaya",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Elleri kurutmuyor çok beğendim",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-15T23:14:21.786Z"
+    },
+    {
+      "productId": "dj_120",
+      "productName": "Vaseline Men Body and Face Lotion",
+      "brand": "Vaseline",
+      "reviewer": "İhsan Turhan",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Kardeşime aldım severek kullanıyor",
+      "tags": [
+        "Tekrar Alırım"
+      ],
+      "timestamp": "2026-06-15T23:14:54.817Z"
+    },
+    {
+      "productId": "dj_193",
+      "productName": "Watch Gold for Women",
+      "brand": "Fashion Gold",
+      "reviewer": "Nurgül Erol",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Bilekte kaba durmuyor çok şık",
+      "tags": [
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-15T23:15:26.944Z"
+    },
+    {
+      "productId": "dj_190",
+      "productName": "IWC Ingenieur Automatic Steel",
+      "brand": "IWC",
+      "reviewer": "Nihat Polat",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Materyali sağlam çok beğendik",
+      "tags": [
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-15T23:16:04.514Z"
+    },
+    {
+      "productId": "dj_7",
+      "productName": "Chanel Coco Noir Eau De",
+      "brand": "Chanel",
+      "reviewer": "Caner Toprak",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Kokusu harika ilk sıktığınızda gelen notalarla alt notalar biraz farklı ama uyumlu",
+      "tags": [
+        "Tekrar Alırım"
+      ],
+      "timestamp": "2026-06-15T23:16:57.020Z"
+    },
+    {
+      "productId": "dj_148",
+      "productName": "Golf Ball",
+      "brand": "sports-accessories",
+      "reviewer": "Perihan Fidancı",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Her zaman aldığım marka",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T23:17:43.010Z"
+    },
+    {
+      "productId": "dj_6",
+      "productName": "Calvin Klein CK One",
+      "brand": "Calvin Klein",
+      "reviewer": "Özge Öztürk",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Calvin Klein kalitesi",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-15T23:18:12.876Z"
+    },
+    {
+      "productId": "dj_9",
+      "productName": "Dolce Shine Eau de",
+      "brand": "Dolce & Gabbana",
+      "reviewer": "İhsan Balcı",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Meyve kokuları seviyorsanız mükemmel",
+      "tags": [
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-15T23:18:35.218Z"
+    },
+    {
+      "productId": "dj_172",
+      "productName": "Blue Women's Handbag",
+      "brand": "Fashionista",
+      "reviewer": "Davut Koç",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Rengi güzel sap kısmı sağlam",
+      "tags": [
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-15T23:19:53.680Z"
+    },
+    {
+      "productId": "dj_163",
+      "productName": "Girl Summer Dress",
+      "brand": "tops",
+      "reviewer": "Latife Güler",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Annem severek giyiyor",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-15T23:20:15.386Z"
+    },
+    {
+      "productId": "dj_174",
+      "productName": "Prada Women Bag",
+      "brand": "Prada",
+      "reviewer": "Pakize Uysal",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Pahalı ama Prada kalitesi",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-15T23:20:35.072Z"
+    },
+    {
+      "productId": "dj_145",
+      "productName": "Cricket Wicket",
+      "brand": "sports-accessories",
+      "reviewer": "Gizem Metin",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Daha iyisi olabilirdi ama idare eder",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T23:21:31.747Z"
+    },
+    {
+      "productId": "dj_144",
+      "productName": "Cricket Helmet",
+      "brand": "sports-accessories",
+      "reviewer": "Hilal Avcı",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Güzel ürün",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T23:22:07.251Z"
+    },
+    {
+      "productId": "dj_1",
+      "productName": "Essence Mascara Lash Princess",
+      "brand": "Essence",
+      "reviewer": "Gizem Özdemir",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Hep kullandığım bir ürün takma kirpik etkisi yapıyor",
+      "tags": [
+        "Tekrar Alırım"
+      ],
+      "timestamp": "2026-06-15T23:22:34.254Z"
+    },
+    {
+      "productId": "dj_181",
+      "productName": "Marni Red & Black Suit",
+      "brand": "womens-dresses",
+      "reviewer": "Yalçın Uçar",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "Çok pahalı",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-15T23:22:45.603Z"
+    },
+    {
+      "productId": "dj_154",
+      "productName": "Black Sun Glasses",
+      "brand": "Fashion Shades",
+      "reviewer": "Burak Akın",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Kaliteli ve şık bir ürün",
+      "tags": [
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-15T23:23:11.100Z"
+    },
+    {
+      "productId": "dj_142",
+      "productName": "Cricket Ball",
+      "brand": "sports-accessories",
+      "reviewer": "Fatma Aktaş",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Diğer ekipmanlarla aldım gayet iyi",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-15T23:23:41.800Z"
+    },
+    {
+      "productId": "dj_4",
+      "productName": "Red Lipstick",
+      "brand": "Chic Cosmetics",
+      "reviewer": "Gizem Yıldırım",
+      "reviewerGender": "female",
+      "rating": 5,
+      "comment": "Cilt alt tonuma uydu beğendim, turunculuk yok",
+      "tags": [
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-15T23:24:18.980Z"
+    },
+    {
+      "productId": "dj_140",
+      "productName": "Basketball",
+      "brand": "sports-accessories",
+      "reviewer": "Yeliz Aydın",
+      "reviewerGender": "female",
+      "rating": 3,
+      "comment": "Güzel idare eder",
+      "tags": [
+        "Fiyat/Performans"
+      ],
+      "timestamp": "2026-06-15T23:24:49.333Z"
+    },
+    {
+      "productId": "dj_188",
+      "productName": "Pampi Shoes",
+      "brand": "Pampi",
+      "reviewer": "İsmet Kılıç",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Kendi ayak numaranızdan bir numara küçük alın rahat bir ayakkabı",
+      "tags": [
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-15T23:28:25.845Z"
+    }
+  ]
+}

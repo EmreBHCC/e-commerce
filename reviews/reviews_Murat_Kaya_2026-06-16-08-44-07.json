@@ -1,0 +1,309 @@
+{
+  "exportedAt": "2026-06-16T08:44:07.999Z",
+  "participant": {
+    "name": "Murat Kaya",
+    "gender": "male"
+  },
+  "reviews": [
+    {
+      "productId": "dj_105",
+      "productName": "Apple MagSafe Battery Pack",
+      "brand": "Apple",
+      "reviewer": "Selin Akgün",
+      "reviewerGender": "female",
+      "rating": 3,
+      "comment": "Malzeme kalitesi iyi. Biraz yavaş şarj ediyor ama zor günde iş görür.",
+      "tags": [
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-16T07:55:23.669Z"
+    },
+    {
+      "productId": "dj_145",
+      "productName": "Cricket Wicket",
+      "brand": "sports-accessories",
+      "reviewer": "İlknur Karakaya",
+      "reviewerGender": "female",
+      "rating": 2,
+      "comment": "Kriket'e başlamak için almıştım ilk haftadan kırıldı.",
+      "tags": [
+        "Beklentiyi Karşılamadı"
+      ],
+      "timestamp": "2026-06-16T07:57:58.405Z"
+    },
+    {
+      "productId": "dj_153",
+      "productName": "Volleyball",
+      "brand": "sports-accessories",
+      "reviewer": "Güven Akın",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Tam bir f/p ürünü patlarsa yine aynısından almayı düşünüyorum.",
+      "tags": [
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Tavsiye Ederim",
+        "Tekrar Alırım"
+      ],
+      "timestamp": "2026-06-16T07:58:46.580Z"
+    },
+    {
+      "productId": "dj_137",
+      "productName": "American Football",
+      "brand": "sports-accessories",
+      "reviewer": "Hüseyin Turhan",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Kavrama hissi güzel. Lig maçlarında kullanılabilecek kalitede.",
+      "tags": [
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Beğendim",
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-16T08:02:17.307Z"
+    },
+    {
+      "productId": "dj_139",
+      "productName": "Baseball Glove",
+      "brand": "sports-accessories",
+      "reviewer": "Sibel Acar",
+      "reviewerGender": "female",
+      "rating": 1,
+      "comment": "Fiyatına göre kalitesi kötü daha uyguna daha iyi eldiven bulabilirsiniz.",
+      "tags": [
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-16T08:03:46.464Z"
+    },
+    {
+      "productId": "dj_121",
+      "productName": "iPhone 5s",
+      "brand": "Apple",
+      "reviewer": "Selma Çevik",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Tuşlu telefondan ilk defa geçecekler için tavsiye ederim.",
+      "tags": [
+        "Fiyat/Performans",
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-16T08:04:42.786Z"
+    },
+    {
+      "productId": "dj_98",
+      "productName": "Rolex Submariner Watch",
+      "brand": "Rolex",
+      "reviewer": "Berk Çetin",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Kusursuz işçilik, ikonik tasarım ve yüksek kalite sadece zamanı değil duruşunuz ve tarzınızıda yansıtıyor.",
+      "tags": [
+        "Kaliteli",
+        "Şık",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-16T08:08:15.276Z"
+    },
+    {
+      "productId": "dj_122",
+      "productName": "iPhone 6",
+      "brand": "Apple",
+      "reviewer": "Şahin Köse",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Yıllardır kullandığım telefon bataryasını değiştirerek kullanıyorum. Başka bir sıkıntı yaşamadım.",
+      "tags": [
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-16T08:09:52.406Z"
+    },
+    {
+      "productId": "dj_97",
+      "productName": "Rolex Datejust",
+      "brand": "Rolex",
+      "reviewer": "Zafer Çiftçi",
+      "reviewerGender": "male",
+      "rating": 2,
+      "comment": "Zamansız bir tasarım elde edilmeye çalışılsada gün sonunda sadece kolumda marka logosu taşıyorum gibi hissettiriyor.",
+      "tags": [
+        "Beklentiyi Karşılamadı",
+        "Pahalı"
+      ],
+      "timestamp": "2026-06-16T08:12:53.424Z"
+    },
+    {
+      "productId": "dj_85",
+      "productName": "Man Plaid Shirt",
+      "brand": "Classic Wear",
+      "reviewer": "Gül Ersoy",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Dolabımın en iyi parçalarından biri oldu. Kumaşın dokusu oldukça yumuşak ve hafif.",
+      "tags": [
+        "Kaliteli",
+        "Fiyat/Performans",
+        "Tavsiye Ederim",
+        "Beğendim",
+        "Şık"
+      ],
+      "timestamp": "2026-06-16T08:17:00.019Z"
+    },
+    {
+      "productId": "dj_88",
+      "productName": "Nike Air Jordan 1 Red And Black",
+      "brand": "Nike",
+      "reviewer": "Ragıp Kara",
+      "reviewerGender": "male",
+      "rating": 3,
+      "comment": "Güzel bir ayakkabı ama fiyatı biraz pahalı indirimde yakalanırsa güzel bir ürün.",
+      "tags": [
+        "Pahalı",
+        "Beğendim",
+        "Kaliteli",
+        "Şık"
+      ],
+      "timestamp": "2026-06-16T08:19:26.497Z"
+    },
+    {
+      "productId": "dj_96",
+      "productName": "Rolex Cellini Moonphase",
+      "brand": "Rolex",
+      "reviewer": "Adnan Peker",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Rolex'in ikonik spor modellerine alışkın biri olarak bu model markanın sert yapısından sıyrılarak güzel bir işçiliğe sahip. Koleksiyonunuza da değer katacak bir parça.",
+      "tags": [
+        "Tavsiye Ederim",
+        "Beğendim",
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Şık"
+      ],
+      "timestamp": "2026-06-16T08:28:35.054Z"
+    },
+    {
+      "productId": "dj_161",
+      "productName": "Samsung Galaxy Tab White",
+      "brand": "Samsung",
+      "reviewer": "Bahadır Aslan",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Oğlumun dersleri için aldım oyun oynuyor ama işini görüyor.",
+      "tags": [
+        "Fiyat/Performans",
+        "Beğendim",
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-16T08:29:26.662Z"
+    },
+    {
+      "productId": "dj_146",
+      "productName": "Feather Shuttlecock",
+      "brand": "sports-accessories",
+      "reviewer": "Yusuf Yıldız",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Fazladan elimde bulunsun diye aldım. Kaliteli ama biraz pahalı.",
+      "tags": [
+        "Beğendim",
+        "Pahalı",
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-16T08:30:50.470Z"
+    },
+    {
+      "productId": "dj_136",
+      "productName": "Vivo X21",
+      "brand": "Vivo",
+      "reviewer": "Aylin Demir",
+      "reviewerGender": "female",
+      "rating": 4,
+      "comment": "Kızıma karne hediyesi olarak aldım. 7/24 elinde iyi mi yaptım bilemedim.",
+      "tags": [
+        "Şık",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-16T08:32:36.988Z"
+    },
+    {
+      "productId": "dj_78",
+      "productName": "Apple MacBook Pro 14 Inch Space Grey",
+      "brand": "Apple",
+      "reviewer": "Derviş Ercan",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Şirkette ağır yazılım programlarını çalıştırmak ve daha hızlı render almak için aldım. Windows pişmanlıktır.",
+      "tags": [
+        "Fiyat/Performans",
+        "Kaliteli"
+      ],
+      "timestamp": "2026-06-16T08:34:44.040Z"
+    },
+    {
+      "productId": "dj_131",
+      "productName": "Samsung Galaxy S7",
+      "brand": "Samsung",
+      "reviewer": "İsmail Özcan",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Uzun zamandır kullanıyorum yarı yolda bırakmadı.",
+      "tags": [
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Şık",
+        "Beğendim",
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-16T08:35:26.251Z"
+    },
+    {
+      "productId": "dj_123",
+      "productName": "iPhone 13 Pro",
+      "brand": "Apple",
+      "reviewer": "Celal Tunç",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Günümüzde iphone kullanmak isteyenler için güncel ve güzel bir model.",
+      "tags": [
+        "Tavsiye Ederim",
+        "Kaliteli",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-16T08:38:42.987Z"
+    },
+    {
+      "productId": "dj_95",
+      "productName": "Rolex Cellini Date Black Dial",
+      "brand": "Rolex",
+      "reviewer": "Vedat Metin",
+      "reviewerGender": "male",
+      "rating": 5,
+      "comment": "Siyah kadranın derinliği, kasanın zarif formu ve tarih göstergesinin dengeli yerleşimi, tasarımın ne kadar titizlikle işlendiğinin kanıtı mükemmel bir tercih.",
+      "tags": [
+        "Kaliteli",
+        "Şık",
+        "Beğendim",
+        "Tavsiye Ederim"
+      ],
+      "timestamp": "2026-06-16T08:42:19.246Z"
+    },
+    {
+      "productId": "dj_129",
+      "productName": "Realme X",
+      "brand": "Realme",
+      "reviewer": "Hüsnü Çakır",
+      "reviewerGender": "male",
+      "rating": 4,
+      "comment": "Anneme akıllı telefonu öğrenmesi için aldım. Rahat bir şekilde kullanıyor.",
+      "tags": [
+        "Fiyat/Performans",
+        "Kaliteli",
+        "Beğendim"
+      ],
+      "timestamp": "2026-06-16T08:43:48.695Z"
+    }
+  ]
+}

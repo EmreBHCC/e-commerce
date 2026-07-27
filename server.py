@@ -14,6 +14,7 @@ from flask_socketio import SocketIO, emit, join_room
 
 BASE_DIR        = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR        = os.path.join(BASE_DIR, 'data')
+REVIEWS_DIR     = os.path.join(BASE_DIR, 'reviews')
 LOGS_FILE       = os.path.join(DATA_DIR, 'logs.json')
 SESS_FILE       = os.path.join(DATA_DIR, 'sessions.json')
 HEATMAPS_DIR    = os.path.join(DATA_DIR, 'heatmaps')
@@ -285,6 +286,28 @@ def on_command(data):
 def on_ack(data):
     """Shop → Sunucu → Admin: komut onayı"""
     emit('ack', data, to='admin')
+
+@app.route('/api/reviews')
+def api_get_reviews():
+    by_product = {}
+    if not os.path.isdir(REVIEWS_DIR):
+        return jsonify({})
+    for fname in sorted(os.listdir(REVIEWS_DIR)):
+        if not fname.endswith('.json'):
+            continue
+        try:
+            with open(os.path.join(REVIEWS_DIR, fname), 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            for review in data.get('reviews', []):
+                pid = review.get('productId')
+                if not pid:
+                    continue
+                if pid not in by_product:
+                    by_product[pid] = []
+                by_product[pid].append(review)
+        except Exception:
+            pass
+    return jsonify(by_product)
 
 @app.route('/api/heatmap/<path:filename>')
 def api_serve_heatmap(filename):

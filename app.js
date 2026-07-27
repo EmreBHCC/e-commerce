@@ -28,6 +28,7 @@ const State = {
   giftApplied: 0,
   compareList: [],
   loggedIn: false,
+  productReviews: {},
 };
 
 const DATA = {
@@ -935,6 +936,12 @@ function showCategoryPage(cat, title, products) {
     else products = all;
   }
   logAction(`Kategori sayfası: "${title}" (${products.length} ürün)`, 'navigation');
+  const _rp = State.productReviews;
+  if (_rp && Object.keys(_rp).length > 0) {
+    products = [...products].sort((a, b) =>
+      ((_rp[b.id] || []).length) - ((_rp[a.id] || []).length)
+    );
+  }
   State.currentCategoryProducts = [...products];
   State.currentCategoryTitle = title;
   document.getElementById('home-view').classList.add('hidden');
@@ -1106,6 +1113,8 @@ function openProduct(id) {
   const isFav = State.favorites.includes(p.id);
   const isCompared = State.compareList.includes(p.id);
   const modalImgHtml = renderImg(p.fullImg || p.img, p.name, '9rem');
+  const _mRevs = (State.productReviews || {})[p.id] || [];
+  const _mAvg  = _mRevs.length ? (_mRevs.reduce((s,r) => s + r.rating, 0) / _mRevs.length) : 0;
   document.getElementById('product-modal-inner').innerHTML = `
     <div class="modal-img-side">${modalImgHtml}</div>
     <div class="modal-info-side">
@@ -1115,9 +1124,9 @@ function openProduct(id) {
       </div>
       <h2 class="modal-name">${p.name}</h2>
       <div class="modal-rating">
-        <span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5 - Math.floor(p.rating))}</span>
-        <span style="font-size:.85rem;font-weight:600">${p.rating}</span>
-        <span style="font-size:.8rem;color:var(--text-muted)">(${p.reviews} değerlendirme)</span>
+        ${_mRevs.length
+          ? `<span class="stars">${'★'.repeat(Math.floor(_mAvg))}${'☆'.repeat(5 - Math.floor(_mAvg))}</span><span style="font-size:.85rem;font-weight:600">${_mAvg.toFixed(1)}</span><span style="font-size:.8rem;color:var(--text-muted)">(${_mRevs.length} değerlendirme)</span>`
+          : `<span class="stars" style="color:var(--text-muted)">☆☆☆☆☆</span><span style="font-size:.85rem;font-weight:600;color:var(--text-muted)">0.0</span><span style="font-size:.8rem;color:var(--text-muted)">(değerlendirme yok)</span>`}
       </div>
       <div class="modal-price-row">
         <span class="modal-price">${p.price.toLocaleString('tr-TR')} TL</span>
@@ -1152,6 +1161,7 @@ function openProduct(id) {
         <button class="modal-fav-btn ${isCompared ? 'active' : ''}" id="modal-cmp-btn" onclick="addToCompare('${p.id}')"><span class="modal-btn-icon">⚖️</span><span class="modal-btn-text">Karşılaştır</span></button>
       </div>
       ${_buildAIReviewHTML(p)}
+      ${_buildUserReviewsHTML(p)}
     </div>`;
   document.getElementById('product-overlay').classList.add('active');
   document.getElementById('product-modal').classList.add('open');
@@ -2459,6 +2469,21 @@ function _generateAIReview(p) {
 }
 
 function _buildAIReviewHTML(p) {
+  const _aiRevs = (State.productReviews || {})[p.id] || [];
+  if (_aiRevs.length === 0) return `
+  <div class="ai-review-card">
+    <div class="ai-review-header">
+      <div class="ai-review-icon">🤖</div>
+      <span class="ai-review-title">AI Ürün Analizi</span>
+      <span class="ai-review-badge">ShopX AI</span>
+    </div>
+    <div class="ai-review-assessment" style="color:var(--text-muted)">🔍 Bu ürün henüz yeterli kullanıcı değerlendirmesine sahip değil. Yorumlar oluştukça AI analizi burada görünecek.</div>
+    <div class="ai-review-score">
+      <span class="ai-review-score-label">AI Skoru</span>
+      <div class="ai-review-score-bar"><div class="ai-review-score-fill" style="width:0%"></div></div>
+      <span class="ai-review-score-val" style="color:var(--text-muted)">— / 100</span>
+    </div>
+  </div>`;
   const r = _generateAIReview(p);
   const prosHTML = r.pros.map(x => `<div class="ai-review-list-item"><span>✓</span><span>${x}</span></div>`).join('');
   const consHTML = r.cons.map(x => `<div class="ai-review-list-item"><span>·</span><span>${x}</span></div>`).join('');
@@ -2486,6 +2511,42 @@ function _buildAIReviewHTML(p) {
       <span class="ai-review-score-val">${r.score}/100</span>
     </div>
   </div>`;
+}
+
+function _buildUserReviewsHTML(p) {
+  const reviews = (State.productReviews || {})[p.id] || [];
+  if (reviews.length === 0) return `
+    <div class="user-reviews-section">
+      <div class="ur-header">
+        <span class="ur-title">Kullanıcı Yorumları</span>
+        <span class="ur-count-badge" style="color:var(--text-muted)">☆☆☆☆☆ · 0 yorum</span>
+      </div>
+      <div class="ur-cards">
+        <div class="ur-card" style="text-align:center;color:var(--text-muted);padding:20px 0;font-size:.88rem">
+          Bu ürün için henüz yorum bulunamadı.
+        </div>
+      </div>
+    </div>`;
+  const stars = n => '★'.repeat(n) + '☆'.repeat(5 - n);
+  const avg = (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1);
+  const cards = reviews.map(r => `
+    <div class="ur-card">
+      <div class="ur-card-header">
+        <span class="ur-stars">${stars(r.rating)}</span>
+        <span class="ur-reviewer">${r.reviewer}</span>
+        <span class="ur-date">${new Date(r.timestamp).toLocaleDateString('tr-TR')}</span>
+      </div>
+      <p class="ur-comment">${r.comment}</p>
+      ${r.tags && r.tags.length ? `<div class="ur-tags">${r.tags.map(t => `<span class="ur-tag">${t}</span>`).join('')}</div>` : ''}
+    </div>`).join('');
+  return `
+    <div class="user-reviews-section">
+      <div class="ur-header">
+        <span class="ur-title">Kullanıcı Yorumları</span>
+        <span class="ur-count-badge">${reviews.length} yorum · ★ ${avg}</span>
+      </div>
+      <div class="ur-cards">${cards}</div>
+    </div>`;
 }
 
 function _vaStats() {
@@ -3091,8 +3152,8 @@ function _applyGenderTheme() {
 window.addEventListener('DOMContentLoaded', () => {
   _applyGenderTheme();
   logAction('ShopX yüklendi – Cinsiyet seçim ekranı gösterildi', 'system');
-  
   _showNoSessionWarning(true);
+  fetch('/api/reviews').then(r => r.json()).then(d => { State.productReviews = d; }).catch(() => {});
 });
 
 Object.assign(window, {
