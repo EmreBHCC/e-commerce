@@ -3,6 +3,7 @@
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import webbrowser
@@ -95,15 +96,29 @@ def api_update_session(session_id):
     write_json(SESS_FILE, sessions)
     return jsonify({'ok': True})
 
+def _delete_session_data_folder(session_name):
+    """Bir denek/oturumun data/<slug>/ klasörünü (heatmap PNG/CSV/JSON dahil) siler."""
+    if not session_name:
+        return
+    folder = os.path.join(DATA_DIR, _slug(session_name))
+    if os.path.isdir(folder):
+        shutil.rmtree(folder, ignore_errors=True)
+
 @app.route('/api/sessions/<session_id>', methods=['DELETE'])
 def api_delete_session(session_id):
-    sessions = [s for s in read_json(SESS_FILE) if s.get('id') != session_id]
+    sessions = read_json(SESS_FILE)
+    target = next((s for s in sessions if s.get('id') == session_id), None)
+    sessions = [s for s in sessions if s.get('id') != session_id]
     write_json(SESS_FILE, sessions)
+    if target:
+        _delete_session_data_folder(target.get('name'))
     socketio.emit('sessions_updated', to='admin')
     return jsonify({'ok': True})
 
 @app.route('/api/sessions/all', methods=['DELETE'])
 def api_clear_sessions():
+    for s in read_json(SESS_FILE):
+        _delete_session_data_folder(s.get('name'))
     write_json(SESS_FILE, [])
     socketio.emit('sessions_updated', to='admin')
     return jsonify({'ok': True})
@@ -123,7 +138,7 @@ def _slug(name):
     return re.sub(r'[^\w]', '_', name)[:20].strip('_') or 'denek'
 
 def start_eye_tracker(session_name):
-    global _eye_tracker_proc
+    global _eye_tracker_proc, _gaze_broadcaster_active
     if _eye_tracker_proc and _eye_tracker_proc.poll() is None:
         _eye_tracker_proc.terminate()
         try: _eye_tracker_proc.wait(timeout=3)
@@ -241,16 +256,35 @@ def on_session_started(data):
     start_eye_tracker(_active_session['name'])
     print(f'[WS] Oturum başlatıldı: {_active_session["name"]}')
 
+def _write_calibrate_signal(payload):
+    """EYETRACKER_CALIBRATE dosyasını atomik biçimde yazar (geçici dosya + os.replace) —
+    eye-tracker.py aynı anda dosyayı okuyup siliyor olabilir, doğrudan üzerine yazmak
+    Windows'ta paylaşım ihlali (PermissionError) riski taşır."""
+    os.makedirs(DATA_DIR, exist_ok=True)
+    tmp = EYETRACKER_CALIBRATE + f'.tmp{os.getpid()}'
+    with open(tmp, 'w') as f:
+        json.dump(payload, f)
+    os.replace(tmp, EYETRACKER_CALIBRATE)
+
 @socketio.on('calibration_complete')
 def on_calibration_complete(data):
-    """Shop → Sunucu: 9-nokta kalibrasyonu tamamlandı, eye-tracker'a sinyal gönder"""
+    """Shop → Sunucu: bir kalibrasyon noktası tıklandı, gerçek ekran konumunu eye-tracker'a ilet"""
     try:
-        os.makedirs(DATA_DIR, exist_ok=True)
-        with open(EYETRACKER_CALIBRATE, 'w') as f:
-            f.write('calibrate')
-        print('[EyeTracker] Kalibrasyon sinyali yazıldı')
+        payload = {'x': (data or {}).get('x'), 'y': (data or {}).get('y')}
+        _write_calibrate_signal(payload)
+        print(f'[EyeTracker] Kalibrasyon sinyali yazıldı: {payload}')
     except Exception as e:
         print(f'[EyeTracker] Kalibrasyon sinyal hatası: {e}')
+
+@socketio.on('calibration_mouse')
+def on_calibration_mouse(data):
+    """Shop → Sunucu: kalibrasyon sırasında canlı mouse konumu (kullanıcı mouse'a bakıyor varsayımıyla
+    eye-tracker offsetini sürekli ince ayar yapmak için kullanılır)"""
+    try:
+        payload = {'x': (data or {}).get('x'), 'y': (data or {}).get('y')}
+        _write_calibrate_signal(payload)
+    except Exception:
+        pass
 
 @socketio.on('session_stopped')
 def on_session_stopped(data):
@@ -337,8 +371,11 @@ def api_list_heatmaps():
                 with open(os.path.join(sdir, fname), 'r', encoding='utf-8') as f:
                     m = json.load(f)
                     parent = os.path.basename(sdir)
-                    if parent != 'heatmaps' and m.get('png'):
-                        m['png'] = f"{parent}/{m['png']}"
+                    if parent != 'heatmaps':
+                        if m.get('png'):
+                            m['png'] = f"{parent}/{m['png']}"
+                        if m.get('csv'):
+                            m['csv'] = f"{parent}/{m['csv']}"
                     metas.append(m)
             except Exception:
                 pass
@@ -348,13 +385,33 @@ def _open_browser():
     webbrowser.open('http://localhost:5000')
     webbrowser.open_new_tab('http://localhost:5000/admin')
 
+def _should_open_browser():
+    """Reloader her kod değişikliğinde alt süreci yeniden başlatır — bu, ana (watcher)
+    sürecin PID'sini bir işaretçi dosyaya yazarak sekmelerin sadece gerçek ilk açılışta
+    açılmasını, kod düzenlemesi kaynaklı yeniden başlatmalarda tekrar açılmamasını sağlar."""
+    marker = os.path.join(DATA_DIR, '.browser_opened_ppid')
+    ppid = str(os.getppid())
+    try:
+        with open(marker, 'r') as f:
+            if f.read().strip() == ppid:
+                return False
+    except Exception:
+        pass
+    try:
+        os.makedirs(DATA_DIR, exist_ok=True)
+        with open(marker, 'w') as f:
+            f.write(ppid)
+    except Exception:
+        pass
+    return True
+
 if __name__ == '__main__':
     print('=' * 50)
     print('  ShopX Backend')
     print('  Shop  →  http://localhost:5000')
     print('  Admin →  http://localhost:5000/admin')
     print('=' * 50)
-    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' and _should_open_browser():
         Timer(1.5, _open_browser).start()
     socketio.run(app, host='0.0.0.0', port=5000, debug=True,
                  allow_unsafe_werkzeug=True)

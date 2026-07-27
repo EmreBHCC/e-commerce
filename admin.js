@@ -273,7 +273,9 @@ function refreshSubjectListSilent() {
 function deleteSession(id) {
   if (!confirm('Bu oturumu silmek istiyor musunuz? Bu işlem geri alınamaz.')) return;
   _sessionsCache = _sessionsCache.filter(s => s.id !== id);
-  apiDelete(`/api/sessions/${id}`).catch(e => console.warn('deleteSession error:', e));
+  apiDelete(`/api/sessions/${id}`)
+    .then(() => _loadAndShowHistoricHeatmaps())
+    .catch(e => console.warn('deleteSession error:', e));
   refreshSubjectList();
   showAdminToast('🗑 Oturum silindi', 'info');
 }
@@ -282,7 +284,9 @@ function clearAllSessions() {
   if (!confirm('TÜM oturumları ve loglarını silmek istiyor musunuz? Bu işlem GERİ ALINAMAZ!')) return;
   if (Admin.activeSessionId) stopSubjectSession(true);
   _sessionsCache = [];
-  apiDelete('/api/sessions/all').catch(e => console.warn('clearAllSessions error:', e));
+  apiDelete('/api/sessions/all')
+    .then(() => _loadAndShowHistoricHeatmaps())
+    .catch(e => console.warn('clearAllSessions error:', e));
   refreshSubjectList();
   showAdminToast('🗑 Tüm oturumlar silindi', 'info');
 }
@@ -330,11 +334,15 @@ function viewSessionDetail(id) {
         <div style="font-size:.75rem;font-weight:700;color:#22c55e;margin-bottom:10px">👁 Göz Takibi Heatmap${sess.heatmapFiles.length > 1 ? 'ları' : ''}</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           ${sess.heatmapFiles.map(f => `
-            <a href="/api/heatmap/${encodeURIComponent(f)}" target="_blank" style="display:block">
-              <img src="/api/heatmap/${encodeURIComponent(f)}" alt="Heatmap"
-                   style="max-width:280px;max-height:160px;border-radius:8px;border:1px solid rgba(34,197,94,.3);display:block" />
+            <div style="position:relative;display:inline-block">
+              <a href="/api/heatmap/${encodeURIComponent(f)}" target="_blank" style="display:block">
+                <img src="/api/heatmap/${encodeURIComponent(f)}" alt="Heatmap"
+                     class="heatmap-hover-img" data-csv="/api/heatmap/${encodeURIComponent(f.replace(/\.png$/i, '.csv'))}"
+                     style="max-width:280px;max-height:160px;border-radius:8px;border:1px solid rgba(34,197,94,.3);display:block" />
+              </a>
+              <button class="heatmap-zoom-btn" title="Büyüt" onclick="event.preventDefault();event.stopPropagation();openHeatmapZoom('/api/heatmap/${encodeURIComponent(f)}','/api/heatmap/${encodeURIComponent(f.replace(/\.png$/i, '.csv'))}')">🔍</button>
               <div style="font-size:.65rem;color:#64748b;margin-top:3px;font-family:JetBrains Mono,monospace">${escHtml(f)}</div>
-            </a>`).join('')}
+            </div>`).join('')}
         </div>
       </div>` : ''}
     </div>`;
@@ -655,10 +663,14 @@ function _insertHeatmapLogRow(sessName, files) {
   if (emptyEl) emptyEl.style.display = 'none';
 
   const imgTags = files.map(f =>
-    `<a href="/api/heatmap/${encodeURIComponent(f)}" target="_blank">
-      <img src="/api/heatmap/${encodeURIComponent(f)}" alt="Heatmap"
-           style="max-width:320px;max-height:180px;border-radius:8px;border:1px solid rgba(99,102,241,.3);cursor:pointer;display:block;margin-top:6px" />
-     </a>`
+    `<div style="position:relative;display:inline-block">
+      <a href="/api/heatmap/${encodeURIComponent(f)}" target="_blank">
+        <img src="/api/heatmap/${encodeURIComponent(f)}" alt="Heatmap"
+             class="heatmap-hover-img" data-csv="/api/heatmap/${encodeURIComponent(f.replace(/\.png$/i, '.csv'))}"
+             style="max-width:320px;max-height:180px;border-radius:8px;border:1px solid rgba(99,102,241,.3);cursor:pointer;display:block;margin-top:6px" />
+      </a>
+      <button class="heatmap-zoom-btn" title="Büyüt" onclick="event.preventDefault();event.stopPropagation();openHeatmapZoom('/api/heatmap/${encodeURIComponent(f)}','/api/heatmap/${encodeURIComponent(f.replace(/\.png$/i, '.csv'))}')">🔍</button>
+     </div>`
   ).join('');
 
   const div = document.createElement('div');
@@ -810,8 +822,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 async function _loadAndShowHistoricHeatmaps() {
   try {
-    const metas = await apiGet('/api/heatmaps');
-    if (!metas || !metas.length) return;
+    const metas = await apiGet('/api/heatmaps') || [];
 
     // Sessions cache'e heatmapFiles alanlarını ekle
     metas.forEach(m => {
@@ -824,8 +835,19 @@ async function _loadAndShowHistoricHeatmaps() {
     });
     refreshSubjectList();
 
-    // Ayrı bir "Tarihi Kayıtlar" bölümü oluştur/güncelle
+    // Silinen oturumların heatmapFiles referanslarını temizle (artık API'de yoklar)
+    const stillExisting = new Set(metas.map(m => m.png));
+    _sessionsCache.forEach(s => {
+      if (s.heatmapFiles) s.heatmapFiles = s.heatmapFiles.filter(f => stillExisting.has(f));
+    });
+
     let section = document.getElementById('historic-heatmaps-section');
+    if (!metas.length) {
+      if (section) section.remove();
+      return;
+    }
+
+    // Ayrı bir "Tarihi Kayıtlar" bölümü oluştur/güncelle
     if (!section) {
       section = document.createElement('div');
       section.id = 'historic-heatmaps-section';
@@ -846,15 +868,105 @@ async function _loadAndShowHistoricHeatmaps() {
           <div style="background:rgba(255,255,255,.06);border-radius:10px;padding:10px;min-width:180px;max-width:220px">
             <div style="font-size:.75rem;color:#4fc3f7;font-weight:600;margin-bottom:6px">${m.session}</div>
             <div style="font-size:.7rem;color:#64748b;margin-bottom:8px">${m.timestamp} · ${m.points} nokta</div>
-            <a href="/api/heatmap/${encodeURIComponent(m.png)}" target="_blank">
-              <img src="/api/heatmap/${encodeURIComponent(m.png)}" alt="Heatmap"
-                style="width:100%;border-radius:6px;display:block;border:1px solid rgba(255,255,255,.1)">
-            </a>
+            <div style="position:relative">
+              <a href="/api/heatmap/${encodeURIComponent(m.png)}" target="_blank">
+                <img src="/api/heatmap/${encodeURIComponent(m.png)}" alt="Heatmap"
+                  class="heatmap-hover-img" data-csv="/api/heatmap/${encodeURIComponent(m.csv || m.png.replace(/\.png$/i, '.csv'))}"
+                  style="width:100%;border-radius:6px;display:block;border:1px solid rgba(255,255,255,.1)">
+              </a>
+              <button class="heatmap-zoom-btn" title="Büyüt" onclick="event.preventDefault();event.stopPropagation();openHeatmapZoom('/api/heatmap/${encodeURIComponent(m.png)}','/api/heatmap/${encodeURIComponent(m.csv || m.png.replace(/\.png$/i, '.csv'))}')">🔍</button>
+            </div>
           </div>`).join('')}
       </div>`;
   } catch (e) {
     console.warn('[Heatmap] Tarihi kayıt yükleme hatası:', e);
   }
+}
+
+// ── HEATMAP HOVER: imleç üzerindeyken bakış yoğunluğu/süresi tahmini ──
+const _heatmapPointsCache = new Map();
+const HEATMAP_SAMPLE_INTERVAL = 0.15; // sn/örnek — kamera fps'ine bağlı yaklaşık değer
+const HEATMAP_HOVER_RADIUS = 55;      // orijinal görsel piksel cinsinden arama yarıçapı
+
+function _getHeatmapPoints(csvUrl) {
+  if (_heatmapPointsCache.has(csvUrl)) return _heatmapPointsCache.get(csvUrl);
+  const promise = fetch(csvUrl)
+    .then(r => r.ok ? r.text() : '')
+    .then(text => text.split('\n').slice(1)
+      .map(line => line.split(','))
+      .filter(p => p.length === 2)
+      .map(([x, y]) => [parseFloat(x), parseFloat(y)])
+      .filter(([x, y]) => !isNaN(x) && !isNaN(y)))
+    .catch(() => []);
+  _heatmapPointsCache.set(csvUrl, promise);
+  return promise;
+}
+
+function _getHeatmapTooltip() {
+  let el = document.getElementById('heatmap-hover-tooltip');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'heatmap-hover-tooltip';
+    el.className = 'heatmap-hover-tooltip';
+    document.body.appendChild(el);
+  }
+  return el;
+}
+
+document.addEventListener('mousemove', async (e) => {
+  const img = e.target.closest && e.target.closest('.heatmap-hover-img');
+  const tip = _getHeatmapTooltip();
+  if (!img || !img.dataset.csv) { tip.style.display = 'none'; return; }
+
+  const points = await _getHeatmapPoints(img.dataset.csv);
+  const rect = img.getBoundingClientRect();
+  if (!img.naturalWidth || !rect.width) { tip.style.display = 'none'; return; }
+
+  const scaleX = img.naturalWidth  / rect.width;
+  const scaleY = img.naturalHeight / rect.height;
+  const px = (e.clientX - rect.left) * scaleX;
+  const py = (e.clientY - rect.top)  * scaleY;
+
+  let count = 0;
+  const r2 = HEATMAP_HOVER_RADIUS * HEATMAP_HOVER_RADIUS;
+  for (const [x, y] of points) {
+    const dx = x - px, dy = y - py;
+    if (dx * dx + dy * dy <= r2) count++;
+  }
+
+  const secs = (count * HEATMAP_SAMPLE_INTERVAL).toFixed(1);
+  tip.innerHTML = count > 0
+    ? `👁 ≈ <strong>${secs} sn</strong> bakıldı <span style="opacity:.6">(${count} örnek)</span>`
+    : `👁 Bu bölgeye bakılmadı`;
+  tip.style.left = (e.clientX + 16) + 'px';
+  tip.style.top  = (e.clientY + 16) + 'px';
+  tip.style.display = 'block';
+});
+
+// ── HEATMAP BÜYÜTME (ZOOM) MODALI ──────────────────────
+function openHeatmapZoom(pngUrl, csvUrl) {
+  let modal = document.getElementById('heatmap-zoom-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'heatmap-zoom-modal';
+    modal.className = 'heatmap-zoom-modal';
+    modal.innerHTML = `
+      <div class="heatmap-zoom-backdrop" onclick="closeHeatmapZoom()"></div>
+      <div class="heatmap-zoom-box">
+        <button class="heatmap-zoom-close" onclick="closeHeatmapZoom()" title="Kapat">✕</button>
+        <img id="heatmap-zoom-img" class="heatmap-hover-img" alt="Heatmap (büyütülmüş)" />
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  const img = document.getElementById('heatmap-zoom-img');
+  img.src = pngUrl;
+  img.dataset.csv = csvUrl;
+  modal.style.display = 'flex';
+}
+
+function closeHeatmapZoom() {
+  const modal = document.getElementById('heatmap-zoom-modal');
+  if (modal) modal.style.display = 'none';
 }
 
 // ── EXPOSE GLOBALS ────────────────────────────────────
@@ -867,4 +979,5 @@ Object.assign(window, {
   viewSessionDetail,
   exportSession, exportSessionCSV,
   exportAllSessions, exportAllSessionsCSV,
+  openHeatmapZoom, closeHeatmapZoom,
 });
