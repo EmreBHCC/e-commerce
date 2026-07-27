@@ -29,112 +29,116 @@ const State = {
   compareList: [],
   loggedIn: false,
   productReviews: {},
+
+  participantName: '',
+  conditionMap: {},
 };
 
 const DATA = {
-  female: {
-    
-    nav: [
-      { label: 'Tümü',              cat: 'tumu' },
-      { label: 'Elbise & Üstler',   cat: 'elbise' },
-      { label: 'Ayakkabı',          cat: 'ayakkabi' },
-      { label: 'Çanta',             cat: 'canta' },
-      { label: 'Makyaj',            cat: 'makyaj' },
-      { label: 'Cilt Bakımı',       cat: 'cilt' },
-      { label: 'Parfüm',            cat: 'parfum' },
-      { label: 'Takı & Aksesuar',   cat: 'taki' },
-      { label: 'Spor',              cat: 'spor' },
-      { label: '🔥 İndirim',        cat: 'indirim', sale: true },
-    ],
-    
-    categories: [
-      { icon: '👗', label: 'Elbise',        id: 'elbise'   },
-      { icon: '👠', label: 'Ayakkabı',      id: 'ayakkabi' },
-      { icon: '👜', label: 'Çanta',         id: 'canta'    },
-      { icon: '💄', label: 'Makyaj',        id: 'makyaj'   },
-      { icon: '🧴', label: 'Cilt Bakımı',   id: 'cilt'     },
-      { icon: '🌸', label: 'Parfüm',        id: 'parfum'   },
-      { icon: '💍', label: 'Takı',          id: 'taki'     },
-      { icon: '🏃‍♀️', label: 'Spor',       id: 'spor'     },
-    ],
-    
-    banners: [
-      { bg: 'linear-gradient(135deg,#6a0735 0%,#c2187a 50%,#ff9ec6 100%)', label: 'YENİ SEZON 2026',   title: 'İlkbahar<br>Koleksiyonu',     sub: 'Elbise, üstler ve daha fazlası',  cta: 'Keşfet',          emoji: '👗', cat: 'elbise'   },
-      { bg: 'linear-gradient(135deg,#0d47a1 0%,#7b1fa2 50%,#e91e8c 100%)', label: 'AKSESUAR FIRSATLARI', title: 'Çanta & Takı<br>Koleksiyonu', sub: 'Büyük indirimler sizi bekliyor', cta: 'Alışverişe Başla', emoji: '👜', cat: 'canta'    },
-      { bg: 'linear-gradient(135deg,#1b5e20 0%,#388e3c 50%,#a5d6a7 100%)', label: 'GÜZELLİK DÜNYASI',  title: 'Premium<br>Cilt Bakımı',      sub: 'Dünyaca ünlü markalar burada',    cta: 'Ürünlere Bak',    emoji: '🧴', cat: 'cilt'     },
-    ],
-    
-    promos: [
-      { bg: 'linear-gradient(135deg,#880e4f,#c2187a)',  title: 'Yeni Elbiseler',      desc: 'Bu sezonun en trend modelleri', cat: 'elbise'   },
-      { bg: 'linear-gradient(135deg,#4a148c,#7b1fa2)',  title: 'Güzellik Fırsatları', desc: 'Makyaj ve cilt bakımında büyük indirim', cat: 'makyaj'   },
-      { bg: 'linear-gradient(135deg,#bf360c,#e64a19)',  title: 'Takı & Aksesuar',    desc: 'Çanta, takı ve gözlük kampanyaları', cat: 'taki'     },
-    ],
-    
-    products: [
-      { id: 'f1',  name: 'Çiçekli Midi Elbise',       brand: 'Zara',         price: 649,  oldPrice: 1099, img: '👗', badge: 'sale', rating: 4.7, reviews: 342,  desc: 'Şık çiçek baskısı, body-fit kesim, %100 viskon.',        cat: 'elbise'   },
-      { id: 'f2',  name: 'Deri Makyaj Çantası',        brand: 'Aldo',         price: 289,  oldPrice: 459,  img: '👜', badge: 'hot',  rating: 4.5, reviews: 217,  desc: 'İtalyan deri görünümlü, altın aplike detaylı.',           cat: 'canta'    },
-      { id: 'f3',  name: 'Mat Ruj Seti 8\'li',         brand: 'MAC',          price: 435,  oldPrice: null, img: '💄', badge: 'new',  rating: 4.9, reviews: 891,  desc: '8 farklı sezon tonu, uzun kalıcılıklı, vegan formula.',   cat: 'makyaj'   },
-      { id: 'f4',  name: 'Yüksek Topuklu Sandalet',    brand: 'Steve Madden', price: 879,  oldPrice: 1249, img: '👠', badge: 'sale', rating: 4.3, reviews: 156,  desc: 'Şık bilek askılı, 9 cm topuklu sandalet.',               cat: 'ayakkabi' },
-      { id: 'f5',  name: 'Hyaluronik Asit Serum',      brand: 'CeraVe',       price: 299,  oldPrice: 399,  img: '🧴', badge: null,   rating: 4.8, reviews: 1243, desc: 'Yoğun nemlendirici, dermatoloji onaylı.',                 cat: 'cilt'     },
-      { id: 'f6',  name: 'Altın Kaplama Kolye Set',    brand: 'Giulio',       price: 524,  oldPrice: 780,  img: '💍', badge: 'sale', rating: 4.6, reviews: 489,  desc: '3\'lü kolye set, 18 ayar altın kaplama.',                cat: 'taki'     },
-      { id: 'f7',  name: 'Yoga Tayt Seti',             brand: 'Nike',         price: 749,  oldPrice: 999,  img: '🏃‍♀️', badge: 'hot', rating: 4.7, reviews: 672, desc: 'Dri-FIT teknolojili, yüksek bel.',                      cat: 'spor'     },
-      { id: 'f8',  name: 'Retinol Gece Kremi',         brand: 'L\'Oréal',     price: 189,  oldPrice: 259,  img: '🧴', badge: null,   rating: 4.5, reviews: 321,  desc: 'Gece boyunca kırışıklık azaltıcı, cilt yenileyici.',     cat: 'cilt'     },
-      { id: 'f9',  name: 'Platform Spor Ayakkabı',     brand: 'Adidas',       price: 1299, oldPrice: 1699, img: '👠', badge: 'sale', rating: 4.8, reviews: 543,  desc: 'Ultra Boost taban, platform tasarım.',                    cat: 'ayakkabi' },
-      { id: 'f10', name: 'Çiçek Parfümü Kadın 100ml',  brand: 'Chanel',       price: 1890, oldPrice: 2490, img: '🌸', badge: 'sale', rating: 4.9, reviews: 1102, desc: 'Çiçeksi notalar, uzun kalıcılık, şık şişe.',              cat: 'parfum'   },
-    ],
-  },
+  nav: [
+    { label: 'Tümü',                  cat: 'tumu' },
+    { label: 'Giyim',                 cat: 'giyim' },
+    { label: 'Ayakkabı',              cat: 'ayakkabi' },
+    { label: 'Çanta & Aksesuar',      cat: 'aksesuar' },
+    { label: 'Kozmetik & Bakım',      cat: 'kozmetik' },
+    { label: 'Saat & Gözlük',         cat: 'saat' },
+    { label: 'Elektronik',            cat: 'elektronik' },
+    { label: 'Oyun & Bilgisayar',     cat: 'oyun' },
+    { label: 'Spor & Outdoor',        cat: 'spor' },
+    { label: '🔥 Kampanyalar',        cat: 'kampanya', sale: true },
+  ],
 
-  male: {
-    
-    nav: [
-      { label: 'Tümü',                cat: 'tumu' },
-      { label: 'Gömlek & Üstler',     cat: 'gomlek'   },
-      { label: 'Ayakkabı',            cat: 'spor-ayak'},
-      { label: 'Saat & Güneş Gözlüğü', cat: 'saat'   },
-      { label: 'Akıllı Telefonlar',   cat: 'telefon'  },
-      { label: 'Gaming & Laptop',     cat: 'gaming'   },
-      { label: 'Tablet',              cat: 'tablet'   },
-      { label: 'Outdoor & Spor',      cat: 'outdoor'  },
-      { label: '🔥 Kampanyalar',      cat: 'kampanya', sale: true },
-    ],
-    
-    categories: [
-      { icon: '👕', label: 'Gömlek & Üstler',    id: 'gomlek'    },
-      { icon: '👟', label: 'Ayakkabı',            id: 'spor-ayak' },
-      { icon: '⌚', label: 'Saat & Aksesuar',     id: 'saat'      },
-      { icon: '📱', label: 'Akıllı Telefonlar',   id: 'telefon'   },
-      { icon: '🎮', label: 'Gaming & Laptop',     id: 'gaming'    },
-      { icon: '📟', label: 'Tablet',              id: 'tablet'    },
-      { icon: '🏕️', label: 'Outdoor & Spor',     id: 'outdoor'   },
-      { icon: '😎', label: 'Güneş Gözlüğü',      id: 'gozluk'    },
-    ],
-    
-    banners: [
-      { bg: 'linear-gradient(135deg,#0a1f4e 0%,#1565c0 50%,#039be5 100%)', label: 'YENİ SEZON 2026',  title: 'Erkek<br>Koleksiyonu',       sub: 'Gömlek, üstler ve daha fazlası',  cta: 'Keşfet',          emoji: '👕', cat: 'gomlek'    },
-      { bg: 'linear-gradient(135deg,#1a237e 0%,#283593 50%,#1976d2 100%)', label: 'TEKNOLOJİ FIRSATI', title: 'Telefon &<br>Gaming Dünyası', sub: 'En iyi donanımlar burada',        cta: 'Mağazaya Git',    emoji: '📱', cat: 'telefon'   },
-      { bg: 'linear-gradient(135deg,#1b1b2e 0%,#004d40 50%,#00695c 100%)', label: 'OUTDOOR SEZONU',   title: 'Spor &<br>Outdoor Ekipmanları', sub: 'Profesyonel outdoor markaları', cta: 'İncele',          emoji: '🏕️', cat: 'outdoor'  },
-    ],
-    
-    promos: [
-      { bg: 'linear-gradient(135deg,#1a237e,#1565c0)',  title: 'Gaming & Laptop',   desc: 'Donanımda büyük fırsatlar',      cat: 'gaming'    },
-      { bg: 'linear-gradient(135deg,#263238,#37474f)',  title: 'Akıllı Telefonlar', desc: 'En yeni modeller, en iyi fiyat', cat: 'telefon'   },
-      { bg: 'linear-gradient(135deg,#004d40,#00695c)',  title: 'Outdoor & Spor',    desc: 'Yeni sezon ekipmanları',         cat: 'outdoor'   },
-    ],
-    
-    products: [
-      { id: 'm1',  name: 'Slim Fit Denim Pantolon',     brand: 'Levi\'s',   price: 799,  oldPrice: 1099, img: '👖', badge: 'sale', rating: 4.8, reviews: 1023, desc: 'Slim fit, stretch denim, 5 cep model.',              cat: 'gomlek'    },
-      { id: 'm2',  name: 'Gaming Kulaklık 7.1',         brand: 'Razer',     price: 1599, oldPrice: 2199, img: '🎧', badge: 'hot',  rating: 4.9, reviews: 756,  desc: 'USB 7.1 surround, RGB aydınlatma.',                  cat: 'gaming'    },
-      { id: 'm3',  name: 'Akıllı Spor Saat',            brand: 'Garmin',    price: 3299, oldPrice: 4199, img: '⌚', badge: 'new',  rating: 4.7, reviews: 432,  desc: 'GPS, kalp atışı sensörü, 14 gün pil.',              cat: 'saat'      },
-      { id: 'm4',  name: 'Air Jordan Retro High',       brand: 'Nike',      price: 2499, oldPrice: 3299, img: '👟', badge: 'sale', rating: 4.9, reviews: 2312, desc: 'Orijinal renk blokajı, gerçek deri.',                cat: 'spor-ayak' },
-      { id: 'm5',  name: 'Mekanik Oyun Klavyesi',       brand: 'Corsair',   price: 2199, oldPrice: null, img: '⌨️', badge: 'hot',  rating: 4.8, reviews: 891,  desc: 'Cherry MX Red, RGB, alüminyum gövde.',              cat: 'gaming'    },
-      { id: 'm6',  name: 'Oversize Kapüşon Sweat',      brand: 'Champion',  price: 549,  oldPrice: 799,  img: '👕', badge: null,   rating: 4.6, reviews: 654,  desc: 'Oversize kalıp, fleece iç yüzey.',                  cat: 'gomlek'    },
-      { id: 'm7',  name: 'Pro Gaming Mouse',            brand: 'Logitech',  price: 899,  oldPrice: 1199, img: '🖱️', badge: 'sale', rating: 4.9, reviews: 1456, desc: 'HERO 25K sensör, 25600 DPI, şarj edilebilir.',      cat: 'gaming'    },
-      { id: 'm8',  name: 'Akıllı Tablet 10"',           brand: 'Samsung',   price: 5490, oldPrice: 6990, img: '📟', badge: 'sale', rating: 4.7, reviews: 831,  desc: '10 inç AMOLED, 256GB, kalem destekli.',             cat: 'tablet'    },
-      { id: 'm9',  name: 'Kablosuz Kulaklık NC',        brand: 'Sony',      price: 4299, oldPrice: 5499, img: '🎵', badge: 'sale', rating: 4.9, reviews: 3241, desc: 'WH-1000XM5, aktif gürültü engelleme, 30 saat pil.', cat: 'gaming'    },
-      { id: 'm10', name: 'Running Pro Spor Ayakkabı',   brand: 'Adidas',    price: 1699, oldPrice: 2199, img: '🏃', badge: 'new',  rating: 4.8, reviews: 876,  desc: 'Ultraboost 23, karbon plaka, maraton optimize.',    cat: 'spor-ayak' },
-    ],
-  },
+  categories: [
+    { icon: '👕', label: 'Giyim',             id: 'giyim'      },
+    { icon: '👟', label: 'Ayakkabı',          id: 'ayakkabi'   },
+    { icon: '👜', label: 'Çanta & Aksesuar',  id: 'aksesuar'   },
+    { icon: '🧴', label: 'Kozmetik & Bakım',  id: 'kozmetik'   },
+    { icon: '⌚', label: 'Saat & Gözlük',     id: 'saat'       },
+    { icon: '📱', label: 'Elektronik',        id: 'elektronik' },
+    { icon: '🎮', label: 'Oyun & Bilgisayar', id: 'oyun'       },
+    { icon: '🏃', label: 'Spor & Outdoor',    id: 'spor'       },
+  ],
+
+  banners: [
+    { bg: 'linear-gradient(135deg,#7a3b00 0%,#ff6000 50%,#ffb37a 100%)', label: 'YENİ SEZON 2026',    title: 'Yeni Sezon<br>Koleksiyonu',     sub: 'Binlerce üründe fırsatlar sizi bekliyor', cta: 'Keşfet',          emoji: '🛍️', cat: 'giyim'      },
+    { bg: 'linear-gradient(135deg,#263238 0%,#455a64 50%,#78909c 100%)', label: 'TEKNOLOJİ FIRSATI',  title: 'Elektronik &<br>Oyun Dünyası',  sub: 'En yeni donanımlar burada',                cta: 'Mağazaya Git',    emoji: '📱', cat: 'elektronik' },
+    { bg: 'linear-gradient(135deg,#1b5e20 0%,#388e3c 50%,#a5d6a7 100%)', label: 'OUTDOOR SEZONU',     title: 'Spor &<br>Outdoor Ekipmanları', sub: 'Aktif yaşam için en iyi ürünler',          cta: 'İncele',          emoji: '🏃', cat: 'spor'       },
+  ],
+
+  promos: [
+    { bg: 'linear-gradient(135deg,#5d4037,#8d6e63)',  title: 'Yeni Giyim',        desc: 'Bu sezonun öne çıkan modelleri',      cat: 'giyim'      },
+    { bg: 'linear-gradient(135deg,#4a148c,#7b1fa2)',  title: 'Kozmetik Fırsatları', desc: 'Bakım ürünlerinde büyük indirim',   cat: 'kozmetik'   },
+    { bg: 'linear-gradient(135deg,#263238,#455a64)',  title: 'Elektronik & Oyun', desc: 'En yeni modeller, en iyi fiyat',      cat: 'elektronik' },
+  ],
 };
+
+/* Kategori başına tek DummyJSON kategori slug'ı — tüm katılımcılar için ortak, tek ürün havuzu */
+const DJ_CATEGORY_MAP = {
+  giyim:      'tops',
+  ayakkabi:   'womens-shoes',
+  aksesuar:   'womens-bags',
+  kozmetik:   'beauty',
+  saat:       'womens-watches',
+  elektronik: 'smartphones',
+  oyun:       'laptops',
+  spor:       'sports-accessories',
+};
+
+const USD_TO_TRY = 38;
+
+/* API erişilemezse kullanılacak yedek ürün seti */
+const FALLBACK_PRODUCTS = [
+  { id: 'fb1', name: 'Klasik Sweatshirt',        brand: 'ShopX', price: 449,  img: '👕', rating: 4.6, reviews: 512,  desc: 'Günlük kullanım için rahat kesim.',        cat: 'giyim'      },
+  { id: 'fb2', name: 'Günlük Spor Ayakkabı',     brand: 'ShopX', price: 899,  img: '👟', rating: 4.5, reviews: 734,  desc: 'Nefes alabilir, hafif taban.',             cat: 'ayakkabi'   },
+  { id: 'fb3', name: 'Sırt Çantası',             brand: 'ShopX', price: 899,  img: '🎒', rating: 4.6, reviews: 543,  desc: 'Laptop bölmeli, günlük kullanım.',         cat: 'aksesuar'   },
+  { id: 'fb4', name: 'Nemlendirici Krem',        brand: 'ShopX', price: 289,  img: '🧴', rating: 4.7, reviews: 1102, desc: 'Tüm cilt tipleri için uygun.',             cat: 'kozmetik'   },
+  { id: 'fb5', name: 'Akıllı Saat',              brand: 'ShopX', price: 2799, img: '⌚', rating: 4.6, reviews: 823,  desc: 'Nabız takibi, su geçirmez gövde.',         cat: 'saat'       },
+  { id: 'fb6', name: 'Akıllı Telefon',           brand: 'ShopX', price: 8999, img: '📱', rating: 4.7, reviews: 2341, desc: 'Üçlü kamera, hızlı şarj desteği.',         cat: 'elektronik' },
+  { id: 'fb7', name: 'Dizüstü Bilgisayar',       brand: 'ShopX', price: 24999,img: '💻', rating: 4.8, reviews: 1456, desc: 'Yüksek performanslı işlemci.',             cat: 'oyun'       },
+  { id: 'fb8', name: 'Kamp Çadırı',              brand: 'ShopX', price: 2499, img: '⛺', rating: 4.5, reviews: 312,  desc: '2 kişilik, su geçirmez yapı.',             cat: 'spor'       },
+];
+
+function transformDJProduct(p, catId) {
+  const price = Math.round((p.price * USD_TO_TRY) / 10) * 10;
+  const reviews = (p.reviews && p.reviews.length > 0)
+    ? p.reviews.length * 47 + p.stock * 11
+    : p.stock * 23 + 80;
+  return {
+    id:       `dj_${p.id}`,
+    name:     p.title,
+    brand:    p.brand || 'ShopX',
+    price,
+    img:      p.thumbnail,
+    fullImg:  (p.images && p.images.length > 0) ? p.images[0] : p.thumbnail,
+    rating:   Math.round(p.rating * 10) / 10,
+    reviews,
+    desc:     p.description,
+    cat:      catId,
+  };
+}
+
+let PRODUCTS = [];
+
+async function fetchAllProducts() {
+  try {
+    const entries = Object.entries(DJ_CATEGORY_MAP);
+    const results = await Promise.all(
+      entries.map(([catId, djCat]) =>
+        fetch(`https://dummyjson.com/products/category/${djCat}?limit=5&select=id,title,description,price,rating,stock,brand,thumbnail,images,reviews`)
+          .then(r => r.ok ? r.json() : { products: [] })
+          .then(d => (d.products || []).map(p => transformDJProduct(p, catId)))
+          .catch(() => [])
+      )
+    );
+    const all = results.flat();
+    if (!all.length) return FALLBACK_PRODUCTS;
+    const seen = new Set();
+    return all.filter(p => { if (seen.has(p.id)) return false; seen.add(p.id); return true; });
+  } catch (err) {
+    logAction(`Ürün API hatası: ${err.message} — yedek veri kullanılıyor`, 'system');
+    return FALLBACK_PRODUCTS;
+  }
+}
 
 const BUDGET_LIMITS = { low: [0, 500], medium: [500, 1500], high: [1500, 3500], luxury: [3500, 99999], any: [0, 99999] };
 
@@ -191,151 +195,76 @@ function renderImg(img, alt, emojiSize) {
   return `<span style="font-size:${emojiSize||'2rem'};display:flex;align-items:center;justify-content:center;width:100%;height:100%;">${img || '🛍'}</span>`;
 }
 
-const DUMMYJSON_CAT_MAP = {
-  female: {
-    'womens-dresses':    'elbise',
-    'tops':              'elbise',
-    'womens-shoes':      'ayakkabi',
-    'womens-bags':       'canta',
-    'beauty':            'makyaj',
-    'skin-care':         'cilt',
-    'fragrances':        'parfum',   
-    'womens-jewellery':  'taki',
-    'womens-watches':    'taki',
-    'sports-accessories':'spor',
-    'sunglasses':        'taki',
-  },
-  male: {
-    'mens-shirts':       'gomlek',
-    'mens-shoes':        'spor-ayak',
-    'mens-watches':      'saat',
-    'sunglasses':        'gozluk',
-    'smartphones':       'telefon',
-    'laptops':           'gaming',
-    'mobile-accessories':'gaming',
-    'tablets':           'tablet',
-    'sports-accessories':'outdoor',
-  },
-};
-
-const FEMALE_CATS = [
-  'womens-dresses', 'tops',
-  'womens-shoes',
-  'womens-bags',
-  'beauty',
-  'skin-care',
-  'fragrances',
-  'womens-jewellery', 'womens-watches',
-  'sports-accessories',
-  'sunglasses',
-];
-
-const MALE_CATS = [
-  'mens-shirts',
-  'mens-shoes',
-  'mens-watches', 'sunglasses',
-  'smartphones',
-  'laptops', 'mobile-accessories',
-  'tablets',
-  'sports-accessories',
-];
-
-const USD_TO_TRY = 38; 
-
-function transformDJProduct(p, gender) {
-  const catMap = DUMMYJSON_CAT_MAP[gender];
-  const cat = catMap[p.category] || (gender === 'female' ? 'elbise' : 'gomlek');
-
-  const price = Math.round((p.price * USD_TO_TRY) / 10) * 10;
-
-  let oldPrice = null;
-  if (p.discountPercentage && p.discountPercentage > 4) {
-    oldPrice = Math.round((price / (1 - p.discountPercentage / 100)) / 10) * 10;
-  }
-
-  let badge = null;
-  if (p.discountPercentage >= 20)    badge = 'sale';
-  else if (p.stock <= 20)            badge = 'hot';
-  else if (p.id % 7 === 0)           badge = 'new';
-
-  const reviews = (p.reviews && p.reviews.length > 0)
-    ? p.reviews.length * 47 + p.stock * 11
-    : p.stock * 23 + 80;
-
-  return {
-    id:       `dj_${p.id}`,
-    name:     p.title,
-    brand:    p.brand || 'ShopX',
-    price,
-    oldPrice,
-    img:      p.thumbnail,
-    fullImg:  (p.images && p.images.length > 0) ? p.images[0] : p.thumbnail,
-    badge,
-    rating:   Math.round(p.rating * 10) / 10,
-    reviews,
-    desc:     p.description,
-    cat,
-  };
+function getProducts() {
+  return PRODUCTS;
 }
 
-const PRODUCTS_CACHE = { female: null, male: null };
+/* ============================================================
+   DENEYSEL KOŞUL ATAMA (Kontrol / İndirim / Kıtlık / Sosyal Kanıt)
+   ============================================================ */
+const CONDITIONS = ['control', 'discount', 'scarcity', 'social'];
 
-async function fetchDJProducts(gender) {
-  if (PRODUCTS_CACHE[gender]) return PRODUCTS_CACHE[gender];  
-
-  const cats = gender === 'female' ? FEMALE_CATS : MALE_CATS;
-
-  showProductsSkeleton();  
-
-  try {
-    
-    const results = await Promise.all(
-      cats.map(cat =>
-        fetch(`https://dummyjson.com/products/category/${cat}?limit=12&select=id,title,description,price,discountPercentage,rating,stock,brand,category,thumbnail,images,reviews`)
-          .then(r => r.ok ? r.json() : { products: [] })
-          .then(d => d.products || [])
-          .catch(() => [])
-      )
-    );
-
-    const all = results.flat().map(p => transformDJProduct(p, gender));
-
-    const seen = new Set();
-    const unique = all.filter(p => { if (seen.has(p.id)) return false; seen.add(p.id); return true; });
-
-    PRODUCTS_CACHE[gender] = unique;
-    logAction(`DummyJSON: ${unique.length} ürün yüklendi (${gender})`, 'system');
-    return unique;
-
-  } catch (err) {
-    logAction(`DummyJSON hatası: ${err.message} — yerel veri kullanılıyor`, 'system');
-    return DATA[gender].products;  
-  }
+function _hashString(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  return h;
 }
 
-function getProducts(gender) {
-  return PRODUCTS_CACHE[gender] || DATA[gender].products;
-}
-
-function showProductsSkeleton() {
-  const skeletonCard = `
-    <div class="product-card skeleton-card">
-      <div class="product-img-wrap skeleton-box" style="aspect-ratio:1"></div>
-      <div class="product-body" style="gap:8px;display:flex;flex-direction:column">
-        <div class="skeleton-box" style="height:10px;width:50%;border-radius:4px"></div>
-        <div class="skeleton-box" style="height:13px;width:90%;border-radius:4px"></div>
-        <div class="skeleton-box" style="height:13px;width:70%;border-radius:4px"></div>
-        <div class="skeleton-box" style="height:18px;width:55%;border-radius:4px;margin-top:4px"></div>
-      </div>
-    </div>`;
-  ['flash-products-grid','recommended-products-grid','more-products-grid'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = Array(5).fill(skeletonCard).join('');
+function assignConditions(products, participantKey) {
+  const n = CONDITIONS.length;
+  const groups = Array.from({ length: n }, () => []);
+  const byCat = {};
+  products.forEach(p => { (byCat[p.cat] = byCat[p.cat] || []).push(p); });
+  let gi = 0;
+  Object.values(byCat).forEach(catProducts => {
+    catProducts.forEach(p => { groups[gi % n].push(p); gi++; });
   });
+  const rotation = _hashString(participantKey || 'default') % n;
+  const map = {};
+  groups.forEach((group, groupIdx) => {
+    const condition = CONDITIONS[(groupIdx + rotation) % n];
+    group.forEach(p => { map[p.id] = condition; });
+  });
+  return map;
 }
 
-function hideProductsSkeleton() {
-  document.querySelectorAll('.skeleton-card').forEach(el => el.remove());
+function getProductCondition(id) {
+  return (State.conditionMap && State.conditionMap[id]) || 'control';
+}
+
+function _conditionAnchorPrice(price) {
+  return Math.round((price * 2) / 10) * 10;
+}
+
+function _scarcityCount(id) {
+  return 2 + (_hashString(id + 'scarcity') % 4);
+}
+
+function _socialBuyers(id) {
+  return 800 + (_hashString(id + 'social') % 4200);
+}
+
+function getDisplayOldPrice(p) {
+  return getProductCondition(p.id) === 'discount' ? _conditionAnchorPrice(p.price) : null;
+}
+
+function getConditionRibbon(p) {
+  const condition = getProductCondition(p.id);
+  if (condition === 'discount') return '<span class="product-badge badge-sale">İndirim</span>';
+  if (condition === 'scarcity') return '<span class="product-badge badge-scarcity">Kıtlık</span>';
+  if (condition === 'social')   return '<span class="product-badge badge-social">Popüler</span>';
+  return '';
+}
+
+function getConditionSlotHtml(p) {
+  const condition = getProductCondition(p.id);
+  if (condition === 'scarcity') {
+    return `<div class="condition-msg condition-scarcity"><span>⏰ Son ${_scarcityCount(p.id)} ürün!</span><span>Bugün bitiyor</span><span>Stokta az kaldı</span></div>`;
+  }
+  if (condition === 'social') {
+    return `<div class="condition-msg condition-social"><span>⭐ ${p.rating.toFixed(1)}</span><span>${_socialBuyers(p.id).toLocaleString('tr-TR')} kişi satın aldı</span><span>En çok satan</span></div>`;
+  }
+  return `<div class="condition-msg"></div>`;
 }
 
 const socket = io();
@@ -351,6 +280,7 @@ socket.on('disconnect', () => {
 
 socket.on('session_status', (data) => {
   _showNoSessionWarning(!data?.active);
+  if (data?.active && data?.name) State.participantName = data.name;
 });
 
 socket.on('command', (data) => {
@@ -378,6 +308,7 @@ socket.on('command', (data) => {
       break;
     case 'SESSION_STARTED':
       _showNoSessionWarning(false);
+      State.participantName = data.name || '';
       logAction(`Oturum başlatıldı: "${data.name || ''}"`, 'system');
       etShowCalibration();
       break;
@@ -391,13 +322,31 @@ socket.on('command', (data) => {
 
 setInterval(() => socket.emit('heartbeat'), 3000);
 
-const ET_DOT_IDS    = [4, 0, 1, 2, 6, 7, 8]; 
-const ET_TOTAL      = ET_DOT_IDS.length;       
-const _etClicks     = {};                       
+const ET_DOT_IDS    = [4, 0, 1, 2, 6, 7, 8];
+const ET_TOTAL      = ET_DOT_IDS.length;
+const _etClicks     = {};
 const ET_CLICKS_NEEDED = 5;
 let _etCountdownTimer = null;
 
+
+let _calibMouseLast = 0;
+function _onCalibMouseMove(e) {
+  // Sadece arka planda kalibrasyon offset hesabını besler — görsel gaze noktası
+  // her zaman gerçek kamera verisinden gelir, mouse'u birebir yansıtmaz.
+  const now = Date.now();
+  if (now - _calibMouseLast < 100) return;
+  _calibMouseLast = now;
+  const winLeft   = window.screenX ?? window.screenLeft ?? 0;
+  const winTop    = window.screenY ?? window.screenTop  ?? 0;
+  const topChrome = window.outerHeight - window.innerHeight;
+  socket.emit('calibration_mouse', {
+    x: Math.round(e.clientX + winLeft),
+    y: Math.round(e.clientY + winTop + topChrome),
+  });
+}
+
 function etShowCalibration() {
+  document.getElementById('et-calib-overlay').addEventListener('mousemove', _onCalibMouseMove);
   ET_DOT_IDS.forEach(i => {
     _etClicks[i] = 0;
     const dot = document.getElementById('et-dot-' + i);
@@ -452,6 +401,17 @@ function _etUnlockDots() {
   });
 }
 
+function _etDotScreenXY(dot) {
+
+  const rect = dot.getBoundingClientRect();
+  const vx = rect.left + rect.width / 2;
+  const vy = rect.top + rect.height / 2;
+  const winLeft   = window.screenX ?? window.screenLeft ?? 0;
+  const winTop    = window.screenY ?? window.screenTop  ?? 0;
+  const topChrome = window.outerHeight - window.innerHeight;
+  return { x: Math.round(vx + winLeft), y: Math.round(vy + winTop + topChrome) };
+}
+
 function etDotClick(idx) {
   if (!ET_DOT_IDS.includes(idx)) return;
   if ((_etClicks[idx] || 0) >= ET_CLICKS_NEEDED) return;
@@ -470,7 +430,9 @@ function etDotClick(idx) {
     const doneEl = document.getElementById('et-calib-done');
     if (doneEl) doneEl.textContent = done;
 
-    if (idx === 4) socket.emit('calibration_complete', { centerOnly: true });
+
+    const { x, y } = _etDotScreenXY(dot);
+    socket.emit('calibration_complete', { x, y });
 
     if (done === ET_TOTAL) setTimeout(etFinishCalibration, 600);
   } else {
@@ -480,52 +442,87 @@ function etDotClick(idx) {
 
 function etFinishCalibration() {
   document.getElementById('et-calib-overlay').style.display = 'none';
-  socket.emit('calibration_complete', {});
+  document.getElementById('et-calib-overlay').removeEventListener('mousemove', _onCalibMouseMove);
   logAction('Eye-tracker kalibrasyonu tamamlandı', 'system');
 }
 
 (function () {
-  let _gc = null;
+  let _trailActive = true;
+  let canvas = null, ctx = null;
+  let latest = null; // {x,y} — en güncel gaze konumu (viewport koordinatı), her olayda güncellenir
+  let _lastStampTime = 0;
+  const STAMP_INTERVAL = 130; // ms — soluk noktalar birbirinden ayrık dursun, sürekli çizgi/leke olmasın
 
-  function _getGazeCursor() {
-    if (!_gc) {
-      _gc = document.createElement('div');
-      _gc.id = 'browser-gaze-cursor';
-      _gc.style.cssText = [
-        'position:fixed',
-        'width:36px',
-        'height:36px',
-        'border-radius:50%',
-        'border:3px solid cyan',
-        'background:rgba(255,0,0,0.25)',
-        'pointer-events:none',
-        'z-index:2147483647',
-        'transform:translate(-50%,-50%)',
-        'display:none',
-        'transition:left .05s linear,top .05s linear',
-      ].join(';');
-      document.body.appendChild(_gc);
-    }
-    return _gc;
+  function _ensureCanvas() {
+    if (canvas) return;
+    canvas = document.createElement('canvas');
+    canvas.id = 'gaze-trail-canvas';
+    canvas.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:2147483647;';
+    document.body.appendChild(canvas);
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+    ctx = canvas.getContext('2d');
+    requestAnimationFrame(_tick);
   }
 
+  function _tick() {
+    if (ctx) {
+      // Canvas'ı her karede soldur — gezilen yerler ~0.3sn içinde kaybolur
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'source-over';
+
+      if (latest && _trailActive) {
+        ctx.beginPath();
+        ctx.arc(latest.x, latest.y, 9, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,140,0,0.95)';
+        ctx.shadowColor = 'rgba(255,140,0,0.85)';
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+    requestAnimationFrame(_tick);
+  }
+
+  function _updateGaze(bx, by) {
+    _ensureCanvas();
+    // Soluk iz noktasını sadece aralıklı olarak bas — her olayda basılırsa noktalar
+    // birbirine değip sürekli bir çizgi gibi görünüyordu.
+    const now = Date.now();
+    if (latest && ctx && now - _lastStampTime >= STAMP_INTERVAL) {
+      _lastStampTime = now;
+      ctx.beginPath();
+      ctx.arc(latest.x, latest.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,140,0,0.45)';
+      ctx.fill();
+    }
+    latest = { x: bx, y: by };
+  }
+
+  // Görsel her zaman kameradan gelen gerçek gaze_position verisinden besleniyor —
+  // kalibrasyon sırasında da dahil, mouse'u birebir yansıtmıyor (gerçek göz takibi hissi).
   socket.on('gaze_position', function (data) {
-    const el = _getGazeCursor();
-    
+    if (!_trailActive) return;
     const winLeft  = window.screenX  ?? window.screenLeft ?? 0;
     const winTop   = window.screenY  ?? window.screenTop  ?? 0;
-    const topChrome = window.outerHeight - window.innerHeight; 
-    const bx = data.x - winLeft;
-    const by = data.y - winTop - topChrome;
-    el.style.left    = Math.max(0, bx) + 'px';
-    el.style.top     = Math.max(0, by) + 'px';
-    el.style.display = 'block';
+    const topChrome = window.outerHeight - window.innerHeight;
+    const bx = Math.max(0, data.x - winLeft);
+    const by = Math.max(0, data.y - winTop - topChrome);
+    _updateGaze(bx, by);
   });
 
   socket.on('command', function (data) {
     if (data && data.cmd === 'SESSION_STOPPED') {
-      const el = document.getElementById('browser-gaze-cursor');
-      if (el) el.style.display = 'none';
+      _trailActive = false;
+      latest = null;
+      if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setTimeout(() => { _trailActive = true; }, 0);
     }
   });
 })();
@@ -582,6 +579,8 @@ function resetToInitial() {
   State.giftApplied = 0;
   State.compareList = [];
   State.loggedIn = false;
+  State.conditionMap = {};
+  State.participantName = '';
 
   const compareBar = document.getElementById('compare-bar');
   if (compareBar) compareBar.style.display = 'none';
@@ -606,11 +605,6 @@ function resetToInitial() {
   document.body.className = '';
   document.body.style.overflow = '';
   document.getElementById('gender-screen')?.classList.remove('step2-mode');
-
-  if (typeof PRODUCTS_CACHE !== 'undefined') {
-    PRODUCTS_CACHE.female = null;
-    PRODUCTS_CACHE.male = null;
-  }
 
   updateCartUI();
   updateFavUI();
@@ -788,7 +782,6 @@ function selectBudget(val, label) {
   State.budget = val;
   State.budgetLabel = label;
   logAction(`Bütçe seçildi: ${label}`, 'system');
-  document.body.classList.add(State.gender === 'female' ? 'theme-female' : 'theme-male');
   const gs = document.getElementById('gender-screen');
   gs.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   gs.style.opacity = '0'; gs.style.transform = 'scale(0.96)';
@@ -804,7 +797,7 @@ function selectBudget(val, label) {
 }
 
 function switchGender() {
-  logAction('Kategori değiştirme ekranına gidildi', 'navigation');
+  logAction('Başlangıç ekranına dönüldü', 'navigation');
   clearInterval(State.bannerInterval); clearInterval(State.countdownInterval);
   clearInterval(State.flashPopupInterval); clearInterval(State.flashPopupTimer);
   State.gender = null; State.budget = null; State.currentBannerSlide = 0;
@@ -836,7 +829,7 @@ function switchGender() {
 }
 
 async function initShop() {
-  const d = DATA[State.gender];
+  const d = DATA;
 
   buildNav(d.nav);
   buildCategories(d.categories);
@@ -850,9 +843,12 @@ async function initShop() {
   updateCartUI();
   updateFavUI();
 
-  logAction(`Mağaza yükleniyor – ${State.gender === 'female' ? 'Kadın' : 'Erkek'} | Bütçe: ${State.budgetLabel || 'Belirtilmedi'}`, 'system');
+  logAction(`Mağaza yükleniyor – Bütçe: ${State.budgetLabel || 'Belirtilmedi'}`, 'system');
 
-  const products = await fetchDJProducts(State.gender);
+  showProductsSkeleton();
+  PRODUCTS = await fetchAllProducts();
+  State.conditionMap = assignConditions(PRODUCTS, State.participantName || 'default');
+  const products = getProducts();
 
   buildFlashProducts(products.slice(0, 5));
   buildRecommendedProducts(getFilteredByBudget(products).slice(0, 5));
@@ -860,6 +856,23 @@ async function initShop() {
   updateShippingTopbar();
 
   logAction(`Mağaza hazır – ${products.length} ürün yüklendi`, 'system');
+}
+
+function showProductsSkeleton() {
+  const skeletonCard = `
+    <div class="product-card skeleton-card">
+      <div class="product-img-wrap skeleton-box" style="aspect-ratio:1"></div>
+      <div class="product-body" style="gap:8px;display:flex;flex-direction:column">
+        <div class="skeleton-box" style="height:10px;width:50%;border-radius:4px"></div>
+        <div class="skeleton-box" style="height:13px;width:90%;border-radius:4px"></div>
+        <div class="skeleton-box" style="height:13px;width:70%;border-radius:4px"></div>
+        <div class="skeleton-box" style="height:18px;width:55%;border-radius:4px;margin-top:4px"></div>
+      </div>
+    </div>`;
+  ['flash-products-grid','recommended-products-grid','more-products-grid'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = Array(5).fill(skeletonCard).join('');
+  });
 }
 
 function getFilteredByBudget(products) {
@@ -904,7 +917,7 @@ function navClick(cat, label) {
     filtered = products;
   } else if (cat === 'indirim' || cat === 'kampanya') {
     
-    filtered = products.filter(p => p.badge === 'sale' || p.oldPrice);
+    filtered = products.filter(p => getProductCondition(p.id) === 'discount');
   } else {
     
     filtered = products.filter(p => p.cat === cat);
@@ -1020,28 +1033,6 @@ function startBannerAuto() {
   State.bannerInterval = setInterval(() => { State.currentBannerSlide = (State.currentBannerSlide + 1) % State.bannerTotal; applyBannerSlide(); }, 5000);
 }
 
-const VERIFIED_BRANDS = new Set([
-  'Nike','Adidas','Samsung','Sony','Apple','Zara','MAC','CeraVe',
-  "L'Oréal",'Chanel','Razer','Corsair','Logitech','Garmin',
-  "Levi's",'Champion','Steve Madden','Aldo','Giulio',
-]);
-function getSellerBadge(brand, id) {
-  if (VERIFIED_BRANDS.has(brand)) return '<span class="seller-badge seller-verified">✓ Onaylı Satıcı</span>';
-  const code = id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  if (code % 4 === 0) return '<span class="seller-badge seller-super">⭐ Süper Satıcı</span>';
-  return '';
-}
-
-function getOpportunityLabel(p, section) {
-  if (section === 'flash') return '<span class="opp-badge opp-flash">⚡ Flaş Fiyat</span>';
-  if (p.reviews > 800)    return '<span class="opp-badge opp-hot">🔥 Çok Satan</span>';
-  if (p.badge === 'hot')  return '<span class="opp-badge opp-limited">⏰ Sınırlı Stok</span>';
-  const code = p.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  if (code % 7 === 0) return '<span class="opp-badge opp-gift">🎁 Hediye Paket</span>';
-  if (code % 5 === 0) return '<span class="opp-badge opp-deal">💥 Süper Fırsat</span>';
-  return null;
-}
-
 function getMemberBenefit(price) {
   const mem = MEMBERSHIPS[State.membership];
   if (mem.discount === 0) {
@@ -1054,27 +1045,27 @@ function getMemberBenefit(price) {
 }
 
 function buildProductCard(p, section) {
-  const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
+  const condition = getProductCondition(p.id);
+  const oldPrice = getDisplayOldPrice(p);
+  const discount = oldPrice ? Math.round((1 - p.price / oldPrice) * 100) : null;
   const isFav = State.favorites.includes(p.id);
   const isCompared = State.compareList.includes(p.id);
   const imgHtml = renderImg(p.img, p.name, '5rem');
-  const oppLabel = getOpportunityLabel(p, section);
-  const sellerBadge = getSellerBadge(p.brand, p.id);
+  const ribbon = getConditionRibbon(p);
+  const conditionSlot = getConditionSlotHtml(p);
   const memberBenefit = getMemberBenefit(p.price);
   return `
-  <div class="product-card" id="pcard-${p.id}" onclick="openProduct('${p.id}')" data-section="${section}">
+  <div class="product-card" id="pcard-${p.id}" onclick="openProduct('${p.id}')" data-section="${section}" data-condition="${condition}">
     <div class="product-img-wrap">
-      ${p.badge ? `<span class="product-badge badge-${p.badge}">${p.badge === 'sale' ? 'İndirim' : p.badge === 'new' ? 'Yeni' : 'Popüler'}</span>` : ''}
-      ${discount ? `<span class="product-discount-badge">%${discount} İNDİRİM</span>` : ''}
+      ${ribbon}
       <button class="product-fav-btn ${isFav ? 'active' : ''}" id="fav-btn-${p.id}" onclick="event.stopPropagation();toggleFavorite('${p.id}')" aria-label="Favorilere ekle"><span class="btn-icon">${isFav ? '❤️' : '🤍'}</span><span class="btn-text">Favori</span></button>
       <button class="product-compare-btn ${isCompared ? 'active' : ''}" id="cmp-btn-${p.id}" onclick="event.stopPropagation();addToCompare('${p.id}')" title="Karşılaştır"><span class="btn-icon">⚖️</span><span class="btn-text">Karşılaştır</span></button>
       ${imgHtml}
     </div>
-    ${oppLabel ? `<div class="product-opportunity">${oppLabel}</div>` : ''}
+    <div class="product-condition-slot">${conditionSlot}</div>
     <div class="product-body">
       <div class="product-brand-row">
         <span class="product-brand">${p.brand}</span>
-        ${sellerBadge}
       </div>
       <div class="product-name">${p.name}</div>
       <div class="product-rating">
@@ -1083,7 +1074,7 @@ function buildProductCard(p, section) {
       </div>
       <div class="product-price-row">
         <span class="product-price">${p.price.toLocaleString('tr-TR')} TL</span>
-        ${p.oldPrice ? `<span class="product-old-price">${p.oldPrice.toLocaleString('tr-TR')} TL</span>` : ''}
+        ${oldPrice ? `<span class="product-old-price">${oldPrice.toLocaleString('tr-TR')} TL</span>` : ''}
         ${discount ? `<span class="product-discount">%${discount}</span>` : ''}
       </div>
       ${memberBenefit}
@@ -1095,7 +1086,7 @@ function buildProductCard(p, section) {
 
 function buildFlashProducts(products) { document.getElementById('flash-products-grid').innerHTML = products.map(p => buildProductCard(p, 'flash')).join(''); }
 function buildRecommendedProducts(products) {
-  document.getElementById('recommended-title').textContent = State.gender === 'female' ? '💅 Sana Özel Öneriler' : '🎯 Sana Özel Öneriler';
+  document.getElementById('recommended-title').textContent = '🎯 Sana Özel Öneriler';
   document.getElementById('recommended-products-grid').innerHTML = (products.length ? products : getProducts(State.gender).slice(0, 5)).sort(() => Math.random() - 0.5).map(p => buildProductCard(p, 'recommended')).join('');
 }
 function buildMoreProducts(products) { document.getElementById('more-products-grid').innerHTML = products.map(p => buildProductCard(p, 'more')).join(''); }
@@ -1105,11 +1096,13 @@ function buildPromos(promos) {
 }
 
 function openProduct(id) {
-  const p = getProducts(State.gender).find(x => x.id === id);
+  const p = getProducts().find(x => x.id === id);
   if (!p) return;
   State.modalProduct = p; State.modalQty = 1;
-  logAction(`Ürün görüntülendi: ${p.name} (${p.brand}) – ${p.price} TL`, 'product');
-  const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
+  const condition = getProductCondition(p.id);
+  logAction(`Ürün görüntülendi: ${p.name} (${p.brand}) – ${p.price} TL [Koşul: ${condition}]`, 'product');
+  const oldPrice = getDisplayOldPrice(p);
+  const discount = oldPrice ? Math.round((1 - p.price / oldPrice) * 100) : null;
   const isFav = State.favorites.includes(p.id);
   const isCompared = State.compareList.includes(p.id);
   const modalImgHtml = renderImg(p.fullImg || p.img, p.name, '9rem');
@@ -1120,7 +1113,6 @@ function openProduct(id) {
     <div class="modal-info-side">
       <div class="modal-brand-row">
         <span class="modal-brand">${p.brand}</span>
-        ${getSellerBadge(p.brand, p.id)}
       </div>
       <h2 class="modal-name">${p.name}</h2>
       <div class="modal-rating">
@@ -1130,9 +1122,10 @@ function openProduct(id) {
       </div>
       <div class="modal-price-row">
         <span class="modal-price">${p.price.toLocaleString('tr-TR')} TL</span>
-        ${p.oldPrice ? `<span class="modal-old-price">${p.oldPrice.toLocaleString('tr-TR')} TL</span>` : ''}
+        ${oldPrice ? `<span class="modal-old-price">${oldPrice.toLocaleString('tr-TR')} TL</span>` : ''}
         ${discount ? `<span class="modal-discount" style="animation:pulseBadge 2.2s ease-in-out infinite">%${discount} İndirim</span>` : ''}
       </div>
+      <div class="product-condition-slot modal-condition-slot">${getConditionSlotHtml(p)}</div>
       ${(() => { const mem = MEMBERSHIPS[State.membership]; return mem.discount > 0 ? `<div style="font-size:.8rem;color:var(--green);font-weight:700;margin-bottom:8px">${mem.icon} ${mem.label} fiyatın: ${Math.round(p.price*(1-mem.discount/100)).toLocaleString('tr-TR')} TL</div>` : ''; })()}
       <p class="modal-desc">${p.desc}</p>
       <div class="modal-member-benefits">
@@ -1203,7 +1196,7 @@ function addToCart(id, showToastFlag = true) {
   if (!p) return;
   const existing = State.cart.find(i => i.product.id === id);
   if (existing) { existing.qty++; logAction(`Sepette adet artırıldı: ${p.name} → ${existing.qty}`, 'cart'); }
-  else { State.cart.push({ product: p, qty: 1 }); logAction(`Sepete eklendi: ${p.name} – ${p.price} TL`, 'cart'); }
+  else { State.cart.push({ product: p, qty: 1 }); logAction(`Sepete eklendi: ${p.name} – ${p.price} TL [Koşul: ${getProductCondition(p.id)}]`, 'cart'); }
   updateCartUI();
   if (showToastFlag) showToast(`🛒 ${p.name} sepete eklendi!`, 'success');
 }
@@ -1480,8 +1473,8 @@ function openCompareModal() {
   const cols = `130px ${Array(prods.length).fill('1fr').join(' ')}`;
   const rows = [
     { label: 'Ürün',     fn: p => `<div class="compare-product-head"><div class="compare-product-img">${p.img && p.img.startsWith('http') ? `<img src="${p.img}" style="width:60px;height:60px;object-fit:cover;border-radius:8px">` : p.img}</div><div class="compare-product-name">${p.name}</div><div class="compare-product-brand">${p.brand}</div></div>` },
-    { label: 'Fiyat',    fn: p => `<div class="compare-price-cell">${p.price.toLocaleString('tr-TR')} TL${p.oldPrice ? `<div class="product-old-price" style="font-size:.72rem">${p.oldPrice.toLocaleString('tr-TR')} TL</div>` : ''}</div>` },
-    { label: 'İndirim',  fn: p => p.oldPrice ? `<span class="product-discount" style="font-size:.8rem;padding:3px 7px">%${Math.round((1-p.price/p.oldPrice)*100)} İndirim</span>` : '—' },
+    { label: 'Fiyat',    fn: p => `<div class="compare-price-cell">${p.price.toLocaleString('tr-TR')} TL${getDisplayOldPrice(p) ? `<div class="product-old-price" style="font-size:.72rem">${getDisplayOldPrice(p).toLocaleString('tr-TR')} TL</div>` : ''}</div>` },
+    { label: 'İndirim',  fn: p => getDisplayOldPrice(p) ? `<span class="product-discount" style="font-size:.8rem;padding:3px 7px">%${Math.round((1-p.price/getDisplayOldPrice(p))*100)} İndirim</span>` : '—' },
     { label: 'Puan',     fn: p => `<span class="stars" style="font-size:.9rem">${'★'.repeat(Math.floor(p.rating))}</span> <strong>${p.rating}</strong>` },
     { label: 'Yorum',    fn: p => `${p.reviews.toLocaleString('tr-TR')} değerlendirme` },
     { label: 'Kargo',    fn: _ => `<span style="color:var(--green);font-weight:700">✓ Ücretsiz</span>` },
@@ -2089,10 +2082,10 @@ function startFlashPopups() {
 }
 
 function showFlashPopup() {
-  const saleProducts = getProducts(State.gender).filter(p => p.oldPrice);
+  const saleProducts = getProducts().filter(p => getProductCondition(p.id) === 'discount');
   if (!saleProducts.length) return;
   const p = saleProducts[Math.floor(Math.random() * saleProducts.length)];
-  const discount = Math.round((1 - p.price / p.oldPrice) * 100);
+  const discount = Math.round((1 - p.price / getDisplayOldPrice(p)) * 100);
   const flashPrice = Math.round(p.price * 0.8);
   logAction(`Flaş indirim pop-up gösterildi: ${p.name}`, 'ui');
 
@@ -2288,7 +2281,7 @@ function openPurposeModal(p) {
   document.getElementById('purpose-overlay').classList.add('active');
   setTimeout(() => m.classList.add('open'), 10);
   const priceStr = p.price ? p.price.toLocaleString('tr-TR') + ' ₺' : '';
-  const oldPriceStr = p.oldPrice ? p.oldPrice.toLocaleString('tr-TR') + ' ₺' : '';
+  const oldPriceStr = getDisplayOldPrice(p) ? getDisplayOldPrice(p).toLocaleString('tr-TR') + ' ₺' : '';
   document.getElementById('purpose-content').innerHTML = `
     <div class="purpose-header">
       <div class="purpose-product-preview">
@@ -2411,7 +2404,8 @@ function saveFinancial() {
 }
 
 function _generateAIReview(p) {
-  const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
+  const oldPrice = getDisplayOldPrice(p);
+  const discount = oldPrice ? Math.round((1 - p.price / oldPrice) * 100) : 0;
 
   let score = 0;
   if (p.rating >= 4.8) score += 3;
@@ -2424,8 +2418,7 @@ function _generateAIReview(p) {
   if (discount >= 20) score += 2;
   else if (discount >= 8) score += 1;
 
-  const premiumBrands = new Set(['Nike','Adidas','Samsung','Sony','Apple','Chanel','MAC','CeraVe',
-    'Zara','Razer','Corsair','Logitech','Garmin',"L'Oréal","Levi's",'Champion','Steve Madden']);
+  const premiumBrands = new Set(['Apple','Samsung','Sony','Nike','Adidas','Dell','Chanel','Gucci','Dior','Fossil','Calvin Klein']);
   if (premiumBrands.has(p.brand)) score += 1;
 
   const pros = [];
@@ -2441,11 +2434,10 @@ function _generateAIReview(p) {
   else if (discount > 0) pros.push(`%${discount} indirim mevcut`);
 
   if (premiumBrands.has(p.brand)) pros.push(`${p.brand} marka güvencesi`);
-  if (p.badge === 'new') pros.push('Yeni sezon ürünü');
 
   if (p.rating < 4.4) cons.push('Puan biraz daha yüksek olabilirdi');
   if (p.reviews < 100) cons.push('Henüz sınırlı kullanıcı yorumu');
-  if (!p.oldPrice) cons.push('İndirim uygulanmıyor şu an');
+  if (!oldPrice) cons.push('İndirim uygulanmıyor şu an');
   if (p.price > 3000 && score < 5) cons.push('Yüksek fiyat segmentinde yer alıyor');
   if (cons.length === 0) cons.push('Stok durumu yakından takip edilmeli');
 
@@ -2558,15 +2550,15 @@ function _vaStats() {
   const minPrice  = Math.min(...prices);
   const maxPrice  = Math.max(...prices);
 
-  const discounted = products.filter(p => p.oldPrice);
+  const discounted = products.filter(p => getDisplayOldPrice(p));
   const avgDiscount = discounted.length
-    ? Math.round(discounted.reduce((s, p) => s + (1 - p.price / p.oldPrice) * 100, 0) / discounted.length)
+    ? Math.round(discounted.reduce((s, p) => s + (1 - p.price / getDisplayOldPrice(p)) * 100, 0) / discounted.length)
     : 0;
   const maxDiscount = discounted.length
-    ? Math.round(Math.max(...discounted.map(p => (1 - p.price / p.oldPrice) * 100)))
+    ? Math.round(Math.max(...discounted.map(p => (1 - p.price / getDisplayOldPrice(p)) * 100)))
     : 0;
 
-  const bestDeal   = [...discounted].sort((a, b) => (1 - b.price / b.oldPrice) - (1 - a.price / a.oldPrice)).slice(0, 3);
+  const bestDeal   = [...discounted].sort((a, b) => (1 - b.price / getDisplayOldPrice(b)) - (1 - a.price / getDisplayOldPrice(a))).slice(0, 3);
   const topRated   = [...products].sort((a, b) => b.rating - a.rating).slice(0, 3);
   const mostSold   = [...products].sort((a, b) => b.reviews - a.reviews).slice(0, 3);
   const cheapest   = [...products].sort((a, b) => a.price - b.price).slice(0, 3);
@@ -2619,7 +2611,7 @@ function _buildVAResponses() {
        + `📉 Ortalama indirim: <strong>%${s.avgDiscount}</strong>\n`
        + `🔥 En yüksek indirim: <strong>%${s.maxDiscount}</strong>\n\n`
        + `En iyi fırsatlar:\n`
-       + s.bestDeal.map(p => `• ${p.name} → %${Math.round((1 - p.price / p.oldPrice) * 100)} indirim · <strong>${fmt(p.price)} TL</strong>`).join('\n'),
+       + s.bestDeal.map(p => `• ${p.name} → %${Math.round((1 - p.price / getDisplayOldPrice(p)) * 100)} indirim · <strong>${fmt(p.price)} TL</strong>`).join('\n'),
     },
     {
       id: 'fiyat',
@@ -2718,9 +2710,8 @@ function closeAssistant() {
 
 function _vaWelcome() {
   const s = _vaStats();
-  const catName = State.gender === 'female' ? 'Kadın' : State.gender === 'male' ? 'Erkek' : '';
   const intro = s
-    ? `Merhaba! 👋 Ben <strong>ShopX Asistanı</strong>.<br>${catName ? `<strong>${catName}</strong> kategorisinde ` : ''}${s.products.length} ürün, ortalama <strong>${s.avgPrice.toLocaleString('tr-TR')} TL</strong> ile hizmetinizdeyim!`
+    ? `Merhaba! 👋 Ben <strong>ShopX Asistanı</strong>.<br>${s.products.length} ürün, ortalama <strong>${s.avgPrice.toLocaleString('tr-TR')} TL</strong> ile hizmetinizdeyim!`
     : `Merhaba! 👋 Ben <strong>ShopX Asistanı</strong>. Size nasıl yardımcı olabilirim?`;
   _vaAddMsg('bot', intro);
   setTimeout(_vaShowQuickReplies, 700);
@@ -3116,7 +3107,7 @@ document.addEventListener('mouseout', e => {
     const secs = (ms / 1000).toFixed(1);
     const pid = card.id.replace('pcard-', '');
     const p = getProducts(State.gender).find(x => x.id === pid);
-    if (p) logAction(`Ürün üzerinde ${secs}s beklendi: ${p.name} (${p.brand})`, 'product');
+    if (p) logAction(`Ürün üzerinde ${secs}s beklendi: ${p.name} (${p.brand}) [Koşul: ${getProductCondition(p.id)}]`, 'product');
   }
 }, { passive: true });
 
