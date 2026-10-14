@@ -9,9 +9,11 @@
     <title>ShopX – Türkiye'nin En Trend Mağazası</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <!-- v2: Trendyol/Hepsiburada derslerinden gelen görünüm katmanı (tasarim-dersleri/) -->
+    <link rel="stylesheet" href="v2.css" />
 </head>
 
 <body>
@@ -150,12 +152,12 @@
             <div class="header-top">
                 <div class="container">
                     <div class="header-top-inner">
-                        <span class="header-topbar-text"><span id="topbar-ship-text">🚚 Ücretsiz kargo fırsatı</span> &nbsp;|&nbsp; 🔒 Güvenli alışveriş &nbsp;|&nbsp; ⭐ 4.9/5 Müşteri Puanı</span>
+                        <span class="header-topbar-text"><span id="topbar-ship-text">Ücretsiz kargo fırsatı</span><span class="topbar-sep"></span>Güvenli alışveriş<span class="topbar-sep"></span>4.9/5 Müşteri Puanı</span>
                         <div class="header-top-actions">
                             <a href="#" id="link-track" onclick="openOrderTracking(); return false;">Sipariş Takibi</a>
-                            <a href="#" id="link-help" onclick="openHelp(); return false;">Yardım</a>
+                            <a href="#" id="link-help" onclick="openHelp(); return false;">Yardım &amp; Destek</a>
                             <a href="#" id="link-switch-gender" onclick="switchGender(); return false;"
-                                class="switch-gender-link">🔄 Baştan Başla</a>
+                                class="switch-gender-link">Baştan Başla</a>
                         </div>
                     </div>
                 </div>
@@ -165,15 +167,14 @@
                 <div class="container">
                     <div class="header-main-inner">
                         <div class="logo" id="main-logo" onclick="handleLogoClick()" title="Ana Sayfaya Git">
-                            <span class="logo-icon">🛍</span>
-                            <span class="logo-text">Shop<strong>X</strong></span>
+                            <span class="logo-text">shop<strong>x</strong></span>
                             <span class="gender-badge" id="gender-badge"></span>
                         </div>
 
                         <div class="search-bar" id="search-container">
                             <div class="search-inner">
                                 <input type="text" id="search-input" class="search-input"
-                                    placeholder="Ürün, kategori veya marka ara..."
+                                    placeholder="Ürün, kategori veya marka ara"
                                     oninput="handleSearchInput(this.value)"
                                     onfocus="logAction('Arama kutusuna tıklandı')"
                                     onkeydown="if(event.key==='Enter') doSearch()" aria-label="Ürün ara" />
@@ -207,7 +208,7 @@
                                     </svg>
                                     <span class="badge" id="fav-count">0</span>
                                 </div>
-                                <span>Favoriler</span>
+                                <span>Favorilerim</span>
                             </div>
 
                             <div class="header-action-item cart-action" id="cart-btn" onclick="openCart()" tabindex="0">
@@ -252,7 +253,7 @@
                     <div class="container">
                         <div class="flash-header">
                             <div class="flash-title-group">
-                                <span class="flash-icon">⚡</span>
+                                <svg class="flash-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                                 <h2 class="flash-title">Flaş İndirim</h2>
                             </div>
                             <div class="countdown" id="countdown">
@@ -263,7 +264,7 @@
                                 <div class="countdown-unit"><span id="cd-s">00</span><small>SN</small></div>
                             </div>
                             <a href="#" class="section-see-all" id="flash-see-all"
-                                onclick="showCategoryPage('flash', 'Flaş İndirim'); return false;">Tümünü Gör →</a>
+                                onclick="showCategoryPage('flash', 'Flaş İndirim'); return false;">Tümünü Gör</a>
                         </div>
                         <div class="products-grid" id="flash-products-grid"></div>
                     </div>
@@ -274,8 +275,7 @@
                         <div class="section-header">
                             <h2 class="section-title" id="recommended-title">Sana Özel Öneriler</h2>
                             <a href="#" class="section-see-all" id="rec-see-all"
-                                onclick="showCategoryPage('recommended','Önerilen Ürünler'); return false;">Tümünü Gör
-                                →</a>
+                                onclick="showCategoryPage('recommended','Önerilen Ürünler'); return false;">Tümünü Gör</a>
                         </div>
                         <div class="products-grid" id="recommended-products-grid"></div>
                     </div>
@@ -292,7 +292,7 @@
                         <div class="section-header">
                             <h2 class="section-title">Çok Satanlar</h2>
                             <a href="#" class="section-see-all" id="more-see-all"
-                                onclick="showCategoryPage('bestseller','Çok Satanlar'); return false;">Tümünü Gör →</a>
+                                onclick="showCategoryPage('bestseller','Çok Satanlar'); return false;">Tümünü Gör</a>
                         </div>
                         <div class="products-grid" id="more-products-grid"></div>
                     </div>
@@ -302,32 +302,34 @@
                     <div class="container">
                         <div class="budget-banner" id="budget-banner-box" onclick="openBudgetFilterModal()">
                             <div class="budget-banner-text">
-                                <strong id="budget-banner-label">💰 Bütçene Göre Ürünler</strong>
-                                <span id="budget-banner-sub">Bütçe tercihin güncellemek için tıkla</span>
+                                <strong id="budget-banner-label">Bütçene Göre Ürünler</strong>
+                                <span id="budget-banner-sub">Bütçe tercihini güncellemek için tıkla</span>
                             </div>
-                            <button class="budget-change-btn">Bütçeni Güncelle →</button>
+                            <button class="budget-change-btn">Bütçeni Güncelle</button>
                         </div>
-                        <button class="financial-profile-btn" onclick="event.stopPropagation();openFinancialModal()">💳 Finansal Profil</button>
+                        <button class="financial-profile-btn" onclick="event.stopPropagation();openFinancialModal()">Finansal Profil</button>
                     </div>
                 </section>
             </div>
 
             <div id="category-view" class="hidden">
                 <div class="container">
+                    <nav class="breadcrumb" aria-label="Konum">
+                        <a href="#" id="back-btn" onclick="goHome(); return false;">Ana Sayfa</a>
+                        <span class="breadcrumb-sep" aria-hidden="true">›</span>
+                        <span class="breadcrumb-current" id="breadcrumb-current">Kategori</span>
+                    </nav>
                     <div class="category-view-header">
-                        <button class="back-btn" id="back-btn" onclick="goHome()">
-                            ← <span id="back-label">Ana Sayfa</span>
-                        </button>
                         <h2 class="category-view-title" id="category-view-title">Kategori</h2>
+                        <span class="product-count-label" id="product-count-label">0 ürün</span>
                         <div class="sort-filter-row">
                             <select class="sort-select" id="sort-select" onchange="sortProducts(this.value)">
-                                <option value="default">Varsayılan Sıralama</option>
+                                <option value="default">Önerilen Sıralama</option>
                                 <option value="price-asc">Fiyat: Düşükten Yükseğe</option>
                                 <option value="price-desc">Fiyat: Yüksekten Düşüğe</option>
                                 <option value="rating">En Yüksek Puan</option>
                                 <option value="reviews">En Çok Değerlendirilen</option>
                             </select>
-                            <span class="product-count-label" id="product-count-label">0 ürün</span>
                         </div>
                     </div>
                     <div class="products-grid products-grid-wide" id="category-products-grid"></div>
@@ -340,8 +342,7 @@
                 <div class="footer-grid">
                     <div class="footer-col">
                         <div class="logo" onclick="goHome()">
-                            <span class="logo-icon">🛍</span>
-                            <span class="logo-text">Shop<strong>X</strong></span>
+                            <span class="logo-text">shop<strong>x</strong></span>
                         </div>
                         <p class="footer-desc">Türkiye'nin en trend e-ticaret platformu. Milyonlarca ürün, güvenli
                             alışveriş.</p>
@@ -368,10 +369,10 @@
                     <div class="footer-col">
                         <h4>Güvenli Ödeme</h4>
                         <div class="payment-badges">
-                            <span class="payment-badge">💳 Kredi Kartı</span>
-                            <span class="payment-badge">🏦 Havale</span>
-                            <span class="payment-badge">💰 Kapıda</span>
-                            <span class="payment-badge">📱 Mobil</span>
+                            <span class="payment-badge">Kredi Kartı</span>
+                            <span class="payment-badge">Havale / EFT</span>
+                            <span class="payment-badge">Kapıda Ödeme</span>
+                            <span class="payment-badge">Mobil Ödeme</span>
                         </div>
                     </div>
                 </div>
@@ -391,14 +392,14 @@
     <div class="drawer-overlay" id="cart-overlay" onclick="closeCart()"></div>
     <aside class="drawer" id="cart-drawer" aria-label="Sepetim">
         <div class="drawer-header">
-            <h3>🛒 Sepetim</h3>
-            <button class="drawer-close" id="cart-close" onclick="closeCart()">✕</button>
+            <h3>Sepetim</h3>
+            <button class="drawer-close" id="cart-close" onclick="closeCart()" aria-label="Kapat">✕</button>
         </div>
         <div class="drawer-body" id="cart-body">
             <div class="empty-state" id="cart-empty">
-                <span class="empty-icon">🛒</span>
-                <p>Sepetiniz boş</p>
-                <span>Ürün eklemek için alışverişe başlayın</span>
+                <span class="empty-icon-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg></span>
+                <p>Sepetinde ürün bulunmamaktadır.</p>
+                <button class="btn-primary" onclick="closeCart()">Alışverişe Başla</button>
             </div>
             <div id="cart-items"></div>
         </div>
@@ -406,8 +407,13 @@
             <div id="cart-tier-banner" class="cart-tier-banner" style="display:none"></div>
             <div class="cart-coupon-section">
                 <div class="coupon-input-row">
-                    <input type="text" id="coupon-input" class="coupon-input" placeholder="Kupon kodu (SHOPX10, KARGO...)" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')applyCoupon()" />
+                    <input type="text" id="coupon-input" class="coupon-input" placeholder="Kupon kodu gir" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')applyCoupon()" />
                     <button class="coupon-apply-btn" onclick="applyCoupon()">Uygula</button>
+                </div>
+                <div class="coupon-chips">
+                    <span class="coupon-chips-label">Kuponlarım:</span>
+                    <button class="coupon-chip" onclick="fillCoupon('SHOPX10')">SHOPX10 <small>%10</small></button>
+                    <button class="coupon-chip" onclick="fillCoupon('KARGO')">KARGO <small>Kargo Bedava</small></button>
                 </div>
                 <div id="coupon-status"></div>
             </div>
@@ -419,21 +425,22 @@
                 <div class="cart-summary-row total-row"><span>Toplam</span><strong id="cart-total-price">0 TL</strong></div>
             </div>
             <div id="cart-financial-impact" class="cart-financial-impact" style="display:none"></div>
-            <button class="checkout-btn" id="checkout-btn" onclick="openCheckout()">Ödemeye Geç →</button>
+            <button class="checkout-btn" id="checkout-btn" onclick="openCheckout()">Sepeti Onayla</button>
         </div>
     </aside>
 
     <div class="drawer-overlay" id="fav-overlay" onclick="closeFavorites()"></div>
     <aside class="drawer" id="fav-drawer" aria-label="Favorilerim">
         <div class="drawer-header">
-            <h3>❤️ Favorilerim</h3>
-            <button class="drawer-close" id="fav-close" onclick="closeFavorites()">✕</button>
+            <h3>Favorilerim</h3>
+            <button class="drawer-close" id="fav-close" onclick="closeFavorites()" aria-label="Kapat">✕</button>
         </div>
         <div class="drawer-body" id="fav-body">
             <div class="empty-state" id="fav-empty">
-                <span class="empty-icon">❤️</span>
-                <p>Favori listeniz boş</p>
-                <span>Beğendiğin ürünleri kaydet</span>
+                <span class="empty-icon-circle"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
+                <p>Favori listende ürün bulunmamaktadır.</p>
+                <span>Beğendiğin ürünleri kalp simgesiyle buraya ekleyebilirsin.</span>
+                <button class="btn-primary" onclick="closeFavorites()">Alışverişe Başla</button>
             </div>
             <div id="fav-items"></div>
         </div>
@@ -469,7 +476,7 @@
     <div class="modal-overlay" id="help-overlay" onclick="closeHelp()"></div>
     <div class="help-modal" id="help-modal" role="dialog" aria-label="Yardım" style="display:none">
         <button class="modal-close" onclick="closeHelp()">✕</button>
-        <h2 class="help-title">🙋 Yardım Merkezi</h2>
+        <h2 class="help-title">Yardım Merkezi</h2>
         <div class="help-tabs">
             <button class="help-tab active" onclick="switchHelpTab('faq', this)">SSS</button>
             <button class="help-tab" onclick="switchHelpTab('shipping', this)">Kargo</button>
@@ -522,7 +529,7 @@
 
     <div class="flash-popup" id="flash-popup" style="display:none">
         <div class="flash-popup-header">
-            <span class="flash-popup-tag">⚡ FLAŞ İNDİRİM</span>
+            <span class="flash-popup-tag">FLAŞ İNDİRİM</span>
             <button class="flash-popup-close" onclick="closeFlashPopup()">✕</button>
         </div>
         <div class="flash-popup-body" id="flash-popup-body"></div>
@@ -566,7 +573,7 @@
 
     <div class="compare-bar" id="compare-bar" style="display:none">
         <div class="compare-bar-inner">
-            <span class="compare-bar-label">⚖️ Karşılaştır (<span id="compare-count">0</span>/3)</span>
+            <span class="compare-bar-label">Karşılaştır (<span id="compare-count">0</span>/3)</span>
             <div class="compare-bar-items" id="compare-bar-items"></div>
             <div class="compare-bar-actions">
                 <button class="compare-btn-go" onclick="openCompareModal()">Karşılaştır</button>
@@ -588,7 +595,7 @@
             <div class="btb-progress-state" id="btb-progress-state">
                 <div class="btb-top-row">
                     <div class="btb-left">
-                        <span class="btb-state-icon" id="btb-icon">💰</span>
+                        <span class="btb-state-icon" id="btb-icon"></span>
                         <div class="btb-text-group">
                             <span class="btb-title">Günlük Bütçe</span>
                             <span class="btb-subtitle" id="btb-subtitle">Bütçe takibi aktif</span>
@@ -607,7 +614,7 @@
 
             <div class="btb-exceeded-state" id="btb-exceeded-state">
                 <div class="btb-warn-left">
-                    <div class="btb-warn-badge">⚠️</div>
+                    <div class="btb-warn-badge"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></div>
                     <div>
                         <span class="btb-warn-title">Günlük bütçeni aştın!</span>
                         <span class="btb-warn-sub" id="btb-over-msg">0 TL fazla harcama</span>
@@ -615,10 +622,10 @@
                 </div>
                 <div class="btb-warn-actions">
                     <button class="btb-upgrade-btn" onclick="openBudgetUpgradeModal()">
-                        Profili Düzenle ✏️
+                        Profili Düzenle
                     </button>
                     <button class="btb-checkout-btn" onclick="openCheckout()">
-                        Ödemeye Geç →
+                        Ödemeye Geç
                     </button>
                 </div>
             </div>
@@ -636,7 +643,7 @@
     <div class="toast-container" id="toast-container"></div>
 
     <button class="va-toggle" id="va-toggle" onclick="toggleAssistant()" aria-label="Sanal Asistan">
-        <span class="va-toggle-icon">💬</span>
+        <span class="va-toggle-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span>
         <span class="va-toggle-label">Asistan</span>
         <span class="va-badge" id="va-badge">1</span>
     </button>
@@ -644,7 +651,7 @@
     <div class="va-panel" id="va-panel">
         <div class="va-header">
             <div class="va-avatar-wrap">
-                <div class="va-avatar">🤖</div>
+                <div class="va-avatar">sx</div>
                 <span class="va-online-dot"></span>
             </div>
             <div class="va-header-info">
