@@ -8,7 +8,8 @@ satış değil, ölçüm.
 - **Ekip:** Emre (EmreBHCC, repo sahibi) + Levent Aslan (lvntaslann, collaborator). Kodun
   büyük kısmını 2026-06/07'de Levent yazdı.
 - **Dallar:** `main` kararlı hal. `experiment-conditions` en son iş (deneysel pazarlama
-  koşulları + eye-tracker düzeltmeleri), 2026-10-13 itibarıyla `main`'e birleşmedi.
+  koşulları + eye-tracker düzeltmeleri), Levent 2026-10-14'te PR #1 ile `main`'e birleştirdi
+  (d0f3ea4). `v2-profesyonel` bunun üstünde, `main`'in içerdiği her şeyi zaten taşıyor.
 - **Açık işler:** `YAPILACAKLAR.md`.
 - **README.md:** mimari ve API için iyi bir harita, ama kısmen eskimiş (bkz. "README'de eskimiş
   olanlar"). Kod ile çelişirse kod doğrudur.
