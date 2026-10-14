@@ -44,3 +44,26 @@ puan sinyali tüm koşullarda zaten açık ve tutarsız. Bu, koşullar arası fa
 **Bitti sayılması için:** Yorumu olan bir ürün (örn. `dj_163`) ile olmayan bir ürün
 (örn. `dj_162`) için kart, modal, karşılaştırma ve asistan aynı puanı/yorum sayısını gösteriyor.
 Tarayıcıda dört koşulun her birinden bir üründe kontrol edildi.
+
+## Eye-tracker kalibrasyonu (2026-10-15 incelemesi)
+
+`main`'deki d4a871a üzerinde kod okuması + bu makinede duman testi. Hesap doğru (tıklanan
+noktadan çıkarılan açı, `convert_gaze_to_screen_coordinates`'in tam tersi), ama:
+
+- [ ] **7 noktalı kalibrasyon pratikte tek noktaya iniyor.** `calibration_mouse` saniyede 10
+      örnek gönderiyor ve tıklama örnekleriyle aynı 5'lik `_calib_samples` tamponuna düşüyor.
+      Sonuç: ofset son tıklanan noktanın etrafındaki ~0.5 sn fare hareketinden çıkıyor, ilk
+      noktalar atılıyor. Öneri: tıklama örneklerini ayrı ve hepsini tut, fare örneklerini ya
+      kaldır ya da düşük ağırlıkla kullan ("göz fareye bakıyor" varsayımı zayıf).
+- [ ] **Sadece kaydırma (ofset), ölçek yok.** ±12°/±8° sabit kabul ediliyor, köşeler kayar.
+      7 nokta olduğu için yaw/pitch başına doğrusal uydurma (kazanç + ofset) yapılabilir.
+- [ ] **Oturum durdurulmadan yeniden başlatılırsa gaze yayını kesiliyor.** Eski sürecin
+      `_watch_eye_tracker`'ı `_gaze_broadcaster_active = False` yapıp yenisinin yayınını kapatıyor.
+- [ ] **Ekran ölçeklemesi.** Tarayıcı CSS piksel, `pyautogui.size()` fiziksel piksel gönderiyor.
+      %100'de sorun yok; %125/%150 ölçekli makinede `devicePixelRatio` ile çarpılmalı.
+- [ ] **Geç açılan mağaza sekmesi kalibrasyonu görmüyor.** `SESSION_STARTED` sadece başlangıçta
+      gidiyor; sekme sonra bağlanırsa `session_status` alıyor ama kalibrasyon ekranı açılmıyor.
+
+Duman testi: kamera açılıyor, otomatik kalibrasyon ~13 sn, durdurunca heatmap PNG/CSV/JSON
+yazılıyor. Tıklamalı kalibrasyon yapılmadan 227 noktanın 163'ü ekran kenarına yapıştı
+(beklenen; asıl doğruluk testi henüz yapılmadı).
