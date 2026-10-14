@@ -1,0 +1,518 @@
+/* ============================================================
+   SHOPX v2 — Profesyonel görünüm katmanı
+   Kaynak: tasarim-dersleri/ (Trendyol + Hepsiburada, 2026-10-14 ölçümleri).
+   style.css'ten sonra yüklenir. Temel değişkenler style.css :root'ta güncellendi; burası
+   bileşenleri yeniden biçimler. Her bölümün başında hangi derse dayandığı yazar.
+   Deney değişmezi: koşula göre değişen tek şey rozet + koşul satırı (.product-condition-slot).
+   Kart, modal ve fiyat düzeni dört koşulda birebir aynıdır.
+   ============================================================ */
+
+:root {
+  --radius: 8px;
+  --price: #333333;
+  --star: #ffc000;
+  --c-sale: #e53935;      /* indirim rozeti (v1 ile aynı ton) */
+  --c-scarcity: #d84315;  /* kıtlık rozeti/satırı (v1 #e65100'e yakın) */
+  --c-social: #1565c0;    /* sosyal kanıt rozeti/satırı (v1 ile aynı) */
+}
+
+body { font-size: 14px; line-height: 1.45; }
+.container { max-width: 1200px; }
+.ico { flex-shrink: 0; display: inline-block; vertical-align: middle; }
+
+.btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 44px; padding: 0 24px;
+  background: var(--accent); color: #fff;
+  border: none; border-radius: var(--radius);
+  font: 600 15px/1 var(--font); cursor: pointer;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+/* ------------------------------------------------------------
+   HEADER (Ders 02): ince link şeridi + logo/arama/eylemler + düz kategori satırı.
+   Gölge yok, ayrım ince çizgiyle.
+   ------------------------------------------------------------ */
+.header { box-shadow: none; border-bottom: 1px solid var(--border); }
+
+.header-top { background: #fff; padding: 0; border-bottom: none; }
+.header-top-inner { height: 30px; }
+.header-topbar-text { color: #999; font-size: 12px; font-weight: 400; display: inline-flex; align-items: center; }
+.topbar-sep { display: inline-block; width: 1px; height: 10px; background: #ddd; margin: 0 10px; }
+.header-top-actions { gap: 20px; font-size: 12px; }
+.header-top-actions a { color: #666; }
+.header-top-actions a:hover { color: var(--accent); text-decoration: none; }
+.switch-gender-link { font-weight: 400 !important; }
+
+.header-main { padding: 6px 0 12px; }
+.header-main-inner { gap: 32px; }
+
+.logo .logo-text { font-size: 30px; font-weight: 700; letter-spacing: -1px; color: #333; line-height: 1; }
+.logo .logo-text strong { color: var(--accent); font-weight: 700; }
+.gender-badge, #mem-badge-header { display: none !important; }
+
+.search-bar { max-width: 760px; }
+.search-inner {
+  height: 44px; border: 1px solid transparent; border-radius: var(--radius);
+  background: #f3f3f3;
+}
+.search-inner:focus-within { border-color: var(--accent); background: #fff; box-shadow: none; }
+.search-btn { order: -1; padding: 0 4px 0 14px; background: transparent; color: var(--accent); }
+.search-btn:hover { opacity: 1; }
+.search-btn svg { width: 20px; height: 20px; }
+.search-input { padding: 0 14px 0 8px; font-size: 15px; }
+.search-input::placeholder { color: #999; }
+
+.search-suggestions { border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+.search-suggestion-item { font-size: 14px; padding: 8px 14px; }
+.search-suggestion-item:hover { background: #fafafa; color: inherit; }
+.sug-img { width: 36px; height: 36px; flex-shrink: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: #fff; }
+.sug-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sug-price { margin-left: auto; font-weight: 600; color: var(--price); white-space: nowrap; }
+
+.header-actions { gap: 24px; }
+.header-action-item {
+  flex-direction: row; gap: 8px; padding: 6px 0;
+  font-size: 14px; font-weight: 600; color: #333; border-radius: 0;
+}
+.header-action-item:hover { background: none; color: var(--accent); }
+.header-action-item:hover svg { transform: none; }
+.header-action-item svg { width: 22px; height: 22px; }
+.badge { background: var(--accent); border: 2px solid #fff; font-size: 10px; font-weight: 700; top: -8px; right: -10px; }
+
+.nav { border-top: none; }
+.nav-list { gap: 28px; }
+.nav-list li a {
+  padding: 10px 0 8px; font-size: 14px; font-weight: 600; color: #333;
+  border-bottom: 2px solid transparent;
+}
+.nav-list li a:hover, .nav-list li a.active { background: none; color: var(--accent); border-bottom-color: var(--accent); }
+.nav-list li a.sale-tag { color: #333; }
+.nav-list li a.sale-tag::after {
+  content: 'Fırsat'; margin-left: 6px; padding: 1px 6px; border-radius: 10px;
+  background: var(--c-sale); color: #fff; font-size: 10px; font-weight: 600; vertical-align: 2px;
+}
+
+/* ------------------------------------------------------------
+   BANNER: düz renk, dev emoji yok, sağda kategorinin gerçek ürün görselleri.
+   ------------------------------------------------------------ */
+.hero-section { background: transparent; padding-top: 20px; }
+.banner-slider { max-width: 1200px; margin: 0 auto; border-radius: var(--radius); }
+.banner-slide { height: 300px; }
+.banner-slide-content { background: none; padding: 40px 56px; max-width: 55%; }
+.banner-slide-label { font-size: 12px; letter-spacing: 1.5px; font-weight: 600; color: rgba(255,255,255,.85); }
+.banner-slide-label::before { display: none; }
+.banner-slide-title { font-size: 36px; font-weight: 700; text-shadow: none; margin-bottom: 10px; }
+.banner-slide-sub { font-size: 16px; margin-bottom: 22px; }
+.banner-cta { padding: 0 24px; height: 44px; color: #333; font-weight: 600; box-shadow: none; }
+.banner-cta:hover { background: #f3f3f3; color: #333; box-shadow: none; }
+.banner-slide-visual {
+  position: absolute; right: 56px; top: 50%; transform: translateY(-50%);
+  display: flex; gap: 14px; pointer-events: none;
+}
+.banner-visual-tile {
+  width: 150px; height: 200px; background: #fff; border-radius: var(--radius);
+  padding: 10px; display: flex; align-items: center; justify-content: center;
+}
+.banner-visual-tile:nth-child(2) { transform: translateY(-14px); }
+.slider-btn { width: 40px; height: 40px; font-size: 22px; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+.slider-btn:hover { transform: translateY(-50%); box-shadow: 0 1px 4px rgba(0,0,0,.15); }
+
+/* ------------------------------------------------------------
+   BÖLÜM BAŞLIKLARI: sol renkli çubuk yok, sağda düz "Tümünü Gör ›".
+   ------------------------------------------------------------ */
+.section-title { font-size: 20px; font-weight: 600; color: #333; letter-spacing: 0; }
+.section-title::before { display: none; }
+.section-header { margin-bottom: 14px; }
+.section-see-all { border: none; padding: 0; font-size: 14px; font-weight: 600; color: #333; border-radius: 0; }
+.section-see-all::after { content: ' ›'; font-size: 18px; vertical-align: -1px; }
+.section-see-all:hover { background: none; color: var(--accent); }
+
+.products-section, .flash-sale-section { background: transparent; padding: 24px 0 8px; margin-bottom: 0; }
+
+/* Flaş indirim başlığı: koyu gradient kutu yerine beyaz zemin, turuncu şimşek, koyu sayaç */
+.flash-header { background: none; margin: 0 0 14px; padding: 0; border-radius: 0; }
+.flash-icon { color: var(--accent); }
+.flash-title { font-size: 20px; font-weight: 600; color: #333; }
+.countdown { gap: 4px; }
+.countdown-unit { background: #333; border: none; border-radius: 4px; padding: 4px 7px; min-width: 38px; backdrop-filter: none; }
+.countdown-unit span { font-size: 15px; font-weight: 700; }
+.countdown-unit small { font-size: 9px; color: rgba(255,255,255,.7); }
+.countdown-sep { color: #333; font-size: 16px; }
+.flash-header .section-see-all { border: none; color: #333; }
+.flash-header .section-see-all:hover { background: none; color: var(--accent); }
+
+/* ------------------------------------------------------------
+   ÜRÜN GRİDİ VE KARTI (Ders 03, 04)
+   ------------------------------------------------------------ */
+/* Ana sayfa bölümleri 5 ürünlük (flaş 5, öneri 5, çok satan 10): 5 sütun. Kategori sayfası 4 sütun. */
+.products-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.products-grid-wide { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+.product-card {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: #fff; transition: box-shadow .15s ease;
+}
+.product-card:hover { transform: none; border-color: var(--border); box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+
+.product-img-wrap { aspect-ratio: 3 / 4; background: #fff; padding: 12px; }
+.product-card:hover .product-img-wrap img { transform: none; }
+
+/* Koşul rozeti: sol üst, ifade metni, tüm koşullarda aynı biçim */
+.product-badge {
+  top: 10px; left: 10px; padding: 4px 8px; border-radius: 4px;
+  font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: 0; line-height: 1.2;
+}
+.badge-sale { background: var(--c-sale); }
+.badge-scarcity { background: var(--c-scarcity); }
+.badge-social { background: var(--c-social); }
+
+/* Favori: sağ üst, beyaz daire, hep görünür (Trendyol). Aktifken dolu turuncu kalp. */
+.product-fav-btn {
+  top: 10px; right: 10px; bottom: auto;
+  width: 36px; height: 36px; min-width: 0; padding: 0;
+  border-radius: 50%; border: none; background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  opacity: 1; color: #666; flex-direction: row;
+}
+.product-fav-btn:hover { transform: none; color: var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+.product-fav-btn.active { color: var(--accent); }
+.product-fav-btn.active svg, .modal-fav-btn#modal-fav-btn.active svg { fill: currentColor; }
+
+/* Karşılaştır: favorinin altında, sadece hover'da (aktifse hep görünür) */
+.product-compare-btn {
+  top: 52px; right: 10px; bottom: auto; left: auto;
+  width: 36px; height: 36px; min-width: 0; padding: 0;
+  border-radius: 50%; border: none; background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15); color: #666; flex-direction: row;
+}
+.product-compare-btn:hover { transform: none; color: var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+.product-compare-btn.active { background: #fff; color: var(--accent); border: 1px solid var(--accent); }
+
+/* Koşul satırı: tek satır, sabit yükseklik (kart boyu koşullar arasında eşit) */
+.product-condition-slot { min-height: 26px; padding: 0 12px; border-top: 1px solid #f3f3f3; }
+.condition-msg { display: block; font-size: 12px; font-weight: 600; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.condition-msg strong { font-weight: 700; }
+.condition-scarcity { color: var(--c-scarcity); }
+.condition-social { color: var(--c-social); }
+
+.product-body { padding: 8px 12px 12px; }
+.product-brand-row { display: none; }
+.product-name {
+  font-size: 14px; font-weight: 400; color: #333; line-height: 18px;
+  height: 36px; margin-bottom: 6px; flex: none;
+}
+.product-name .product-brand {
+  display: inline; font-size: inherit; font-weight: 700; color: #333;
+  text-transform: none; letter-spacing: 0; margin: 0;
+}
+
+.product-rating { gap: 4px; margin-bottom: 8px; font-size: 12px; }
+.rating-num { font-size: 12px; color: #333; }
+.rating-num.muted { color: #999; }
+.stars { color: var(--star); font-size: 13px; letter-spacing: 0; line-height: 1; }
+.stars-empty { color: #ddd; }
+.rating-count { font-size: 12px; color: #999; }
+
+.product-price-row { justify-content: space-between; align-items: flex-end; flex-wrap: nowrap; gap: 8px; }
+.product-price-stack { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; min-width: 0; }
+.product-price { font-size: 17px; font-weight: 700; color: var(--price); white-space: nowrap; }
+.product-old-price { font-size: 13px; color: #999; white-space: nowrap; }
+.product-discount {
+  display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 6px;
+  border-radius: 4px; background: var(--c-sale); color: #fff;
+}
+
+/* Sepete ekle: fiyatın sağında küçük ikon düğme (Hepsiburada), hep görünür */
+.product-add-btn {
+  width: 36px; height: 36px; padding: 0; margin: 0; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #fff; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: var(--radius);
+  opacity: 1; transform: none; transition: background .15s, color .15s;
+}
+.product-card:hover .product-add-btn { opacity: 1; transform: none; }
+.product-add-btn:hover { background: var(--accent); color: #fff; opacity: 1; transform: none !important; }
+
+.product-member-strip { font-size: 12px; margin-top: 8px; padding: 0; background: none; border: none; color: #666; }
+.product-member-strip strong { color: var(--accent); }
+.member-active, .member-upgrade { background: none !important; border: none !important; color: #666 !important; padding: 0 !important; }
+.product-free-ship { display: flex; align-items: center; gap: 5px; margin-top: 4px; min-height: 16px; font-size: 12px; font-weight: 600; color: #0a8a3f; }
+.product-free-ship .ico { color: #0a8a3f; }
+
+.skeleton-card .product-img-wrap { aspect-ratio: 3 / 4 !important; }
+
+/* Promo kartları: düz renk, kart zıplamaz */
+.promo-section { padding: 16px 0 0; }
+.promo-grid { gap: 20px; }
+.promo-card { border-radius: var(--radius); min-height: 120px; padding: 22px; }
+.promo-card::after { display: none; }
+.promo-card:hover { transform: none; box-shadow: none; filter: brightness(1.05); }
+.promo-card h3 { font-size: 18px; font-weight: 600; }
+.promo-card p { font-size: 14px; }
+
+/* ------------------------------------------------------------
+   LİSTELEME (Ders 05): yol çubuğu, başlık + sonuç sayısı, sağda sıralama
+   ------------------------------------------------------------ */
+.breadcrumb { display: flex; align-items: center; gap: 8px; padding: 16px 0 4px; font-size: 13px; color: #666; }
+.breadcrumb a { color: #666; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb-sep { color: var(--accent); font-size: 15px; }
+.breadcrumb-current { color: #333; font-weight: 600; }
+
+.category-view-header { background: transparent; padding: 8px 0 16px; gap: 10px; align-items: baseline; }
+.category-view-title { font-size: 20px; font-weight: 600; }
+.product-count-label { font-size: 14px; color: #999; }
+.sort-select { height: 38px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; }
+
+/* ------------------------------------------------------------
+   ÜRÜN DETAYI (Ders 06)
+   ------------------------------------------------------------ */
+.modal-overlay, .drawer-overlay { backdrop-filter: none; }
+.product-modal { border-radius: 12px; max-width: 1080px; box-shadow: 0 12px 48px rgba(0,0,0,.2); }
+.modal-close { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.15); border: none; }
+.product-modal-inner { grid-template-columns: 1fr 1.1fr; }
+
+.modal-img-side {
+  background: #fff; border-radius: 12px 0 0 12px; border-right: 1px solid var(--border);
+  min-height: 0; padding: 24px; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 12px;
+  align-self: start; position: sticky; top: 0;
+}
+.modal-main-img { aspect-ratio: 3 / 4; max-height: 540px; display: flex; align-items: center; justify-content: center; }
+.modal-main-img img { max-height: 540px; }
+.modal-thumbs { display: flex; gap: 8px; justify-content: center; }
+.modal-thumb {
+  width: 56px; height: 72px; padding: 4px; background: #fff;
+  border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+}
+.modal-thumb.active { border: 2px solid var(--accent); padding: 3px; }
+
+.modal-info-side { padding: 28px 32px; }
+.modal-ribbon-row { margin-bottom: 10px; }
+.modal-ribbon-row .product-badge { position: static; display: inline-block; }
+.modal-name { font-size: 20px; font-weight: 400; line-height: 26px; color: #333; margin-bottom: 8px; padding-right: 32px; }
+.modal-name .modal-brand { font-size: inherit; font-weight: 700; color: #333; text-transform: none; letter-spacing: 0; margin: 0; }
+.modal-rating { gap: 6px; margin-bottom: 16px; font-size: 13px; }
+.modal-rating .stars { font-size: 15px; }
+.modal-rating .rating-num { font-size: 13px; font-weight: 600; }
+.modal-rating .rating-count { font-size: 13px; color: #666; }
+
+.modal-price-row { gap: 10px; margin-bottom: 8px; align-items: baseline; }
+.modal-price { font-size: 26px; font-weight: 700; color: var(--price); }
+.modal-old-price { font-size: 16px; color: #999; }
+.modal-condition-slot { border-top: none; padding: 0; min-height: 22px; margin: 0 0 12px; }
+.modal-condition-slot .condition-msg { font-size: 14px; }
+.modal-member-price { font-size: 13px; color: #666; margin-bottom: 10px; }
+.modal-member-price strong { color: var(--accent); }
+
+.modal-member-benefits { border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 12px; margin-bottom: 16px; background: #fff; }
+.mmb-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 13px; background: none !important; border: none !important; }
+.mmb-row + .mmb-row { border-top: 1px solid #f3f3f3 !important; }
+.mmb-label { font-weight: 600; min-width: 52px; }
+.mmb-price { font-weight: 600; }
+.mmb-ship { color: #666; font-size: 12px; }
+.mmb-badge { margin-left: auto; font-size: 11px; color: var(--accent); font-weight: 600; background: none; }
+
+.mem-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.mem-dot-lg { width: 32px; height: 32px; }
+.mem-dot.mem-bronze { background: #cd7f32; }
+.mem-dot.mem-silver { background: #a8a8a8; }
+.mem-dot.mem-gold { background: #d4a017; }
+.mem-dot.mem-platinum { background: #6d8ea0; }
+
+.modal-qty-row { gap: 12px; margin-bottom: 14px; }
+.modal-qty-label { font-size: 14px; color: #666; }
+.modal-qty-controls { border: 1px solid var(--border); border-radius: var(--radius); padding: 2px; gap: 4px; }
+.modal-qty-controls .qty-btn { width: 32px; height: 32px; border-radius: 6px; background: #fff; }
+.qty-btn:hover { background: #f3f3f3; color: #333; border-color: var(--border); }
+
+.modal-actions { gap: 10px; margin-bottom: 16px; }
+.modal-add-cart { height: 48px; padding: 0; font-size: 17px; font-weight: 600; border-radius: var(--radius); background: var(--accent); }
+.modal-add-cart:hover { opacity: 1; background: var(--accent-hover); }
+.modal-fav-btn {
+  width: 48px; height: 48px; min-width: 48px; padding: 0; justify-content: center;
+  border: 1px solid var(--border); border-radius: var(--radius); color: #666;
+}
+.modal-fav-btn:hover, .modal-fav-btn.active { background: #fff; border-color: var(--accent); color: var(--accent); }
+
+.modal-trust { border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 14px; margin-bottom: 20px; }
+.modal-trust-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; font-size: 13px; color: #333; }
+.modal-trust-item + .modal-trust-item { border-top: 1px solid #f3f3f3; }
+.modal-trust-item .ico { color: #999; }
+
+.modal-section { margin-bottom: 20px; }
+.modal-section-title { font-size: 16px; font-weight: 600; color: #333; margin-bottom: 8px; }
+.modal-desc { font-size: 14px; color: #666; border-top: none; padding-top: 0; margin-bottom: 0; line-height: 1.6; }
+
+.ai-review-card { background: #fff !important; border: 1px solid var(--border) !important; border-radius: var(--radius) !important; box-shadow: none !important; }
+.ai-review-icon { background: none !important; color: #7723db; width: auto !important; height: auto !important; font-size: 0 !important; }
+.ai-review-badge { background: #f4ecfd !important; color: #7723db !important; border: none !important; }
+.ai-review-score-fill { background: #7723db !important; }
+.user-reviews-section .ur-card { border-radius: var(--radius); }
+
+/* ------------------------------------------------------------
+   SEPET / FAVORİ ÇEKMECESİ, BOŞ DURUMLAR (Ders 08)
+   ------------------------------------------------------------ */
+.drawer { box-shadow: -4px 0 24px rgba(0,0,0,.12); }
+.drawer-header h3 { font-size: 18px; font-weight: 600; }
+.drawer-close { background: #fff; }
+.drawer-footer { border-top: 1px solid var(--border); }
+
+.cart-item, .fav-item { background: #fff; border-radius: var(--radius); }
+.cart-item:hover, .fav-item:hover { border-color: var(--border); }
+.cart-item-img, .fav-item-img { background: #fff; padding: 4px; }
+.cart-item-img img, .fav-item-img img { object-fit: contain; }
+.cart-item-name, .fav-item-name { font-size: 13px; font-weight: 400; color: #333; }
+.cart-item-name strong, .fav-item-name strong { font-weight: 700; }
+.cart-item-price, .fav-item-price { font-size: 15px; font-weight: 700; color: var(--price); }
+.item-delete-btn { background: #fff; border: 1px solid var(--border); color: #999; width: 32px; height: 32px; border-radius: var(--radius); }
+.item-delete-btn:hover { background: #fff; color: var(--c-sale); border-color: var(--c-sale); }
+.item-cart-btn {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  background: #fff; color: var(--accent); border: 1px solid var(--accent); border-radius: var(--radius); cursor: pointer;
+}
+.item-cart-btn:hover { background: var(--accent); color: #fff; }
+
+.empty-state { gap: 12px; padding: 48px 20px; }
+.empty-state p { font-size: 16px; font-weight: 600; color: #333; }
+.empty-state span { font-size: 13px; color: #999; max-width: 260px; }
+.empty-icon-circle, .empty-state .empty-ico {
+  width: 64px; height: 64px; border-radius: 50%; background: #fff3eb; color: var(--accent);
+  display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;
+}
+
+.total-row { font-weight: 700; }
+.total-row strong { color: var(--price); font-size: 18px; }
+.checkout-btn { height: 48px; padding: 0; font-size: 16px; font-weight: 600; letter-spacing: 0; }
+.checkout-btn:hover { opacity: 1; background: var(--accent-hover); }
+
+.coupon-chips { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.coupon-chips-label { font-size: 12px; color: #666; }
+.coupon-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
+  border: 1px dashed var(--accent); border-radius: 6px; background: #fff7f2;
+  font: 600 12px/1.2 var(--font); color: var(--accent); cursor: pointer;
+}
+.coupon-chip small { font-weight: 400; color: #666; font-size: 11px; }
+.coupon-ok { display: inline-flex; align-items: center; gap: 6px; }
+
+.tier-active-label, .tier-banner-msg { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* ------------------------------------------------------------
+   ÖDEME
+   ------------------------------------------------------------ */
+.checkout-summary-row.discount span:last-child { color: #0a8a3f; font-weight: 600; }
+.order-success-icon { color: #0a8a3f; display: flex; justify-content: center; }
+.checkout-next-btn { border-radius: var(--radius); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* ------------------------------------------------------------
+   TOAST: emoji yerine türe göre ikon
+   ------------------------------------------------------------ */
+.toast { border-radius: var(--radius); font-weight: 400; font-size: 14px; color: #333; box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+.toast-success { border-left-color: #0a8a3f; } .toast-success .toast-ico { color: #0a8a3f; }
+.toast-error { border-left-color: var(--c-sale); } .toast-error .toast-ico { color: var(--c-sale); }
+.toast-info { border-left-color: #666; } .toast-info .toast-ico { color: #666; }
+
+/* ------------------------------------------------------------
+   ASİSTAN DÜĞMESİ, BÜTÇE ÇUBUĞU, DİĞER
+   ------------------------------------------------------------ */
+.va-toggle-icon { display: inline-flex; }
+.va-avatar { font-weight: 700; font-size: 14px; color: #fff; background: var(--accent) !important; text-transform: lowercase; }
+.btb-state-icon { display: inline-flex; align-items: center; justify-content: center; }
+.btb-warn-badge { display: flex; align-items: center; justify-content: center; }
+.bum-icon, .bum-tier-icon, .bum-tier-arrow { display: inline-flex; align-items: center; justify-content: center; }
+.gift-section-text { display: inline-flex; align-items: center; gap: 6px; }
+.gift-balance-ico { color: var(--accent); }
+.nsb-icon { display: inline-flex; }
+.info-modal, .help-modal, .checkout-modal, .compare-modal { border-radius: 12px !important; }
+.payment-badge { font-weight: 400; }
+
+@media (max-width: 1100px) {
+  .products-grid, .products-grid-wide { grid-template-columns: repeat(3, 1fr); }
+  .banner-slide-visual { display: none; }
+  .banner-slide-content { max-width: 100%; }
+}
+@media (max-width: 768px) {
+  .products-grid, .products-grid-wide { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .header-topbar-text { display: none; }
+  .product-modal-inner { grid-template-columns: 1fr; }
+  .modal-img-side { position: static; border-right: none; border-bottom: 1px solid var(--border); border-radius: 12px 12px 0 0; }
+}
+
+/* ------------------------------------------------------------
+   v1'DE HİÇ STİLİ OLMAYAN BÖLÜMLER (hata): ödeme düğmeleri, adres formu, ödeme simülasyonu,
+   sipariş onayı, yükleniyor animasyonu, SSS, bilgi pencereleri. Denek bu ekranları düz metin
+   olarak görüyordu.
+   ------------------------------------------------------------ */
+.checkout-form { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 13px; font-weight: 600; color: #333; }
+.form-input, .form-select {
+  height: 44px; padding: 0 14px; width: 100%;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: #fff; font: 400 14px var(--font); color: #333; outline: none;
+}
+.form-input:focus, .form-select:focus { border-color: var(--accent); }
+.form-input::placeholder { color: #aaa; }
+
+.checkout-next-btn {
+  display: flex; width: 100%; height: 48px; margin-top: 8px;
+  background: var(--accent); color: #fff; border: none; cursor: pointer;
+  font: 600 16px var(--font);
+}
+.checkout-next-btn:hover { background: var(--accent-hover); }
+.checkout-back-link { display: block; text-align: center; margin-top: 12px; font-size: 14px; color: #666; cursor: pointer; }
+.checkout-back-link:hover { color: var(--accent); }
+.checkout-cart-item-price { color: var(--price) !important; }
+.checkout-summary-row.total span:last-child { color: var(--price); }
+
+.sim-section-title { font-size: 14px; font-weight: 600; color: #333; margin: 18px 0 8px; }
+.sim-no-financial { padding: 12px 14px; border-radius: var(--radius); background: #fafafa; border: 1px solid var(--border); font-size: 13px; color: #666; }
+.sim-financial-grid, .financial-summary, .sim-result-card {
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 14px; margin-bottom: 12px;
+}
+.sim-fin-row, .financial-summary-row, .sim-result-row {
+  display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 14px;
+}
+.sim-fin-row + .sim-fin-row, .financial-summary-row + .financial-summary-row, .sim-result-row + .sim-result-row { border-top: 1px solid #f3f3f3; }
+.sim-fin-row.debit strong, .financial-summary-row.debit strong { color: #666; font-weight: 600; }
+.sim-fin-row.net, .financial-summary-row.net { font-weight: 600; }
+.sim-verdict { margin: 6px 0 8px; padding: 8px 12px; border-left: 3px solid; border-radius: 4px; background: #fafafa; font-size: 13px; font-weight: 600; }
+.cc-holder-block, .cc-expiry-block { display: flex; flex-direction: column; gap: 2px; }
+
+.payment-processing { text-align: center; padding: 48px 16px; }
+.payment-processing h3 { font-size: 18px; font-weight: 600; margin: 18px 0 6px; }
+.payment-processing p { font-size: 14px; color: #666; }
+.payment-spinner {
+  width: 44px; height: 44px; margin: 0 auto; border-radius: 50%;
+  border: 4px solid #f3f3f3; border-top-color: var(--accent); animation: v2spin 0.9s linear infinite;
+}
+@keyframes v2spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .payment-spinner { animation-duration: 2.5s; } }
+
+.order-success { text-align: center; padding: 16px 0 4px; }
+.order-success-icon { width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 50%; background: #e8f5ec; align-items: center; }
+.order-success h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.order-success > p { font-size: 14px; color: #666; margin-bottom: 18px; }
+.order-number-box { display: inline-block; padding: 10px 24px; border: 1px dashed var(--border); border-radius: var(--radius); margin-bottom: 18px; }
+.order-number-label { font-size: 12px; color: #999; }
+.order-number { font-size: 18px; font-weight: 700; letter-spacing: .5px; }
+.order-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; text-align: left; }
+.order-detail-item { border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; }
+.order-detail-label { font-size: 12px; color: #999; margin-bottom: 2px; }
+.order-detail-value { font-size: 15px; font-weight: 600; }
+.order-continue-btn {
+  width: 100%; height: 48px; border: none; border-radius: var(--radius);
+  background: var(--accent); color: #fff; font: 600 16px var(--font); cursor: pointer;
+}
+
+.info-modal-title { font-size: 20px; font-weight: 600; color: #333; margin: 0 40px 16px 0; }
+.info-modal-body { font-size: 14px; color: #666; line-height: 1.6; }
+.info-modal-body h4 { color: #333; font-size: 15px; margin: 14px 0 6px; }
+.info-modal-body ul { list-style: disc; padding-left: 20px; }
+.faq-item { border-bottom: 1px solid #f3f3f3; padding: 12px 0; }
+.faq-q { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 4px; }
+.faq-a { font-size: 14px; color: #666; line-height: 1.55; }
+.payment-method-info { flex: 1; }
+.payment-method-name { font-size: 14px; font-weight: 600; }
+.tier-ship { color: inherit; opacity: .8; }

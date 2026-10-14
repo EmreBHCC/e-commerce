@@ -45,7 +45,7 @@ const DATA = {
     { label: 'Elektronik',            cat: 'elektronik' },
     { label: 'Oyun & Bilgisayar',     cat: 'oyun' },
     { label: 'Spor & Outdoor',        cat: 'spor' },
-    { label: '🔥 Kampanyalar',        cat: 'kampanya', sale: true },
+    { label: 'Kampanyalar',          cat: 'kampanya', sale: true },
   ],
 
   categories: [
@@ -60,15 +60,16 @@ const DATA = {
   ],
 
   banners: [
-    { bg: 'linear-gradient(135deg,#7a3b00 0%,#ff6000 50%,#ffb37a 100%)', label: 'YENİ SEZON 2026',    title: 'Yeni Sezon<br>Koleksiyonu',     sub: 'Binlerce üründe fırsatlar sizi bekliyor', cta: 'Keşfet',          emoji: '🛍️', cat: 'giyim'      },
-    { bg: 'linear-gradient(135deg,#263238 0%,#455a64 50%,#78909c 100%)', label: 'TEKNOLOJİ FIRSATI',  title: 'Elektronik &<br>Oyun Dünyası',  sub: 'En yeni donanımlar burada',                cta: 'Mağazaya Git',    emoji: '📱', cat: 'elektronik' },
-    { bg: 'linear-gradient(135deg,#1b5e20 0%,#388e3c 50%,#a5d6a7 100%)', label: 'OUTDOOR SEZONU',     title: 'Spor &<br>Outdoor Ekipmanları', sub: 'Aktif yaşam için en iyi ürünler',          cta: 'İncele',          emoji: '🏃', cat: 'spor'       },
+    /* v2: düz renk, emoji yok. Görsel: kategorinin ilk ürünü (ürünler yüklenince eklenir). */
+    { bg: '#FF6000', label: 'YENİ SEZON 2026',    title: 'Yeni Sezon<br>Koleksiyonu',     sub: 'Binlerce üründe fırsatlar sizi bekliyor', cta: 'Keşfet',          cat: 'giyim'      },
+    { bg: '#37474f', label: 'TEKNOLOJİ FIRSATI',  title: 'Elektronik &<br>Oyun Dünyası',  sub: 'En yeni donanımlar burada',                cta: 'Mağazaya Git',    cat: 'elektronik' },
+    { bg: '#2e7d32', label: 'OUTDOOR SEZONU',     title: 'Spor &<br>Outdoor Ekipmanları', sub: 'Aktif yaşam için en iyi ürünler',          cta: 'İncele',          cat: 'spor'       },
   ],
 
   promos: [
-    { bg: 'linear-gradient(135deg,#5d4037,#8d6e63)',  title: 'Yeni Giyim',        desc: 'Bu sezonun öne çıkan modelleri',      cat: 'giyim'      },
-    { bg: 'linear-gradient(135deg,#4a148c,#7b1fa2)',  title: 'Kozmetik Fırsatları', desc: 'Bakım ürünlerinde büyük indirim',   cat: 'kozmetik'   },
-    { bg: 'linear-gradient(135deg,#263238,#455a64)',  title: 'Elektronik & Oyun', desc: 'En yeni modeller, en iyi fiyat',      cat: 'elektronik' },
+    { bg: '#6d4c41', title: 'Yeni Giyim',          desc: 'Bu sezonun öne çıkan modelleri',   cat: 'giyim'      },
+    { bg: '#6a1b9a', title: 'Kozmetik Fırsatları', desc: 'Bakım ürünlerinde büyük indirim', cat: 'kozmetik'   },
+    { bg: '#37474f', title: 'Elektronik & Oyun',   desc: 'En yeni modeller, en iyi fiyat',  cat: 'elektronik' },
   ],
 };
 
@@ -98,23 +99,112 @@ const FALLBACK_PRODUCTS = [
   { id: 'fb8', name: 'Kamp Çadırı',              brand: 'ShopX', price: 2499, img: '⛺', rating: 4.5, reviews: 312,  desc: '2 kişilik, su geçirmez yapı.',             cat: 'spor'       },
 ];
 
+/* v2: Ekranda görünen Türkçe ad ve açıklama. Loglar p.name'i (DummyJSON'daki özgün ad) kullanmaya
+   devam eder: ürün kimliği v1 verisiyle karşılaştırılabilir kalsın diye. Ekran p.title'ı gösterir. */
+const TR_PRODUCTS = {
+  162: ['Mavi Kloş Elbise',                     'Canlı mavi rengi ve rahat kesimiyle günlükten davete her ortama uyan şık bir elbise.'],
+  163: ['Kız Çocuk Yazlık Elbise',              'Hafif kumaşı ve neşeli desenleriyle sıcak yaz günleri için serin ve rahat bir elbise.'],
+  164: ['Gri Midi Elbise',                      'Nötr gri tonu sayesinde hem şık hem günlük kombinlenebilen, gardırobun temel parçası.'],
+  165: ['Kısa Kloş Elbise',                     'Kısa boyu ve dinamik kesimiyle günlük kullanımda ve özel günlerde rahat bir seçenek.'],
+  166: ['Ekose Desenli Elbise',                 'Klasik ekose desen, sonbahar ve kış kombinlerine zamansız bir hava katar.'],
+  185: ['Siyah-Kahve Ev Terliği',               'Siyah ve kahve tonlarını bir araya getiren, gün boyu rahat kullanım için yumuşak terlik.'],
+  186: ['Calvin Klein Topuklu Ayakkabı',        'Kaliteli malzeme ve klasik tasarımıyla resmi davetlere uygun zarif topuklu ayakkabı.'],
+  187: ['Altın Rengi Kadın Ayakkabı',           'Altın rengi parlak yüzeyiyle özel günlerde kombininizi tamamlayan göz alıcı ayakkabı.'],
+  188: ['Pampi Günlük Ayakkabı',                'Konfor ve stili birleştiren, her gün rahatça giyilebilecek çok yönlü ayakkabı.'],
+  189: ['Kırmızı Stiletto',                     'Canlı kırmızı rengiyle davetlerde ve günlük kombinlerde iddialı bir görünüm sağlar.'],
+  172: ['Mavi Kadın El Çantası',                'Geniş iç hacmi ve çok bölmeli yapısıyla günlük kullanım için şık ve kullanışlı çanta.'],
+  173: ['Heshe Deri Kadın Çantası',             'Hakiki deri, zamansız tasarım ve sağlam işçilik. Her kombine uyan çok yönlü bir aksesuar.'],
+  174: ['Prada Kadın Çanta',                    'Prada logolu, özenli işçilikle üretilmiş ikonik tasarım çanta.'],
+  175: ['Beyaz Suni Deri Sırt Çantası',         'Sade beyaz tasarımı ve geniş hacmiyle günlük kullanıma uygun modern sırt çantası.'],
+  176: ['Siyah Kadın El Çantası',               'Klasik siyah rengi ve kullanışlı tasarımıyla her gardıropta olması gereken bir çanta.'],
+  1:   ['Essence Lash Princess Maskara',        'Hacim ve uzunluk veren, gün boyu kalıcı maskara. Hayvanlar üzerinde test edilmemiştir.'],
+  2:   ['Aynalı Far Paleti',                    'Geniş renk seçeneği sunan, dahili aynası sayesinde her yerde kullanılabilen far paleti.'],
+  3:   ['Sabitleyici Pudra',                    'İnce öğütülmüş, şeffaf formüllü pudra. Makyajı sabitler, parlamayı kontrol eder.'],
+  4:   ['Kırmızı Ruj',                          'Kremsi ve yoğun pigmentli formülüyle canlı ve kalıcı bir renk sunan klasik kırmızı ruj.'],
+  5:   ['Kırmızı Oje',                          'Hızlı kuruyan formülüyle evde salon kalitesinde parlak kırmızı tırnaklar.'],
+  190: ['IWC Ingenieur Otomatik Çelik Saat',    'Paslanmaz çelik kasa ve otomatik mekanizma. Dayanıklı ve şık bir saat.'],
+  191: ['Rolex Cellini Moonphase',              'Ay evresi göstergesiyle Rolex ustalığını yansıtan özel bir saat.'],
+  192: ['Rolex Datejust Kadın Saat',            'Zamansız tasarımı ve tarih göstergesiyle hem zarif hem işlevsel ikonik kadın saati.'],
+  193: ['Altın Kaplama Kadın Saat',             'Altın kaplama kasası ve şık tasarımıyla her kombine ışıltı katan saat.'],
+  194: ['Kadın Kol Saati',                      'Rahat kayışı ve sade tasarımıyla günlük kullanıma uygun şık kol saati.'],
+  121: ['iPhone 5s',                            'Kompakt tasarımıyla bilinen klasik akıllı telefon. Eski bir model olsa da güvenilir bir deneyim sunar.'],
+  122: ['iPhone 6',                             'Daha geniş ekranı ve gelişmiş performansıyla şık ve yetenekli bir akıllı telefon.'],
+  123: ['iPhone 13 Pro',                        'Güçlü kamera sistemi, yüksek performanslı işlemci ve etkileyici ekran.'],
+  124: ['iPhone X',                             'Çerçevesiz OLED ekran, Face ID yüz tanıma ve üst düzey performans.'],
+  125: ['Oppo A57',                             'Şık tasarımı ve dengeli performansıyla uygun fiyatlı orta segment akıllı telefon.'],
+  78:  ['Apple MacBook Pro 14" Uzay Grisi',     'M1 Pro işlemcisi ve Retina ekranıyla güçlü ve ince bir dizüstü bilgisayar.'],
+  79:  ['Asus Zenbook Pro Çift Ekranlı Laptop', 'Çift ekranı sayesinde yaratıcı profesyoneller için verimli, yüksek performanslı dizüstü.'],
+  80:  ['Huawei Matebook X Pro',                'Yüksek çözünürlüklü dokunmatik ekranıyla ince ve şık bir dizüstü bilgisayar.'],
+  81:  ['Lenovo Yoga 920',                      'Esnek menteşesiyle hem dizüstü hem tablet olarak kullanılabilen 2\'si 1 arada bilgisayar.'],
+  82:  ['Dell XPS 13 9300 Laptop',              'Neredeyse çerçevesiz InfinityEdge ekranı ve yüksek performansıyla kompakt dizüstü.'],
+  137: ['Amerikan Futbolu Topu',                'Atma ve tutma için tasarlanmış klasik Amerikan futbolu topu.'],
+  138: ['Beyzbol Topu',                         'Dayanıklı deri kaplamalı standart beyzbol topu.'],
+  139: ['Beyzbol Eldiveni',                     'Topu yakalamak için tasarlanmış, konfor ve kontrol sağlayan beyzbol eldiveni.'],
+  140: ['Basketbol Topu',                       'İç ve dış mekânda kullanılabilen standart basketbol topu.'],
+  141: ['Basketbol Çemberi',                    'Panyaya monte edilen sağlam çember ve file seti.'],
+};
+
+/* v2: Gerçek mağazalardaki gibi 9 ile biten fiyat (1.229 TL). Önceki sürümde 10 TL'ye yuvarlıydı (1.230 TL). */
+function _realisticPrice(tl) {
+  return Math.max(9, Math.round(tl / 10) * 10 - 1);
+}
+
 function transformDJProduct(p, catId) {
-  const price = Math.round((p.price * USD_TO_TRY) / 10) * 10;
+  const price = _realisticPrice(p.price * USD_TO_TRY);
   const reviews = (p.reviews && p.reviews.length > 0)
     ? p.reviews.length * 47 + p.stock * 11
     : p.stock * 23 + 80;
+  const tr = TR_PRODUCTS[p.id];
   return {
     id:       `dj_${p.id}`,
     name:     p.title,
+    title:    tr ? tr[0] : p.title,
     brand:    p.brand || 'ShopX',
     price,
     img:      p.thumbnail,
     fullImg:  (p.images && p.images.length > 0) ? p.images[0] : p.thumbnail,
+    images:   (p.images && p.images.length > 0) ? p.images : [p.thumbnail],
     rating:   Math.round(p.rating * 10) / 10,
     reviews,
-    desc:     p.description,
+    desc:     tr ? tr[1] : p.description,
     cat:      catId,
   };
+}
+
+/* Ekranda gösterilecek ürün adı. Loglarda p.name kullanılır. */
+function pn(p) { return (p && (p.title || p.name)) || ''; }
+
+/* v2: Arayüz ikonları emoji değil çizgi SVG (Lucide, MIT). */
+const ICONS = {
+  heart:   '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  cart:    '<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>',
+  cartPlus:'<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/><path d="M12 7v6M9 10h6"/>',
+  scale:   '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+  truck:   '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  trash:   '<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>',
+  x:       '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  check:   '<path d="M20 6 9 17l-5-5"/>',
+  info:    '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+  alert:   '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  shield:  '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  undo:    '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+  chat:    '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  tag:     '<path d="M12.59 2.59A2 2 0 0 0 11.17 2H4a2 2 0 0 0-2 2v7.17a2 2 0 0 0 .59 1.42l8.7 8.7a2.43 2.43 0 0 0 3.42 0l6.58-6.58a2.43 2.43 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>',
+  gift:    '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>',
+  search:  '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  chevronRight: '<path d="m9 18 6-6-6-6"/>',
+  lock:    '<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  user:    '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  sparkle: '<path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0L14.06 8.5A2 2 0 0 0 15.5 9.94l6.14 1.58a.5.5 0 0 1 0 .96L15.5 14.06a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/>',
+  package: '<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.7 5 7.7-5"/>',
+};
+function icon(name, size = 18, extraCls = '') {
+  return `<svg class="ico ${extraCls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+}
+
+/* Metnin başındaki emoji(ler)i at: toast ve başlıklarda ikon yerine kullanılmıştı. */
+function _stripLeadingEmoji(str) {
+  return String(str).replace(/^(?:[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}️‍]|\s)+/u, '');
 }
 
 let PRODUCTS = [];
@@ -163,14 +253,14 @@ function updateShippingTopbar() {
   if (!el) return;
   const threshold = calcFreeShipThreshold();
   const cost = calcShippingCost();
-  el.textContent = `🚚 ${threshold.toLocaleString('tr-TR')} TL üzeri ücretsiz kargo (altı ${cost} TL)`;
+  el.textContent = `${threshold.toLocaleString('tr-TR')} TL üzeri ücretsiz kargo (altı ${cost} TL)`;
 }
 
 const MEMBERSHIPS = {
-  bronze:   { label: 'Bronz',  icon: '🥉', discount: 0,  freeShipping: false, cls: 'mem-bronze'   },
-  silver:   { label: 'Gümüş', icon: '🥈', discount: 5,  freeShipping: false, cls: 'mem-silver'   },
-  gold:     { label: 'Altın',  icon: '🥇', discount: 10, freeShipping: true,  cls: 'mem-gold'     },
-  platinum: { label: 'Platin', icon: '💎', discount: 15, freeShipping: true,  cls: 'mem-platinum' },
+  bronze:   { label: 'Bronz',  icon: '', discount: 0,  freeShipping: false, cls: 'mem-bronze'   },
+  silver:   { label: 'Gümüş', icon: '', discount: 5,  freeShipping: false, cls: 'mem-silver'   },
+  gold:     { label: 'Altın',  icon: '', discount: 10, freeShipping: true,  cls: 'mem-gold'     },
+  platinum: { label: 'Platin', icon: '', discount: 15, freeShipping: true,  cls: 'mem-platinum' },
 };
 
 const COUPONS = {
@@ -190,7 +280,8 @@ const SPEND_TIERS = [
 
 function renderImg(img, alt, emojiSize) {
   if (img && (img.startsWith('http') || img.startsWith('/'))) {
-    return `<img src="${img}" alt="${alt || ''}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🛍',style:'font-size:${emojiSize||'2rem'};display:flex;align-items:center;justify-content:center;width:100%;height:100%;'}))">`;
+    /* v2: contain — ürün kırpılmaz, gerçek sitelerdeki gibi beyaz zemin üstünde bütün görünür */
+    return `<img src="${img}" alt="${(alt || '').replace(/"/g, '&quot;')}" style="width:100%;height:100%;object-fit:contain;border-radius:inherit;" loading="lazy" onerror="this.style.visibility='hidden'">`;
   }
   return `<span style="font-size:${emojiSize||'2rem'};display:flex;align-items:center;justify-content:center;width:100%;height:100%;">${img || '🛍'}</span>`;
 }
@@ -233,7 +324,7 @@ function getProductCondition(id) {
 }
 
 function _conditionAnchorPrice(price) {
-  return Math.round((price * 2) / 10) * 10;
+  return _realisticPrice(price * 2);
 }
 
 function _scarcityCount(id) {
@@ -248,21 +339,27 @@ function getDisplayOldPrice(p) {
   return getProductCondition(p.id) === 'discount' ? _conditionAnchorPrice(p.price) : null;
 }
 
+/* v2 (Ders 07): Rozet metni araştırma değişkeninin adı değil, mağaza dili ("Kıtlık" deneyi ele
+   veriyordu). Her koşul eşit doz alır: 1 rozet + 1 sinyal satırı. İndirimde sinyal satırı fiyatın
+   kendisidir (üstü çizili çapa fiyat), bu yüzden yuva boş kalır. Kontrol: rozet yok, satır yok. */
 function getConditionRibbon(p) {
   const condition = getProductCondition(p.id);
-  if (condition === 'discount') return '<span class="product-badge badge-sale">İndirim</span>';
-  if (condition === 'scarcity') return '<span class="product-badge badge-scarcity">Kıtlık</span>';
-  if (condition === 'social')   return '<span class="product-badge badge-social">Popüler</span>';
+  if (condition === 'discount') {
+    const old = getDisplayOldPrice(p);
+    return `<span class="product-badge badge-sale">%${Math.round((1 - p.price / old) * 100)} İndirim</span>`;
+  }
+  if (condition === 'scarcity') return '<span class="product-badge badge-scarcity">Tükenmek Üzere</span>';
+  if (condition === 'social')   return '<span class="product-badge badge-social">Çok Satan</span>';
   return '';
 }
 
 function getConditionSlotHtml(p) {
   const condition = getProductCondition(p.id);
   if (condition === 'scarcity') {
-    return `<div class="condition-msg condition-scarcity"><span>⏰ Son ${_scarcityCount(p.id)} ürün!</span><span>Bugün bitiyor</span><span>Stokta az kaldı</span></div>`;
+    return `<div class="condition-msg condition-scarcity">Son <strong>${_scarcityCount(p.id)} ürün</strong>, tükenmeden al!</div>`;
   }
   if (condition === 'social') {
-    return `<div class="condition-msg condition-social"><span>⭐ ${p.rating.toFixed(1)}</span><span>${_socialBuyers(p.id).toLocaleString('tr-TR')} kişi satın aldı</span><span>En çok satan</span></div>`;
+    return `<div class="condition-msg condition-social">Son 3 günde <strong>${_socialBuyers(p.id).toLocaleString('tr-TR')} kişi</strong> satın aldı!</div>`;
   }
   return `<div class="condition-msg"></div>`;
 }
@@ -534,7 +631,7 @@ function _showNoSessionWarning(show) {
     banner.id = 'no-session-banner';
     banner.className = 'no-session-banner';
     banner.innerHTML = `
-      <span class="nsb-icon">⚠️</span>
+      <span class="nsb-icon">${icon('alert', 16)}</span>
       <span class="nsb-text">Bu oturum <strong>kayıt altına alınmıyor</strong>. Admin panelinden bir oturum başlatın.</span>
       <button class="nsb-close" onclick="document.getElementById('no-session-banner').style.display='none'" title="Kapat">✕</button>
     `;
@@ -682,7 +779,6 @@ function _showCustomAdminPopup(title, body) {
   }
   popup.innerHTML = `
     <div style="background:#1c2540;border:1px solid rgba(99,102,241,.4);border-radius:16px;padding:28px 32px;max-width:420px;width:100%;text-align:center;box-shadow:0 0 40px rgba(99,102,241,.3)">
-      <div style="font-size:2.2rem;margin-bottom:12px">📢</div>
       <h2 style="color:#e2e8f0;font-size:1.25rem;font-weight:800;margin-bottom:10px">${title || ''}</h2>
       <p style="color:#94a3b8;font-size:.9rem;line-height:1.6;margin-bottom:20px">${body || ''}</p>
       <button onclick="document.getElementById('admin-custom-popup').style.display='none'" style="padding:10px 24px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit">Tamam</button>
@@ -850,6 +946,7 @@ async function initShop() {
   State.conditionMap = assignConditions(PRODUCTS, State.participantName || 'default');
   const products = getProducts();
 
+  fillBannerVisuals(products);
   buildFlashProducts(products.slice(0, 5));
   buildRecommendedProducts(getFilteredByBudget(products).slice(0, 5));
   buildMoreProducts(products.slice(5, 15));
@@ -892,10 +989,10 @@ function updateBudgetBanner() {
   if (!lbl || !sub) return;
   const netIncome = State.salary - State.monthlyCredit - State.monthlyDebt;
   if (netIncome > 0) {
-    lbl.textContent = `💰 ${netIncome.toLocaleString('tr-TR')} TL harcanabilir gelir`;
+    lbl.textContent = `${netIncome.toLocaleString('tr-TR')} TL harcanabilir gelir`;
     sub.textContent = 'Profilini güncellemek için tıkla';
   } else {
-    lbl.textContent = '💰 Finansal Profiline Göre Ürünler';
+    lbl.textContent = 'Finansal Profiline Göre Ürünler';
     sub.textContent = 'Profilini güncellemek için tıkla';
   }
 }
@@ -946,6 +1043,8 @@ function showCategoryPage(cat, title, products) {
     if (cat === 'flash') products = all.slice(0, 5);
     else if (cat === 'recommended') products = getFilteredByBudget(all);
     else if (cat === 'bestseller') products = all.slice(5);
+    /* v2 düzeltme: banner ve promo kartları kategori adıyla çağırıyordu ama tüm ürünler geliyordu */
+    else if (all.some(p => p.cat === cat)) products = all.filter(p => p.cat === cat);
     else products = all;
   }
   logAction(`Kategori sayfası: "${title}" (${products.length} ürün)`, 'navigation');
@@ -961,6 +1060,8 @@ function showCategoryPage(cat, title, products) {
   const cv = document.getElementById('category-view');
   cv.classList.remove('hidden');
   document.getElementById('category-view-title').textContent = title;
+  const bc = document.getElementById('breadcrumb-current');
+  if (bc) bc.textContent = title;
   document.getElementById('product-count-label').textContent = `${products.length} ürün`;
   document.getElementById('sort-select').value = 'default';
   renderCategoryProducts(products);
@@ -971,7 +1072,7 @@ function renderCategoryProducts(products) {
   const grid = document.getElementById('category-products-grid');
   if (!grid) return;
   if (products.length === 0) {
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text-muted)"><div style="font-size:3rem;margin-bottom:12px">🔍</div><p style="font-size:1rem;font-weight:600">Bu kategoride ürün bulunamadı</p></div>`;
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">${icon('search', 40, 'empty-ico')}<p>Aradığınız kriterlere uygun ürün bulunamadı.</p><button class="btn-primary" onclick="goHome()">Alışverişe Devam Et</button></div>`;
     return;
   }
   grid.innerHTML = products.map(p => buildProductCard(p, 'category')).join('');
@@ -1000,16 +1101,26 @@ function buildBanners(banners) {
   const dotsEl = document.getElementById('slider-dots');
   slidesEl.innerHTML = banners.map((b, i) => `
     <div class="banner-slide" style="background:${b.bg};" onclick="showCategoryPage('${b.cat}','${b.label}')">
-      <div style="position:absolute;right:8%;top:50%;transform:translateY(-50%);font-size:10rem;opacity:0.22;pointer-events:none;filter:drop-shadow(0 12px 32px rgba(0,0,0,0.3));animation:bcfloat 4s ease-in-out infinite">${b.emoji}</div>
+      <div class="banner-slide-visual" id="banner-visual-${i}"></div>
       <div class="banner-slide-content">
         <span class="banner-slide-label">${b.label}</span>
         <h2 class="banner-slide-title">${b.title}</h2>
         <p class="banner-slide-sub">${b.sub}</p>
-        <button class="banner-cta" onclick="event.stopPropagation();showCategoryPage('${b.cat}','${b.label}')">${b.cta} →</button>
+        <button class="banner-cta" onclick="event.stopPropagation();showCategoryPage('${b.cat}','${b.label}')">${b.cta}</button>
       </div>
     </div>`).join('');
   dotsEl.innerHTML = banners.map((_, i) => `<div class="slider-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`).join('');
   State.bannerTotal = banners.length;
+}
+
+/* v2: banner'larda dev emoji yerine o kategorinin gerçek ürün görselleri */
+function fillBannerVisuals(products) {
+  DATA.banners.forEach((b, i) => {
+    const el = document.getElementById(`banner-visual-${i}`);
+    if (!el) return;
+    const imgs = products.filter(p => p.cat === b.cat && p.img && p.img.startsWith('http')).slice(0, 3);
+    el.innerHTML = imgs.map(p => `<div class="banner-visual-tile">${renderImg(p.img, '', '3rem')}</div>`).join('');
+  });
 }
 
 function slideBanner(dir) {
@@ -1036,57 +1147,63 @@ function startBannerAuto() {
 function getMemberBenefit(price) {
   const mem = MEMBERSHIPS[State.membership];
   if (mem.discount === 0) {
-    
-    return `<div class="product-member-strip member-upgrade">🥈 Üye ol → <strong>%5</strong> indirim kazan</div>`;
+    return `<div class="product-member-strip member-upgrade">Üye ol, <strong>%5</strong> indirim kazan</div>`;
   }
   const memberPrice = Math.round(price * (1 - mem.discount / 100));
   const shipLine = mem.freeShipping ? ' + ücretsiz kargo' : '';
-  return `<div class="product-member-strip member-active">${mem.icon} ${mem.label} fiyatı: <strong>${memberPrice.toLocaleString('tr-TR')} TL</strong>${shipLine}</div>`;
+  return `<div class="product-member-strip member-active">${mem.label} üye fiyatı: <strong>${memberPrice.toLocaleString('tr-TR')} TL</strong>${shipLine}</div>`;
 }
 
+function _starsHtml(rating) {
+  const full = Math.floor(rating);
+  return `<span class="stars" aria-hidden="true">${'★'.repeat(full)}<span class="stars-empty">${'★'.repeat(5 - full)}</span></span>`;
+}
+
+/* v2 (Ders 03): görsel 3:4 contain, kart sabit (zıplama yok), favori hep görünür, marka başlığın
+   içinde kalın, fiyat satırında küçük sepet düğmesi (Hepsiburada). Koşul yuvası yerinde ve sabit
+   yükseklikte: kart boyu koşullar arasında aynı. */
 function buildProductCard(p, section) {
   const condition = getProductCondition(p.id);
   const oldPrice = getDisplayOldPrice(p);
-  const discount = oldPrice ? Math.round((1 - p.price / oldPrice) * 100) : null;
   const isFav = State.favorites.includes(p.id);
   const isCompared = State.compareList.includes(p.id);
-  const imgHtml = renderImg(p.img, p.name, '5rem');
+  const imgHtml = renderImg(p.img, pn(p), '5rem');
   const ribbon = getConditionRibbon(p);
   const conditionSlot = getConditionSlotHtml(p);
   const memberBenefit = getMemberBenefit(p.price);
+  const thr = calcFreeShipThreshold();
   return `
   <div class="product-card" id="pcard-${p.id}" onclick="openProduct('${p.id}')" data-section="${section}" data-condition="${condition}">
     <div class="product-img-wrap">
       ${ribbon}
-      <button class="product-fav-btn ${isFav ? 'active' : ''}" id="fav-btn-${p.id}" onclick="event.stopPropagation();toggleFavorite('${p.id}')" aria-label="Favorilere ekle"><span class="btn-icon">${isFav ? '❤️' : '🤍'}</span><span class="btn-text">Favori</span></button>
-      <button class="product-compare-btn ${isCompared ? 'active' : ''}" id="cmp-btn-${p.id}" onclick="event.stopPropagation();addToCompare('${p.id}')" title="Karşılaştır"><span class="btn-icon">⚖️</span><span class="btn-text">Karşılaştır</span></button>
+      <button class="product-fav-btn ${isFav ? 'active' : ''}" id="fav-btn-${p.id}" onclick="event.stopPropagation();toggleFavorite('${p.id}')" aria-label="Favorilere ekle" title="Favorilere ekle">${icon('heart', 18)}</button>
+      <button class="product-compare-btn ${isCompared ? 'active' : ''}" id="cmp-btn-${p.id}" onclick="event.stopPropagation();addToCompare('${p.id}')" aria-label="Karşılaştır" title="Karşılaştır">${icon('scale', 16)}</button>
       ${imgHtml}
     </div>
     <div class="product-condition-slot">${conditionSlot}</div>
     <div class="product-body">
-      <div class="product-brand-row">
-        <span class="product-brand">${p.brand}</span>
-      </div>
-      <div class="product-name">${p.name}</div>
+      <div class="product-name"><span class="product-brand">${p.brand}</span> ${pn(p)}</div>
       <div class="product-rating">
-        <span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5 - Math.floor(p.rating))}</span>
+        <span class="rating-num">${p.rating.toFixed(1)}</span>
+        ${_starsHtml(p.rating)}
         <span class="rating-count">(${p.reviews.toLocaleString('tr-TR')})</span>
       </div>
       <div class="product-price-row">
-        <span class="product-price">${p.price.toLocaleString('tr-TR')} TL</span>
-        ${oldPrice ? `<span class="product-old-price">${oldPrice.toLocaleString('tr-TR')} TL</span>` : ''}
-        ${discount ? `<span class="product-discount">%${discount}</span>` : ''}
+        <div class="product-price-stack">
+          <span class="product-price">${p.price.toLocaleString('tr-TR')} TL</span>
+          ${oldPrice ? `<span class="product-old-price">${oldPrice.toLocaleString('tr-TR')} TL</span>` : ''}
+        </div>
+        <button class="product-add-btn" onclick="event.stopPropagation();askPurposeThenAdd('${p.id}')" aria-label="Sepete ekle" title="Sepete ekle">${icon('cartPlus', 18)}</button>
       </div>
       ${memberBenefit}
-      <div class="product-free-ship">${p.price >= calcFreeShipThreshold() ? '✓ Ücretsiz kargo' : `🚚 ${calcFreeShipThreshold().toLocaleString('tr-TR')} TL üzeri ücretsiz`}</div>
-      <button class="product-add-btn" onclick="event.stopPropagation();askPurposeThenAdd('${p.id}')">Sepete Ekle</button>
+      <div class="product-free-ship">${p.price >= thr ? `${icon('truck', 14)}Kargo Bedava` : ''}</div>
     </div>
   </div>`;
 }
 
 function buildFlashProducts(products) { document.getElementById('flash-products-grid').innerHTML = products.map(p => buildProductCard(p, 'flash')).join(''); }
 function buildRecommendedProducts(products) {
-  document.getElementById('recommended-title').textContent = '🎯 Sana Özel Öneriler';
+  document.getElementById('recommended-title').textContent = 'Sana Özel Öneriler';
   document.getElementById('recommended-products-grid').innerHTML = (products.length ? products : getProducts(State.gender).slice(0, 5)).sort(() => Math.random() - 0.5).map(p => buildProductCard(p, 'recommended')).join('');
 }
 function buildMoreProducts(products) { document.getElementById('more-products-grid').innerHTML = products.map(p => buildProductCard(p, 'more')).join(''); }
@@ -1102,56 +1219,72 @@ function openProduct(id) {
   const condition = getProductCondition(p.id);
   logAction(`Ürün görüntülendi: ${p.name} (${p.brand}) – ${p.price} TL [Koşul: ${condition}]`, 'product');
   const oldPrice = getDisplayOldPrice(p);
-  const discount = oldPrice ? Math.round((1 - p.price / oldPrice) * 100) : null;
   const isFav = State.favorites.includes(p.id);
   const isCompared = State.compareList.includes(p.id);
-  const modalImgHtml = renderImg(p.fullImg || p.img, p.name, '9rem');
+  const gallery = (p.images && p.images.length ? p.images : [p.fullImg || p.img]).slice(0, 5);
+  const modalImgHtml = renderImg(gallery[0], pn(p), '9rem');
+  const thumbsHtml = gallery.length > 1
+    ? `<div class="modal-thumbs">${gallery.map((src, i) => `<button class="modal-thumb ${i === 0 ? 'active' : ''}" onclick="selectModalImage(${i})" aria-label="Görsel ${i + 1}">${renderImg(src, '', '1rem')}</button>`).join('')}</div>`
+    : '';
   const _mRevs = (State.productReviews || {})[p.id] || [];
   const _mAvg  = _mRevs.length ? (_mRevs.reduce((s,r) => s + r.rating, 0) / _mRevs.length) : 0;
+  const ribbon = getConditionRibbon(p);
+  const mem = MEMBERSHIPS[State.membership];
+  /* v2 (Ders 06): karar sırası yukarıdan aşağı: marka+ad → puan → fiyat → koşul satırı → adet →
+     tek büyük CTA → teslimat/iade güvencesi → açıklama ve yorumlar. İndirim rozeti artık nabız gibi
+     atmıyor: diğer koşulların sinyalleri hareketsizdi, doz eşitlendi (Ders 07). */
   document.getElementById('product-modal-inner').innerHTML = `
-    <div class="modal-img-side">${modalImgHtml}</div>
+    <div class="modal-img-side">
+      <div class="modal-main-img" id="modal-main-img">${modalImgHtml}</div>
+      ${thumbsHtml}
+    </div>
     <div class="modal-info-side">
-      <div class="modal-brand-row">
-        <span class="modal-brand">${p.brand}</span>
-      </div>
-      <h2 class="modal-name">${p.name}</h2>
+      ${ribbon ? `<div class="modal-ribbon-row">${ribbon}</div>` : ''}
+      <h2 class="modal-name"><span class="modal-brand">${p.brand}</span> ${pn(p)}</h2>
       <div class="modal-rating">
         ${_mRevs.length
-          ? `<span class="stars">${'★'.repeat(Math.floor(_mAvg))}${'☆'.repeat(5 - Math.floor(_mAvg))}</span><span style="font-size:.85rem;font-weight:600">${_mAvg.toFixed(1)}</span><span style="font-size:.8rem;color:var(--text-muted)">(${_mRevs.length} değerlendirme)</span>`
-          : `<span class="stars" style="color:var(--text-muted)">☆☆☆☆☆</span><span style="font-size:.85rem;font-weight:600;color:var(--text-muted)">0.0</span><span style="font-size:.8rem;color:var(--text-muted)">(değerlendirme yok)</span>`}
+          ? `<span class="rating-num">${_mAvg.toFixed(1)}</span>${_starsHtml(_mAvg)}<span class="rating-count">${_mRevs.length} Değerlendirme</span>`
+          : `<span class="rating-num muted">0.0</span>${_starsHtml(0)}<span class="rating-count">Henüz değerlendirme yok</span>`}
       </div>
       <div class="modal-price-row">
         <span class="modal-price">${p.price.toLocaleString('tr-TR')} TL</span>
         ${oldPrice ? `<span class="modal-old-price">${oldPrice.toLocaleString('tr-TR')} TL</span>` : ''}
-        ${discount ? `<span class="modal-discount" style="animation:pulseBadge 2.2s ease-in-out infinite">%${discount} İndirim</span>` : ''}
       </div>
       <div class="product-condition-slot modal-condition-slot">${getConditionSlotHtml(p)}</div>
-      ${(() => { const mem = MEMBERSHIPS[State.membership]; return mem.discount > 0 ? `<div style="font-size:.8rem;color:var(--green);font-weight:700;margin-bottom:8px">${mem.icon} ${mem.label} fiyatın: ${Math.round(p.price*(1-mem.discount/100)).toLocaleString('tr-TR')} TL</div>` : ''; })()}
-      <p class="modal-desc">${p.desc}</p>
+      ${mem.discount > 0 ? `<div class="modal-member-price">${mem.label} üye fiyatın: <strong>${Math.round(p.price*(1-mem.discount/100)).toLocaleString('tr-TR')} TL</strong></div>` : ''}
       <div class="modal-member-benefits">
         ${Object.entries(MEMBERSHIPS).filter(([,v]) => v.discount > 0).map(([key, val]) => {
           const mPrice = Math.round(p.price * (1 - val.discount / 100));
           return `<div class="mmb-row ${State.membership === key ? 'mmb-active' : ''}">
-            <span class="mmb-icon">${val.icon}</span>
+            <span class="mem-dot ${val.cls}"></span>
             <span class="mmb-label">${val.label}</span>
             <span class="mmb-price">${mPrice.toLocaleString('tr-TR')} TL</span>
-            ${val.freeShipping ? '<span class="mmb-ship">🚚 Ücretsiz kargo</span>' : ''}
+            ${val.freeShipping ? '<span class="mmb-ship">Ücretsiz kargo</span>' : ''}
             ${State.membership === key ? '<span class="mmb-badge">Aktif</span>' : ''}
           </div>`;
         }).join('')}
       </div>
       <div class="modal-qty-row">
-        <span class="modal-qty-label">Adet:</span>
+        <span class="modal-qty-label">Adet</span>
         <div class="modal-qty-controls">
-          <button class="qty-btn" onclick="changeModalQty(-1)">−</button>
+          <button class="qty-btn" onclick="changeModalQty(-1)" aria-label="Azalt">−</button>
           <span class="qty-num" id="modal-qty-val">1</span>
-          <button class="qty-btn" onclick="changeModalQty(1)">+</button>
+          <button class="qty-btn" onclick="changeModalQty(1)" aria-label="Artır">+</button>
         </div>
       </div>
       <div class="modal-actions">
-        <button class="modal-add-cart" onclick="askPurposeThenAddFromModal()">🛒 Sepete Ekle</button>
-        <button class="modal-fav-btn ${isFav ? 'active' : ''}" id="modal-fav-btn" onclick="toggleFavorite('${p.id}',true)"><span class="modal-btn-icon">${isFav ? '❤️' : '🤍'}</span><span class="modal-btn-text">Favori</span></button>
-        <button class="modal-fav-btn ${isCompared ? 'active' : ''}" id="modal-cmp-btn" onclick="addToCompare('${p.id}')"><span class="modal-btn-icon">⚖️</span><span class="modal-btn-text">Karşılaştır</span></button>
+        <button class="modal-add-cart" onclick="askPurposeThenAddFromModal()">Sepete Ekle</button>
+        <button class="modal-fav-btn ${isFav ? 'active' : ''}" id="modal-fav-btn" onclick="toggleFavorite('${p.id}',true)" aria-label="Favorilere ekle" title="Favorilere ekle">${icon('heart', 22)}</button>
+        <button class="modal-fav-btn ${isCompared ? 'active' : ''}" id="modal-cmp-btn" onclick="addToCompare('${p.id}')" aria-label="Karşılaştır" title="Karşılaştır">${icon('scale', 22)}</button>
+      </div>
+      <div class="modal-trust">
+        <div class="modal-trust-item">${icon('truck', 18)}<span>Tahmini teslimat: <strong>2-4 iş günü</strong></span></div>
+        <div class="modal-trust-item">${icon('undo', 18)}<span><strong>14 gün</strong> içinde ücretsiz iade</span></div>
+        <div class="modal-trust-item">${icon('shield', 18)}<span>Güvenli ödeme</span></div>
+      </div>
+      <div class="modal-section">
+        <h3 class="modal-section-title">Ürün Açıklaması</h3>
+        <p class="modal-desc">${p.desc}</p>
       </div>
       ${_buildAIReviewHTML(p)}
       ${_buildUserReviewsHTML(p)}
@@ -1159,6 +1292,15 @@ function openProduct(id) {
   document.getElementById('product-overlay').classList.add('active');
   document.getElementById('product-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function selectModalImage(i) {
+  const p = State.modalProduct;
+  if (!p || !p.images || !p.images[i]) return;
+  const main = document.getElementById('modal-main-img');
+  if (main) main.innerHTML = renderImg(p.images[i], pn(p), '9rem');
+  document.querySelectorAll('.modal-thumb').forEach((t, j) => t.classList.toggle('active', j === i));
+  logAction(`Ürün görseli değiştirildi: ${i + 1}. görsel – ${p.name}`, 'product');
 }
 
 function closeProduct() {
@@ -1179,7 +1321,7 @@ function changeModalQty(dir) {
 function addToCartFromModal() {
   if (!State.modalProduct) return;
   for (let i = 0; i < State.modalQty; i++) addToCart(State.modalProduct.id, false);
-  showToast(`✅ ${State.modalProduct.name} (${State.modalQty} adet) sepete eklendi`, 'success');
+  showToast(`${pn(State.modalProduct)} (${State.modalQty} adet) sepete eklendi`, 'success');
   closeProduct();
 }
 
@@ -1198,7 +1340,7 @@ function addToCart(id, showToastFlag = true) {
   if (existing) { existing.qty++; logAction(`Sepette adet artırıldı: ${p.name} → ${existing.qty}`, 'cart'); }
   else { State.cart.push({ product: p, qty: 1 }); logAction(`Sepete eklendi: ${p.name} – ${p.price} TL [Koşul: ${getProductCondition(p.id)}]`, 'cart'); }
   updateCartUI();
-  if (showToastFlag) showToast(`🛒 ${p.name} sepete eklendi!`, 'success');
+  if (showToastFlag) showToast(`${pn(p)} sepete eklendi`, 'success');
 }
 
 function removeFromCart(id) {
@@ -1252,7 +1394,7 @@ function calcCartTotals() {
 
 function updateCartUI() {
   const count = State.cart.reduce((s, i) => s + i.qty, 0);
-  const el = document.getElementById('cart-count'); if (el) el.textContent = count;
+  const el = document.getElementById('cart-count'); if (el) { el.textContent = count; el.style.display = count ? '' : 'none'; }
   const emp = document.getElementById('cart-empty'); if (emp) emp.style.display = State.cart.length ? 'none' : 'flex';
 
   const t = calcCartTotals();
@@ -1264,17 +1406,17 @@ function updateCartUI() {
   if (dr) {
     let rows = '';
     if (t.memDiscount > 0) {
-      rows += `<div class="cart-summary-row discount-summary-row"><span>${t.mem.icon} ${t.mem.label} Üyelik İndirimi</span><span class="discount-amount">−${t.memDiscount.toLocaleString('tr-TR')} TL</span></div>`;
+      rows += `<div class="cart-summary-row discount-summary-row"><span>${t.mem.label} Üyelik İndirimi</span><span class="discount-amount">−${t.memDiscount.toLocaleString('tr-TR')} TL</span></div>`;
     }
     if (t.tierDiscount > 0 && t.tier) {
-      rows += `<div class="cart-summary-row discount-summary-row"><span>🎯 Alışveriş İndirimi (${t.tier.label})</span><span class="discount-amount">−${t.tierDiscount.toLocaleString('tr-TR')} TL</span></div>`;
+      rows += `<div class="cart-summary-row discount-summary-row"><span>Alışveriş İndirimi (${t.tier.label})</span><span class="discount-amount">−${t.tierDiscount.toLocaleString('tr-TR')} TL</span></div>`;
     }
     if (t.couponAmt > 0 && State.couponCode) {
       const c = COUPONS[State.couponCode];
-      rows += `<div class="cart-summary-row discount-summary-row"><span>🎟 Kupon (${State.couponCode})</span><span class="discount-amount">−${t.couponAmt.toLocaleString('tr-TR')} TL</span></div>`;
+      rows += `<div class="cart-summary-row discount-summary-row"><span>Kupon (${State.couponCode})</span><span class="discount-amount">−${t.couponAmt.toLocaleString('tr-TR')} TL</span></div>`;
     }
     if (t.giftApplied > 0) {
-      rows += `<div class="cart-summary-row discount-summary-row"><span>🎁 Hediye Para</span><span class="discount-amount">−${t.giftApplied.toLocaleString('tr-TR')} TL</span></div>`;
+      rows += `<div class="cart-summary-row discount-summary-row"><span>Hediye Para</span><span class="discount-amount">−${t.giftApplied.toLocaleString('tr-TR')} TL</span></div>`;
     }
     dr.innerHTML = rows;
   }
@@ -1292,7 +1434,7 @@ function updateCartUI() {
     const status = document.getElementById('coupon-status');
     if (status && !status.querySelector('.coupon-ok')) {
       const c = COUPONS[State.couponCode];
-      status.innerHTML = `<span class="coupon-ok">✅ ${c.label} uygulandı <button class="coupon-remove-btn" onclick="removeCoupon()">Kaldır</button></span>`;
+      status.innerHTML = `<span class="coupon-ok">${icon('check', 14)} ${c.label} uygulandı <button class="coupon-remove-btn" onclick="removeCoupon()">Kaldır</button></span>`;
     }
   }
 
@@ -1304,7 +1446,7 @@ function updateCartUI() {
       const cls = pct > 50 ? 'warn' : pct > 25 ? 'caution' : 'ok';
       fi.style.display = 'block';
       fi.className = `cart-financial-impact ${cls}`;
-      fi.innerHTML = `💡 Bu alışveriş harcanabilir gelirinizin <strong>%${pct}'ine</strong> denk geliyor`;
+      fi.innerHTML = `Bu alışveriş harcanabilir gelirinizin <strong>%${pct}'ine</strong> denk geliyor`;
     } else { fi.style.display = 'none'; }
   }
   updateBudgetBar();
@@ -1319,21 +1461,21 @@ function _renderTierBanner(t) {
   const nextTier  = SPEND_TIERS.find(tier => t.subtotal < tier.min);
 
   const shipNeeded = !t.freeShipping && t.subtotal < threshold
-    ? `<div class="tier-banner-msg" style="color:rgba(255,255,255,.65)">🚚 <strong>${(threshold - t.subtotal).toLocaleString('tr-TR')} TL</strong> daha ekle → kargo ücretsiz (şu an: ${shipCost} TL)</div>`
+    ? `<div class="tier-banner-msg tier-ship">${icon('truck', 14)} <strong>${(threshold - t.subtotal).toLocaleString('tr-TR')} TL</strong> daha ekle → kargo ücretsiz (şu an: ${shipCost} TL)</div>`
     : '';
 
   if (t.tier) {
     const nextMsg = nextTier
-      ? `<div class="tier-banner-msg">🎯 <strong>${(nextTier.min - t.subtotal).toLocaleString('tr-TR')} TL</strong> daha → <strong>${nextTier.label}</strong></div>`
-      : `<div class="tier-banner-msg">🏆 En yüksek indirim seviyesindesin!</div>`;
+      ? `<div class="tier-banner-msg"><strong>${(nextTier.min - t.subtotal).toLocaleString('tr-TR')} TL</strong> daha → <strong>${nextTier.label}</strong></div>`
+      : `<div class="tier-banner-msg">En yüksek indirim seviyesindesin!</div>`;
     const pct = nextTier ? Math.round((t.subtotal / nextTier.min) * 100) : 100;
     banner.style.display = 'block';
-    banner.innerHTML = `<div class="tier-active-label">✓ ${t.tier.label} aktif</div>${nextMsg}${shipNeeded}<div class="tier-progress-bar"><div class="tier-progress-fill" style="width:${pct}%"></div></div>`;
+    banner.innerHTML = `<div class="tier-active-label">${icon('check', 14)} ${t.tier.label} aktif</div>${nextMsg}${shipNeeded}<div class="tier-progress-bar"><div class="tier-progress-fill" style="width:${pct}%"></div></div>`;
   } else {
     const first = SPEND_TIERS[0];
     const pct   = Math.min(100, Math.round((t.subtotal / first.min) * 100));
     banner.style.display = 'block';
-    banner.innerHTML = `<div class="tier-banner-msg">💡 <strong>${(first.min - t.subtotal).toLocaleString('tr-TR')} TL</strong> daha → <strong>${first.label}</strong></div>${shipNeeded}<div class="tier-progress-bar"><div class="tier-progress-fill" style="width:${pct}%"></div></div>`;
+    banner.innerHTML = `<div class="tier-banner-msg"><strong>${(first.min - t.subtotal).toLocaleString('tr-TR')} TL</strong> daha → <strong>${first.label}</strong></div>${shipNeeded}<div class="tier-progress-bar"><div class="tier-progress-fill" style="width:${pct}%"></div></div>`;
   }
 }
 
@@ -1343,10 +1485,17 @@ function _renderGiftSection(t) {
   if (State.giftBalance <= 0 || t.subtotal === 0) { section.style.display = 'none'; return; }
   section.style.display = 'flex';
   if (State.giftApplied > 0) {
-    section.innerHTML = `<div class="gift-section-text">🎁 <strong>${State.giftApplied.toLocaleString('tr-TR')} TL</strong> hediye para uygulandı</div><button class="gift-remove-btn" onclick="removeGiftBalance()">Kaldır</button>`;
+    section.innerHTML = `<div class="gift-section-text">${icon('gift', 16)} <strong>${State.giftApplied.toLocaleString('tr-TR')} TL</strong> hediye para uygulandı</div><button class="gift-remove-btn" onclick="removeGiftBalance()">Kaldır</button>`;
   } else {
-    section.innerHTML = `<div class="gift-section-text">🎁 <strong>${State.giftBalance.toLocaleString('tr-TR')} TL</strong> hediye paran var!</div><button class="gift-apply-btn" onclick="applyGiftBalance()">Uygula</button>`;
+    section.innerHTML = `<div class="gift-section-text">${icon('gift', 16)} <strong>${State.giftBalance.toLocaleString('tr-TR')} TL</strong> hediye paran var!</div><button class="gift-apply-btn" onclick="applyGiftBalance()">Uygula</button>`;
   }
+}
+
+/* v2: kupon kodu placeholder'da değil, "Kuponlarım" çipinde (Trendyol). Çip kodu kutuya yazar,
+   uygulamak için yine "Uygula"ya basmak gerekir: v1'deki çaba korunur. Aynı iki kod: SHOPX10, KARGO. */
+function fillCoupon(code) {
+  const input = document.getElementById('coupon-input');
+  if (input) { input.value = code; input.focus(); }
 }
 
 function applyCoupon() {
@@ -1355,12 +1504,12 @@ function applyCoupon() {
   const status = document.getElementById('coupon-status');
   if (!code) return;
   if (!COUPONS[code]) {
-    if (status) status.innerHTML = `<span class="coupon-err">❌ Geçersiz kupon kodu</span>`;
+    if (status) status.innerHTML = `<span class="coupon-err">Geçersiz kupon kodu</span>`;
     return;
   }
   State.couponCode = code;
   const c = COUPONS[code];
-  if (status) status.innerHTML = `<span class="coupon-ok">✅ ${c.label} uygulandı <button class="coupon-remove-btn" onclick="removeCoupon()">Kaldır</button></span>`;
+  if (status) status.innerHTML = `<span class="coupon-ok">${icon('check', 14)} ${c.label} uygulandı <button class="coupon-remove-btn" onclick="removeCoupon()">Kaldır</button></span>`;
   if (input) input.value = '';
   updateCartUI();
   logAction(`Kupon uygulandı: ${code}`, 'cart');
@@ -1458,9 +1607,9 @@ function _updateCompareBar() {
     const p = products.find(x => x.id === id);
     if (!p) return;
     const imgHtml = p.img && p.img.startsWith('http')
-      ? `<img src="${p.img}" style="width:24px;height:24px;object-fit:cover;border-radius:4px">`
+      ? `<img src="${p.img}" style="width:24px;height:24px;object-fit:contain;border-radius:4px">`
       : `<span style="font-size:1.1rem">${p.img}</span>`;
-    html += `<div class="compare-bar-item">${imgHtml}<span class="compare-bar-item-name">${p.name}</span><button class="compare-item-remove" onclick="removeFromCompare('${id}')">✕</button></div>`;
+    html += `<div class="compare-bar-item">${imgHtml}<span class="compare-bar-item-name">${pn(p)}</span><button class="compare-item-remove" onclick="removeFromCompare('${id}')" aria-label="Çıkar">${icon('x', 14)}</button></div>`;
   });
   for (let i = State.compareList.length; i < 3; i++) html += `<div class="compare-bar-slot">+ Ürün Ekle</div>`;
   items.innerHTML = html;
@@ -1472,15 +1621,15 @@ function openCompareModal() {
   const prods = State.compareList.map(id => products.find(p => p.id === id)).filter(Boolean);
   const cols = `130px ${Array(prods.length).fill('1fr').join(' ')}`;
   const rows = [
-    { label: 'Ürün',     fn: p => `<div class="compare-product-head"><div class="compare-product-img">${p.img && p.img.startsWith('http') ? `<img src="${p.img}" style="width:60px;height:60px;object-fit:cover;border-radius:8px">` : p.img}</div><div class="compare-product-name">${p.name}</div><div class="compare-product-brand">${p.brand}</div></div>` },
+    { label: 'Ürün',     fn: p => `<div class="compare-product-head"><div class="compare-product-img">${p.img && p.img.startsWith('http') ? `<img src="${p.img}" style="width:60px;height:60px;object-fit:contain;border-radius:8px">` : p.img}</div><div class="compare-product-name">${pn(p)}</div><div class="compare-product-brand">${p.brand}</div></div>` },
     { label: 'Fiyat',    fn: p => `<div class="compare-price-cell">${p.price.toLocaleString('tr-TR')} TL${getDisplayOldPrice(p) ? `<div class="product-old-price" style="font-size:.72rem">${getDisplayOldPrice(p).toLocaleString('tr-TR')} TL</div>` : ''}</div>` },
-    { label: 'İndirim',  fn: p => getDisplayOldPrice(p) ? `<span class="product-discount" style="font-size:.8rem;padding:3px 7px">%${Math.round((1-p.price/getDisplayOldPrice(p))*100)} İndirim</span>` : '—' },
-    { label: 'Puan',     fn: p => `<span class="stars" style="font-size:.9rem">${'★'.repeat(Math.floor(p.rating))}</span> <strong>${p.rating}</strong>` },
+    { label: 'İndirim',  fn: p => getDisplayOldPrice(p) ? `<span class="product-discount">%${Math.round((1-p.price/getDisplayOldPrice(p))*100)} İndirim</span>` : '—' },
+    { label: 'Puan',     fn: p => `<strong>${p.rating.toFixed(1)}</strong> ${_starsHtml(p.rating)}` },
     { label: 'Yorum',    fn: p => `${p.reviews.toLocaleString('tr-TR')} değerlendirme` },
-    { label: 'Kargo',    fn: _ => `<span style="color:var(--green);font-weight:700">✓ Ücretsiz</span>` },
+    { label: 'Kargo',    fn: p => p.price >= calcFreeShipThreshold() ? `<span style="color:var(--green);font-weight:600">Kargo Bedava</span>` : `${calcShippingCost()} TL` },
     { label: 'İşlem',    fn: p => `<button class="compare-add-btn" onclick="askPurposeThenAdd('${p.id}');closeCompareModal()">Sepete Ekle</button>` },
   ];
-  let html = `<h2 class="compare-modal-title">⚖️ Ürün Karşılaştırma</h2><div class="compare-table">`;
+  let html = `<h2 class="compare-modal-title">Ürün Karşılaştırma</h2><div class="compare-table">`;
   rows.forEach(row => {
     html += `<div class="compare-row" style="grid-template-columns:${cols}">`;
     html += `<div class="compare-cell compare-header-cell">${row.label}</div>`;
@@ -1553,18 +1702,18 @@ function updateBudgetBar() {
     if (pct >= 90) {
       fill.style.background = 'linear-gradient(to right, #22c55e, #f59e0b, #ef4444)';
       bar.classList.add('btb-warn');
-      document.getElementById('btb-icon').textContent      = '⚠️';
+      document.getElementById('btb-icon').innerHTML        = icon('alert', 20);
       document.getElementById('btb-subtitle').textContent  = 'Limite yaklaşıyorsun!';
     } else if (pct >= 65) {
       fill.style.background = 'linear-gradient(to right, #22c55e, #f59e0b)';
       bar.classList.add('btb-warn');
-      document.getElementById('btb-icon').textContent      = '💰';
+      document.getElementById('btb-icon').innerHTML        = icon('tag', 20);
       document.getElementById('btb-subtitle').textContent  = hasNet
         ? `Net Gelir: ${netIncome.toLocaleString('tr-TR')} TL` : 'Kredi Limiti';
     } else {
       fill.style.background = 'linear-gradient(to right, #22c55e, #4ade80)';
       bar.classList.remove('btb-warn');
-      document.getElementById('btb-icon').textContent      = '💰';
+      document.getElementById('btb-icon').innerHTML        = icon('tag', 20);
       document.getElementById('btb-subtitle').textContent  = hasNet
         ? `Net Gelir: ${netIncome.toLocaleString('tr-TR')} TL` : 'Kredi Limiti';
     }
@@ -1581,8 +1730,8 @@ function updateBudgetBar() {
       const cExceeded = totalPrice > creditLimit;
       creditLine.style.display = 'block';
       creditLine.innerHTML = cExceeded
-        ? `💳 Kredi limitin aşıldı! (${totalPrice.toLocaleString('tr-TR')} / ${creditLimit.toLocaleString('tr-TR')} TL)`
-        : `💳 Kredi Limiti: ${totalPrice.toLocaleString('tr-TR')} / ${creditLimit.toLocaleString('tr-TR')} TL · %${cPct}`;
+        ? `Kredi limitin aşıldı! (${totalPrice.toLocaleString('tr-TR')} / ${creditLimit.toLocaleString('tr-TR')} TL)`
+        : `Kredi Limiti: ${totalPrice.toLocaleString('tr-TR')} / ${creditLimit.toLocaleString('tr-TR')} TL · %${cPct}`;
       creditLine.classList.toggle('btb-credit-exceeded', cExceeded);
     } else {
       creditLine.style.display = 'none';
@@ -1597,7 +1746,7 @@ function openBudgetUpgradeModal() {
 
   document.getElementById('budget-upgrade-content').innerHTML = `
     <div class="bum-header">
-      <div class="bum-icon">⚠️</div>
+      <div class="bum-icon">${icon('alert', 28)}</div>
       <h3 class="bum-title">Net Gelir Aşıldı</h3>
       <p class="bum-sub">
         Sepet tutarın <strong>${totalPrice.toLocaleString('tr-TR')} TL</strong>,
@@ -1624,20 +1773,20 @@ function openBudgetUpgradeModal() {
     </div>
     <div class="bum-tiers">
       <button class="bum-tier-btn" onclick="openFinancialModal(); closeBudgetUpgradeModal();">
-        <span class="bum-tier-icon">✏️</span>
+        <span class="bum-tier-icon">${icon('user', 20)}</span>
         <div class="bum-tier-info">
           <span class="bum-tier-label">Finansal Profili Güncelle</span>
           <span class="bum-tier-desc">Gelir bilgilerini yeniden düzenle</span>
         </div>
-        <span class="bum-tier-arrow">→</span>
+        <span class="bum-tier-arrow">${icon('chevronRight', 18)}</span>
       </button>
       <button class="bum-tier-btn" onclick="openCheckout(); closeBudgetUpgradeModal();">
-        <span class="bum-tier-icon">🛍</span>
+        <span class="bum-tier-icon">${icon('cart', 20)}</span>
         <div class="bum-tier-info">
           <span class="bum-tier-label">Yine de Devam Et</span>
           <span class="bum-tier-desc">Limiti aşarak ödemeye geç</span>
         </div>
-        <span class="bum-tier-arrow">→</span>
+        <span class="bum-tier-arrow">${icon('chevronRight', 18)}</span>
       </button>
     </div>
     <button class="bum-cancel-btn" onclick="closeBudgetUpgradeModal()">Vazgeç</button>
@@ -1677,9 +1826,9 @@ function renderCartItems() {
   container.innerHTML = State.cart.map(item => {
     const p = item.product;
     return `<div class="cart-item" id="cart-item-${p.id}">
-      <div class="cart-item-img">${renderImg(p.img, p.name, '2rem')}</div>
+      <div class="cart-item-img">${renderImg(p.img, pn(p), '2rem')}</div>
       <div class="cart-item-info">
-        <div class="cart-item-name">${p.brand} – ${p.name}</div>
+        <div class="cart-item-name"><strong>${p.brand}</strong> ${pn(p)}</div>
         <div class="cart-item-price">${p.price.toLocaleString('tr-TR')} TL</div>
         <div class="cart-item-controls">
           <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
@@ -1687,7 +1836,7 @@ function renderCartItems() {
           <button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button>
         </div>
       </div>
-      <button class="item-delete-btn" onclick="removeFromCart('${p.id}')">🗑</button>
+      <button class="item-delete-btn" onclick="removeFromCart('${p.id}')" aria-label="Sepetten çıkar" title="Sepetten çıkar">${icon('trash', 16)}</button>
     </div>`;
   }).join('');
 }
@@ -1713,39 +1862,28 @@ function toggleFavorite(id, fromModal = false) {
   if (State.favorites.includes(id)) {
     State.favorites = State.favorites.filter(f => f !== id);
     logAction(`Favorilerden çıkarıldı: ${p.name}`, 'product');
-    showToast(`💔 ${p.name} favorilerden çıkarıldı`, 'info');
+    showToast(`${pn(p)} favorilerden çıkarıldı`, 'info');
     updateFavBtn(id, false, fromModal);
   } else {
     State.favorites.push(id);
     logAction(`Favorilere eklendi: ${p.name}`, 'product');
-    showToast(`❤️ ${p.name} favorilere eklendi!`, 'success');
+    showToast(`${pn(p)} favorilere eklendi`, 'success');
     updateFavBtn(id, true, fromModal);
   }
   updateFavUI(); renderFavItems();
 }
 
 function updateFavBtn(id, isFav, fromModal) {
+  /* v2: kalp SVG, dolu/boş hali CSS'te .active ile. Modal açıkken kart düğmesi de eşitlenir. */
   const cardBtn = document.getElementById(`fav-btn-${id}`);
-  if (cardBtn) {
-    const iconEl = cardBtn.querySelector('.btn-icon');
-    if (iconEl) iconEl.textContent = isFav ? '❤️' : '🤍';
-    else cardBtn.innerHTML = `<span class="btn-icon">${isFav ? '❤️' : '🤍'}</span><span class="btn-text">Favori</span>`;
-    cardBtn.classList.toggle('active', isFav);
-  }
-  if (fromModal) {
-    const mb = document.getElementById('modal-fav-btn');
-    if (mb) {
-      const iconEl = mb.querySelector('.modal-btn-icon');
-      if (iconEl) iconEl.textContent = isFav ? '❤️' : '🤍';
-      else mb.innerHTML = `<span class="modal-btn-icon">${isFav ? '❤️' : '🤍'}</span><span class="modal-btn-text">Favori</span>`;
-      mb.classList.toggle('active', isFav);
-    }
-  }
+  if (cardBtn) cardBtn.classList.toggle('active', isFav);
+  const mb = document.getElementById('modal-fav-btn');
+  if (mb && (fromModal || (State.modalProduct && State.modalProduct.id === id))) mb.classList.toggle('active', isFav);
 }
 
 function updateFavUI() {
   const el = document.getElementById('fav-count');
-  if (el) el.textContent = State.favorites.length;
+  if (el) { el.textContent = State.favorites.length; el.style.display = State.favorites.length ? '' : 'none'; }
 }
 
 function renderFavItems() {
@@ -1754,14 +1892,14 @@ function renderFavItems() {
   const favProducts = State.favorites.map(id => getProducts(State.gender).find(p => p.id === id)).filter(Boolean);
   container.innerHTML = favProducts.map(p => `
     <div class="fav-item" id="fav-item-${p.id}">
-      <div class="fav-item-img">${renderImg(p.img, p.name, '2rem')}</div>
+      <div class="fav-item-img">${renderImg(p.img, pn(p), '2rem')}</div>
       <div class="cart-item-info">
-        <div class="fav-item-name">${p.brand} – ${p.name}</div>
+        <div class="fav-item-name"><strong>${p.brand}</strong> ${pn(p)}</div>
         <div class="fav-item-price">${p.price.toLocaleString('tr-TR')} TL</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px">
-        <button class="item-delete-btn" style="background:#e0e7ff;color:var(--accent)" onclick="askPurposeThenAdd('${p.id}')">🛒</button>
-        <button class="item-delete-btn" onclick="toggleFavorite('${p.id}')">🗑</button>
+        <button class="item-cart-btn" onclick="askPurposeThenAdd('${p.id}')" aria-label="Sepete ekle" title="Sepete ekle">${icon('cartPlus', 16)}</button>
+        <button class="item-delete-btn" onclick="toggleFavorite('${p.id}')" aria-label="Favorilerden çıkar" title="Favorilerden çıkar">${icon('trash', 16)}</button>
       </div>
     </div>`).join('');
   const emp = document.getElementById('fav-empty');
@@ -1791,15 +1929,16 @@ function handleSearchInput(value) {
     logAction(`Arama yapıldı: "${value}"`, 'search');
     const matches = getProducts(State.gender).filter(p =>
       p.name.toLowerCase().includes(value.toLowerCase()) ||
+      pn(p).toLocaleLowerCase('tr-TR').includes(value.toLocaleLowerCase('tr-TR')) ||
       p.brand.toLowerCase().includes(value.toLowerCase()) ||
       p.cat.toLowerCase().includes(value.toLowerCase())
     ).slice(0, 5);
     if (!matches.length) { sugBox.style.display = 'none'; return; }
     sugBox.innerHTML = matches.map(p => `
       <div class="search-suggestion-item" onclick="document.getElementById('search-suggestions').style.display='none'; openProduct('${p.id}')">
-        <span>${p.img}</span>
-        <span><strong>${p.brand}</strong> – ${p.name}</span>
-        <span style="margin-left:auto;font-size:.8rem;font-weight:700;color:var(--accent)">${p.price.toLocaleString('tr-TR')} TL</span>
+        <span class="sug-img">${renderImg(p.img, '', '1.2rem')}</span>
+        <span class="sug-name"><strong>${p.brand}</strong> ${pn(p)}</span>
+        <span class="sug-price">${p.price.toLocaleString('tr-TR')} TL</span>
       </div>`).join('');
     sugBox.style.display = 'block';
   }, 300);
@@ -1812,6 +1951,7 @@ function doSearch() {
   document.getElementById('search-suggestions').style.display = 'none';
   const matches = getProducts(State.gender).filter(p =>
     p.name.toLowerCase().includes(q.toLowerCase()) ||
+    pn(p).toLocaleLowerCase('tr-TR').includes(q.toLocaleLowerCase('tr-TR')) ||
     p.brand.toLowerCase().includes(q.toLowerCase())
   );
   showCategoryPage('search', `"${q}" Arama Sonuçları`, matches);
@@ -1855,25 +1995,29 @@ function renderCheckoutStep(step) {
   setCheckoutStepUI(step);
   const body = document.getElementById('checkout-body');
   const total = State.cart.reduce((s, i) => s + i.product.price * i.qty, 0);
+  const t = calcCartTotals();
+  const payable = t.total;
+  const discountTotal = t.totalDiscountAmt + t.giftApplied;
   const cartHTML = `<div class="checkout-cart-items">${State.cart.map(item => `
     <div class="checkout-cart-item">
-      <div class="checkout-cart-item-img">${renderImg(item.product.img, item.product.name, '2.2rem')}</div>
-      <div><div class="checkout-cart-item-name">${item.product.name}</div><div class="checkout-cart-item-qty">${item.product.brand} · ${item.qty} adet</div></div>
+      <div class="checkout-cart-item-img">${renderImg(item.product.img, pn(item.product), '2.2rem')}</div>
+      <div><div class="checkout-cart-item-name">${pn(item.product)}</div><div class="checkout-cart-item-qty">${item.product.brand} · ${item.qty} adet</div></div>
       <span class="checkout-cart-item-price">${(item.product.price * item.qty).toLocaleString('tr-TR')} TL</span>
     </div>`).join('')}</div>
     <div class="checkout-summary">
       <div class="checkout-summary-row"><span>Ara Toplam</span><span>${total.toLocaleString('tr-TR')} TL</span></div>
-      <div class="checkout-summary-row"><span>Kargo</span><span style="color:#22c55e">Ücretsiz</span></div>
-      <div class="checkout-summary-row total"><span>Genel Toplam</span><span>${total.toLocaleString('tr-TR')} TL</span></div>
+      ${discountTotal > 0 ? `<div class="checkout-summary-row discount"><span>İndirimler</span><span>−${discountTotal.toLocaleString('tr-TR')} TL</span></div>` : ''}
+      <div class="checkout-summary-row"><span>Kargo</span>${t.freeShipping ? '<span class="free-shipping">Ücretsiz</span>' : `<span>${t.shipping.toLocaleString('tr-TR')} TL</span>`}</div>
+      <div class="checkout-summary-row total"><span>Genel Toplam</span><span>${payable.toLocaleString('tr-TR')} TL</span></div>
     </div>`;
 
   if (step === 1) {
-    body.innerHTML = `<h3 class="checkout-title">🛒 Sipariş Özeti</h3>${cartHTML}
-      <button class="checkout-next-btn" onclick="renderCheckoutStep(2)">Devam Et →</button>
-      <span class="checkout-back-link" onclick="closeCheckout(); openCart();">← Sepete Dön</span>`;
+    body.innerHTML = `<h3 class="checkout-title">Sipariş Özeti</h3>${cartHTML}
+      <button class="checkout-next-btn" onclick="renderCheckoutStep(2)">Devam Et</button>
+      <span class="checkout-back-link" onclick="closeCheckout(); openCart();">Sepete Dön</span>`;
     logAction('Ödeme Adım 1: Sepet özeti gösterildi', 'cart');
   } else if (step === 2) {
-    body.innerHTML = `<h3 class="checkout-title">📍 Teslimat Bilgileri</h3>
+    body.innerHTML = `<h3 class="checkout-title">Teslimat Bilgileri</h3>
       <div class="checkout-form">
         <div class="form-row">
           <div class="form-group"><label class="form-label">Ad</label><input class="form-input" id="f-name" placeholder="Adınız" /></div>
@@ -1892,25 +2036,26 @@ function renderCheckoutStep(step) {
         </div>
         <div class="form-group"><label class="form-label">Teslimat Notu (isteğe bağlı)</label><input class="form-input" id="f-note" placeholder="Kapıcıya bırakın..." /></div>
       </div>
-      <button class="checkout-next-btn" onclick="submitAddress()">Ödemeye Geç →</button>
-      <span class="checkout-back-link" onclick="renderCheckoutStep(1)">← Geri Dön</span>`;
+      <button class="checkout-next-btn" onclick="submitAddress()">Ödemeye Geç</button>
+      <span class="checkout-back-link" onclick="renderCheckoutStep(1)">Geri Dön</span>`;
     logAction('Ödeme Adım 2: Adres formu gösterildi', 'cart');
   } else if (step === 3) {
     const net = State.salary - State.monthlyCredit - State.monthlyDebt;
     const hasFinancial = State.salary > 0;
-    const pct = (hasFinancial && net > 0) ? Math.round((total / net) * 100) : null;
+    const pct = (hasFinancial && net > 0) ? Math.round((payable / net) * 100) : null;
+    const pctLog = (hasFinancial && net > 0) ? Math.round((total / net) * 100) : null;
     const pctColor = pct === null ? '#94a3b8' : pct > 50 ? '#e53935' : pct > 25 ? '#f59e0b' : '#22c55e';
     const pctLabel = pct === null ? '—' : `%${pct}`;
     const affordLabel = pct === null ? 'Finansal profil girilmedi' :
-      pct > 100 ? '⚠️ Harcanabilir geliri aşıyor' :
-      pct > 50  ? '⚠️ Gelirinizin yarısından fazlası' :
-      pct > 25  ? '💡 Dikkatli harcama bölgesi' :
-                  '✅ Bütçe içinde';
+      pct > 100 ? 'Harcanabilir geliri aşıyor' :
+      pct > 50  ? 'Gelirinizin yarısından fazlası' :
+      pct > 25  ? 'Dikkatli harcama bölgesi' :
+                  'Bütçe içinde';
 
     const card = _generateSavedCard();
 
     body.innerHTML = `
-      <h3 class="checkout-title">💳 Ödeme</h3>
+      <h3 class="checkout-title">Ödeme</h3>
 
       ${hasFinancial ? `
       <div class="sim-section-title">Kayıtlı Kartınız</div>
@@ -1936,7 +2081,7 @@ function renderCheckoutStep(step) {
         <div class="cc-limit-panel">
           <div class="cc-limit-row"><span>Kart Limiti</span><strong>${card.cardLimit.toLocaleString('tr-TR')} TL</strong></div>
           <div class="cc-limit-row"><span>Kullanılabilir</span><strong class="cc-available">${card.available.toLocaleString('tr-TR')} TL</strong></div>
-          <div class="cc-limit-row highlight"><span>Bu Alışveriş</span><strong style="color:${pctColor}">${total.toLocaleString('tr-TR')} TL</strong></div>
+          <div class="cc-limit-row highlight"><span>Bu Alışveriş</span><strong style="color:${pctColor}">${payable.toLocaleString('tr-TR')} TL</strong></div>
         </div>` : ''}
       </div>` : `
       <div class="sim-no-financial">
@@ -1957,7 +2102,7 @@ function renderCheckoutStep(step) {
       <div class="sim-result-card">
         <div class="sim-result-row">
           <span>Sepet Tutarı</span>
-          <strong style="color:var(--accent);font-size:1.1rem">${total.toLocaleString('tr-TR')} TL</strong>
+          <strong style="font-size:1.1rem">${payable.toLocaleString('tr-TR')} TL</strong>
         </div>
         <div class="sim-result-row">
           <span>Gelirin Yüzdesi</span>
@@ -1967,10 +2112,10 @@ function renderCheckoutStep(step) {
       </div>` : ''}
 
       <button class="checkout-next-btn" onclick="processPayment()">
-        🔒 ${hasFinancial ? card.brandName + ' Kartla Öde' : 'Ödemeyi Tamamla'}
+        ${icon('lock', 16)} ${hasFinancial ? card.brandName + ' Kartla Öde' : 'Ödemeyi Tamamla'}
       </button>
-      <span class="checkout-back-link" onclick="renderCheckoutStep(2)">← Geri Dön</span>`;
-    logAction(`Ödeme Adım 3: ${hasFinancial ? 'Kayıtlı kart gösterildi' : 'Finansal profil yok'} – Sepet: ${total.toLocaleString('tr-TR')} TL${pct !== null ? ', Gelir %' + pct : ''}`, 'cart');
+      <span class="checkout-back-link" onclick="renderCheckoutStep(2)">Geri Dön</span>`;
+    logAction(`Ödeme Adım 3: ${hasFinancial ? 'Kayıtlı kart gösterildi' : 'Finansal profil yok'} – Sepet: ${total.toLocaleString('tr-TR')} TL${pctLog !== null ? ', Gelir %' + pctLog : ''}`, 'cart');
   }
 }
 
@@ -2009,13 +2154,15 @@ function processPayment() {
     const simNo = 'SX' + Date.now().toString().slice(-8);
     const total = State.cart.reduce((s, i) => s + i.product.price * i.qty, 0);
     const itemCount = State.cart.reduce((s, i) => s + i.qty, 0);
+    const payable = calcCartTotals().total;
     const net = State.salary - State.monthlyCredit - State.monthlyDebt;
-    const pct = (State.salary > 0 && net > 0) ? Math.round((total / net) * 100) : null;
+    const pctLog = (State.salary > 0 && net > 0) ? Math.round((total / net) * 100) : null;
+    const pct = (State.salary > 0 && net > 0) ? Math.round((payable / net) * 100) : null;
     const pctColor = pct === null ? '#94a3b8' : pct > 50 ? '#e53935' : pct > 25 ? '#f59e0b' : '#22c55e';
-    logAction(`Simülasyon tamamlandı: #${simNo} – ${total.toLocaleString('tr-TR')} TL, Gelir %${pct ?? '?'}`, 'cart');
+    logAction(`Simülasyon tamamlandı: #${simNo} – ${total.toLocaleString('tr-TR')} TL, Gelir %${pctLog ?? '?'}`, 'cart');
     body.innerHTML = `
       <div class="order-success">
-        <div class="order-success-icon">✅</div>
+        <div class="order-success-icon">${icon('check', 40)}</div>
         <h2>Siparişiniz Alındı!</h2>
         <p>Teşekkürler! Siparişiniz başarıyla oluşturuldu.</p>
         <div class="order-number-box">
@@ -2024,7 +2171,7 @@ function processPayment() {
         </div>
         <div class="order-details-grid">
           <div class="order-detail-item"><div class="order-detail-label">Ürün Sayısı</div><div class="order-detail-value">${itemCount} adet</div></div>
-          <div class="order-detail-item"><div class="order-detail-label">Sepet Tutarı</div><div class="order-detail-value" style="color:var(--accent)">${total.toLocaleString('tr-TR')} TL</div></div>
+          <div class="order-detail-item"><div class="order-detail-label">Ödenen Tutar</div><div class="order-detail-value">${payable.toLocaleString('tr-TR')} TL</div></div>
           ${State.salary > 0 ? `
           <div class="order-detail-item"><div class="order-detail-label">Harcanabilir Gelir</div><div class="order-detail-value">${net.toLocaleString('tr-TR')} TL</div></div>
           <div class="order-detail-item"><div class="order-detail-label">Gelirin Yüzdesi</div><div class="order-detail-value" style="color:${pctColor}">%${pct}</div></div>` : ''}
@@ -2085,19 +2232,20 @@ function showFlashPopup() {
   const saleProducts = getProducts().filter(p => getProductCondition(p.id) === 'discount');
   if (!saleProducts.length) return;
   const p = saleProducts[Math.floor(Math.random() * saleProducts.length)];
-  const discount = Math.round((1 - p.price / getDisplayOldPrice(p)) * 100);
-  const flashPrice = Math.round(p.price * 0.8);
+  const anchor = getDisplayOldPrice(p);
+  const flashPrice = _realisticPrice(p.price * 0.8);
+  const flashDiscount = Math.round((1 - flashPrice / anchor) * 100);
   logAction(`Flaş indirim pop-up gösterildi: ${p.name}`, 'ui');
 
   document.getElementById('flash-popup-body').innerHTML = `
-    <div class="flash-popup-img">${renderImg(p.img, p.name, '3.5rem')}</div>
+    <div class="flash-popup-img">${renderImg(p.img, pn(p), '3.5rem')}</div>
     <div class="flash-popup-info">
       <div class="flash-popup-brand">${p.brand}</div>
-      <div class="flash-popup-name">${p.name}</div>
+      <div class="flash-popup-name">${pn(p)}</div>
       <div class="flash-popup-price-row">
         <span class="flash-popup-price">${flashPrice.toLocaleString('tr-TR')} TL</span>
-        <span class="flash-popup-old">${p.price.toLocaleString('tr-TR')} TL</span>
-        <span class="flash-popup-discount">%${discount + 20}</span>
+        <span class="flash-popup-old">${anchor.toLocaleString('tr-TR')} TL</span>
+        <span class="flash-popup-discount">%${flashDiscount}</span>
       </div>
     </div>`;
 
@@ -2106,7 +2254,7 @@ function showFlashPopup() {
   if (oldBtn) oldBtn.remove();
   const btn = document.createElement('button');
   btn.className = 'flash-popup-buy';
-  btn.textContent = 'Hemen Al!';
+  btn.textContent = 'Sepete Ekle';
   btn.onclick = () => { addToCart(p.id); closeFlashPopup(); logAction(`Flaş indirimden satın alındı: ${p.name}`, 'cart'); };
   footer.appendChild(btn);
 
@@ -2172,12 +2320,12 @@ function renderHelpContent(tab) {
       { q: 'Siparişim ne zaman kargoya verilir?', a: 'Siparişleriniz genellikle 1-2 iş günü içinde kargoya verilir. Kargo takip bilgisi SMS ve e-posta ile iletilir.' },
       { q: 'İade nasıl yapılır?', a: 'Ürün teslim tarihinden itibaren 14 gün içinde iade talep edebilirsiniz. Ürün kullanılmamış ve orijinal ambalajında olmalıdır.' },
       { q: 'Hangi ödeme yöntemleri kabul edilir?', a: 'Kredi kartı, banka kartı, havale/EFT ve kapıda ödeme seçenekleri mevcuttur. Kredi kartında 12 taksit imkânı sunulmaktadır.' },
-      { q: 'Kargo ücreti ne kadar?', a: '150 TL ve üzeri siparişlerinizde kargo ücretsizdir. 150 TL altı siparişlerde 29,90 TL kargo ücreti uygulanır.' },
+      { q: 'Kargo ücreti ne kadar?', a: `${calcFreeShipThreshold().toLocaleString('tr-TR')} TL ve üzeri siparişlerinizde kargo ücretsizdir. Altındaki siparişlerde ${calcShippingCost()} TL kargo ücreti uygulanır.` },
       { q: 'Ürün değişimi yapabilir miyim?', a: 'Evet, boyut, renk gibi değişim talepleri için müşteri hizmetlerimizle iletişime geçebilirsiniz. Değişim bedelsizdir.' },
     ],
-    shipping: `<h4>🚚 Kargo Bilgileri</h4><p>Standart teslimat süresi 2-4 iş günüdür. Hızlı teslimat seçeneği ile aynı gün veya ertesi gün teslim mümkündür.</p><p style="margin-top:12px"><strong>Kargo Firmaları:</strong> Yurtiçi Kargo, MNG Kargo, Aras Kargo</p>`,
-    return: `<h4>🔄 İade ve Değişim</h4><p>14 gün içinde koşulsuz iade ve değişim hakkınız bulunmaktadır. İade kargo bedeli firmamıza aittir.</p>`,
-    contact: `<h4>📞 İletişim</h4><p>Müşteri Hizmetleri: 0850 xxx xx xx</p><p>E-posta: destek@shopx.com.tr</p><p>Çalışma saatleri: Hafta içi 09:00 – 18:00</p>`,
+    shipping: `<h4>Kargo Bilgileri</h4><p>Standart teslimat süresi 2-4 iş günüdür. Hızlı teslimat seçeneği ile aynı gün veya ertesi gün teslim mümkündür.</p><p style="margin-top:12px"><strong>Kargo Firmaları:</strong> Yurtiçi Kargo, MNG Kargo, Aras Kargo</p>`,
+    return: `<h4>İade ve Değişim</h4><p>14 gün içinde koşulsuz iade ve değişim hakkınız bulunmaktadır. İade kargo bedeli firmamıza aittir.</p>`,
+    contact: `<h4>İletişim</h4><p>Müşteri Hizmetleri: 0850 xxx xx xx</p><p>E-posta: destek@shopx.com.tr</p><p>Çalışma saatleri: Hafta içi 09:00 – 18:00</p>`,
   };
 
   if (tab === 'faq') {
@@ -2194,7 +2342,7 @@ function openOrderTracking() {
   document.getElementById('tracking-overlay').classList.add('active');
   setTimeout(() => modal.classList.add('open'), 10);
   document.getElementById('tracking-content').innerHTML = `
-    <h2 class="info-modal-title">📦 Sipariş Takibi</h2>
+    <h2 class="info-modal-title">Sipariş Takibi</h2>
     <div class="checkout-form">
       <div class="form-group"><label class="form-label">Sipariş Numarası</label><input class="form-input" id="track-no" placeholder="SX12345678" /></div>
       <div class="form-group"><label class="form-label">Telefon / E-posta</label><input class="form-input" id="track-contact" placeholder="05xx xxx xx xx" /></div>
@@ -2246,7 +2394,7 @@ function openInfoModal(key) {
   m.style.display = 'block';
   document.getElementById('info-overlay').classList.add('active');
   setTimeout(() => m.classList.add('open'), 10);
-  document.getElementById('info-content').innerHTML = `<h2 class="info-modal-title">${info.title}</h2><div class="info-modal-body">${info.body}</div>`;
+  document.getElementById('info-content').innerHTML = `<h2 class="info-modal-title">${_stripLeadingEmoji(info.title)}</h2><div class="info-modal-body">${info.body}</div>`;
   document.body.style.overflow = 'hidden';
 }
 
@@ -2280,32 +2428,31 @@ function openPurposeModal(p) {
   m.style.display = 'block';
   document.getElementById('purpose-overlay').classList.add('active');
   setTimeout(() => m.classList.add('open'), 10);
-  const priceStr = p.price ? p.price.toLocaleString('tr-TR') + ' ₺' : '';
-  const oldPriceStr = getDisplayOldPrice(p) ? getDisplayOldPrice(p).toLocaleString('tr-TR') + ' ₺' : '';
+  const priceStr = p.price ? p.price.toLocaleString('tr-TR') + ' TL' : '';
+  const oldPriceStr = getDisplayOldPrice(p) ? getDisplayOldPrice(p).toLocaleString('tr-TR') + ' TL' : '';
   document.getElementById('purpose-content').innerHTML = `
     <div class="purpose-header">
       <div class="purpose-product-preview">
-        <div class="purpose-product-img">${renderImg(p.img, p.name, '2.8rem')}</div>
+        <div class="purpose-product-img">${renderImg(p.img, pn(p), '2.8rem')}</div>
         <div class="purpose-product-info">
-          <div class="purpose-product-name">${p.name}</div>
+          <div class="purpose-product-name">${pn(p)}</div>
           <div class="purpose-product-prices">
             <span class="purpose-product-price">${priceStr}</span>
             ${oldPriceStr ? `<span class="purpose-product-old">${oldPriceStr}</span>` : ''}
           </div>
         </div>
       </div>
-      <div class="purpose-question">🎯 Bu ürünü neden alıyorsunuz?</div>
+      <div class="purpose-question">Bu ürünü neden alıyorsunuz?</div>
     </div>
     <div class="purpose-options">
       ${PURPOSE_OPTIONS.map(o => `
         <div class="purpose-option" onclick="confirmPurpose('${o.id}','${o.label}')">
-          <span class="purpose-icon">${o.icon}</span>
           <span class="purpose-label">${o.label}</span>
         </div>`).join('')}
     </div>
     <div class="purpose-custom-row">
       <input class="form-input" id="purpose-custom-input" placeholder="Veya kendi nedeninizi yazın..." maxlength="100" />
-      <button class="purpose-custom-btn" onclick="confirmCustomPurpose()">Devam →</button>
+      <button class="purpose-custom-btn" onclick="confirmCustomPurpose()">Devam</button>
     </div>
     <button class="purpose-skip" onclick="confirmPurpose('skip','Belirtilmedi')">Atla</button>`;
   document.body.style.overflow = 'hidden';
@@ -2333,7 +2480,7 @@ function confirmPurpose(purposeId, purposeLabel) {
   }
   if (fromModal) {
     for (let i = 0; i < qty; i++) addToCart(id, false);
-    showToast(`✅ ${p.name} (${qty} adet) sepete eklendi`, 'success');
+    showToast(`${pn(p)} (${qty} adet) sepete eklendi`, 'success');
     closeProduct();
   } else {
     addToCart(id);
@@ -2355,7 +2502,7 @@ function openFinancialModal() {
   const net = State.salary - State.monthlyCredit - State.monthlyDebt;
   const hasData = State.salary > 0;
   document.getElementById('financial-content').innerHTML = `
-    <h2 class="info-modal-title">💳 Finansal Profilim</h2>
+    <h2 class="info-modal-title">Finansal Profilim</h2>
     <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:20px">Bu bilgiler ödeme adımında bütçe değerlendirmesi için kullanılır.</p>
     <div class="checkout-form">
       <div class="form-group">
@@ -2465,11 +2612,11 @@ function _buildAIReviewHTML(p) {
   if (_aiRevs.length === 0) return `
   <div class="ai-review-card">
     <div class="ai-review-header">
-      <div class="ai-review-icon">🤖</div>
+      <div class="ai-review-icon">${icon('sparkle', 18)}</div>
       <span class="ai-review-title">AI Ürün Analizi</span>
       <span class="ai-review-badge">ShopX AI</span>
     </div>
-    <div class="ai-review-assessment" style="color:var(--text-muted)">🔍 Bu ürün henüz yeterli kullanıcı değerlendirmesine sahip değil. Yorumlar oluştukça AI analizi burada görünecek.</div>
+    <div class="ai-review-assessment" style="color:var(--text-muted)">Bu ürün henüz yeterli kullanıcı değerlendirmesine sahip değil. Yorumlar oluştukça AI analizi burada görünecek.</div>
     <div class="ai-review-score">
       <span class="ai-review-score-label">AI Skoru</span>
       <div class="ai-review-score-bar"><div class="ai-review-score-fill" style="width:0%"></div></div>
@@ -2482,18 +2629,18 @@ function _buildAIReviewHTML(p) {
   return `
   <div class="ai-review-card">
     <div class="ai-review-header">
-      <div class="ai-review-icon">🤖</div>
+      <div class="ai-review-icon">${icon('sparkle', 18)}</div>
       <span class="ai-review-title">AI Ürün Analizi</span>
       <span class="ai-review-badge">ShopX AI</span>
     </div>
-    <div class="ai-review-assessment">${r.emoji} ${r.assessment}</div>
+    <div class="ai-review-assessment">${r.assessment}</div>
     <div class="ai-review-lists">
       <div class="ai-review-pros">
-        <div class="ai-review-list-title">✅ Artılar</div>
+        <div class="ai-review-list-title">Artılar</div>
         ${prosHTML}
       </div>
       <div class="ai-review-cons">
-        <div class="ai-review-list-title">⚠️ Eksiler</div>
+        <div class="ai-review-list-title">Eksiler</div>
         ${consHTML}
       </div>
     </div>
@@ -2511,7 +2658,7 @@ function _buildUserReviewsHTML(p) {
     <div class="user-reviews-section">
       <div class="ur-header">
         <span class="ur-title">Kullanıcı Yorumları</span>
-        <span class="ur-count-badge" style="color:var(--text-muted)">☆☆☆☆☆ · 0 yorum</span>
+        <span class="ur-count-badge" style="color:var(--text-muted)">0 yorum</span>
       </div>
       <div class="ur-cards">
         <div class="ur-card" style="text-align:center;color:var(--text-muted);padding:20px 0;font-size:.88rem">
@@ -2524,7 +2671,7 @@ function _buildUserReviewsHTML(p) {
   const cards = reviews.map(r => `
     <div class="ur-card">
       <div class="ur-card-header">
-        <span class="ur-stars">${stars(r.rating)}</span>
+        ${_starsHtml(r.rating)}
         <span class="ur-reviewer">${r.reviewer}</span>
         <span class="ur-date">${new Date(r.timestamp).toLocaleDateString('tr-TR')}</span>
       </div>
@@ -2672,7 +2819,7 @@ function _buildVAResponses() {
             return `Sepetinizde <strong>${State.cart.reduce((x,i)=>x+i.qty,0)} ürün</strong> var.\n\n`
               + `💰 Ara toplam: <strong>${fmt(t.subtotal)} TL</strong>\n`
               + `${t.totalDiscountAmt > 0 ? `🎉 İndirim: <strong>−${fmt(t.totalDiscountAmt)} TL</strong>\n` : ''}`
-              + `🚚 Kargo: <strong>${t.freeShipping ? 'Ücretsiz' : '29,90 TL'}</strong>\n`
+              + `🚚 Kargo: <strong>${t.freeShipping ? 'Ücretsiz' : t.shipping.toLocaleString('tr-TR') + ' TL'}</strong>\n`
               + `✅ Toplam: <strong>${fmt(t.total)} TL</strong>`;
           })(),
     },
@@ -2836,21 +2983,21 @@ function openAccount() {
   if (State.loggedIn) {
     
     document.getElementById('account-content').innerHTML = `
-      <h2 class="info-modal-title">👤 Hesabım</h2>
+      <h2 class="info-modal-title">Hesabım</h2>
 
       <div class="gift-balance-card">
         <div class="gift-balance-info">
-          <span class="gift-balance-label">🎁 Hediye Param</span>
+          <span class="gift-balance-label">Hediye Param</span>
           <span class="gift-balance-amount">${State.giftBalance.toLocaleString('tr-TR')} TL</span>
           <span class="gift-balance-note">Sepette kullanılabilir</span>
         </div>
-        <span style="font-size:2.2rem">🎁</span>
+        <span class="gift-balance-ico">${icon('gift', 32)}</span>
       </div>
 
       <div class="membership-section">
-        <div class="membership-section-title">⭐ Üyelik Seviyem</div>
+        <div class="membership-section-title">Üyelik Seviyem</div>
         <div style="background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px">
-          <span style="font-size:2.4rem">${mem.icon}</span>
+          <span class="mem-dot mem-dot-lg ${mem.cls}"></span>
           <div>
             <div style="font-weight:800;font-size:1.1rem">${mem.label} Üye</div>
             <div style="font-size:.82rem;color:var(--text-muted);margin-top:3px">
@@ -2866,7 +3013,7 @@ function openAccount() {
         <div class="membership-cards" style="pointer-events:none;opacity:.75;margin-top:10px">
           ${Object.entries(MEMBERSHIPS).map(([key, val]) => `
           <div class="membership-card ${State.membership === key ? 'active' : ''}" id="mem-card-${key}">
-            <div class="membership-card-icon">${val.icon}</div>
+            <div class="membership-card-icon"><span class="mem-dot ${val.cls}"></span></div>
             <div class="membership-card-name">${val.label}</div>
             <div class="membership-card-info">${val.discount > 0 ? `%${val.discount} indirim` : 'Temel üyelik'}${val.freeShipping ? ' · Ücretsiz kargo' : ''}</div>
             <div class="membership-card-check">${State.membership === key ? '✓ Aktif' : ''}</div>
@@ -2876,17 +3023,17 @@ function openAccount() {
   } else {
     
     document.getElementById('account-content').innerHTML = `
-      <h2 class="info-modal-title">👤 Giriş Yap</h2>
+      <h2 class="info-modal-title">Giriş Yap</h2>
 
       <div class="membership-section" style="margin-bottom:20px">
-        <div class="membership-section-title">⭐ Üyelik Avantajları</div>
+        <div class="membership-section-title">Üyelik Avantajları</div>
         <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:14px;line-height:1.5">
           Üye olarak aşağıdaki avantajlardan yararlanabilirsiniz. Üyelik seviyeniz alışveriş geçmişinize göre otomatik belirlenir.
         </p>
         <div class="membership-cards" style="pointer-events:none">
           ${Object.entries(MEMBERSHIPS).map(([key, val]) => `
           <div class="membership-card" id="mem-card-${key}">
-            <div class="membership-card-icon">${val.icon}</div>
+            <div class="membership-card-icon"><span class="mem-dot ${val.cls}"></span></div>
             <div class="membership-card-name">${val.label}</div>
             <div class="membership-card-info">${val.discount > 0 ? `%${val.discount} indirim` : 'Temel üyelik'}${val.freeShipping ? ' · Ücretsiz kargo' : ''}</div>
             <div class="membership-card-check"></div>
@@ -2934,12 +3081,11 @@ function openBudgetFilterModal() {
   document.getElementById('budget-filter-overlay').classList.add('active');
   setTimeout(() => m.classList.add('open'), 10);
   document.getElementById('budget-filter-content').innerHTML = `
-    <h2 class="info-modal-title">💰 Bütçeni Güncelle</h2>
+    <h2 class="info-modal-title">Bütçeni Güncelle</h2>
     <p style="color:var(--text-muted);font-size:.88rem;margin-bottom:20px">Önerilen ürünler bütçene göre filtrelenecek.</p>
     <div class="budget-options" style="max-width:100%">
-      ${[['low', '500 TL Altı', '💸'], ['medium', '500-1500 TL', '💳'], ['high', '1500-3500 TL', '💰'], ['luxury', '3500+ TL', '👑'], ['any', 'Tümünü Göster', '🛍']].map(([val, label, em]) => `
+      ${[['low', '500 TL Altı'], ['medium', '500-1500 TL'], ['high', '1500-3500 TL'], ['luxury', '3500+ TL'], ['any', 'Tümünü Göster']].map(([val, label]) => `
       <div class="payment-method-option ${State.budget === val ? 'selected' : ''}" onclick="updateBudget('${val}','${label}')">
-        <span class="payment-method-icon">${em}</span>
         <div class="payment-method-info"><div class="payment-method-name">${label}</div></div>
       </div>`).join('')}
     </div>`;
@@ -3047,17 +3193,26 @@ function showToast(msg, type = 'info') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  toast.textContent = msg;
+  const ico = type === 'success' ? 'check' : type === 'error' ? 'alert' : 'info';
+  toast.innerHTML = `${icon(ico, 18, 'toast-ico')}<span></span>`;
+  toast.querySelector('span').textContent = _stripLeadingEmoji(msg);
   container.appendChild(toast);
   setTimeout(() => { toast.classList.add('toast-out'); toast.addEventListener('animationend', () => toast.remove()); }, 3200);
 }
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    closeProduct(); closeCart(); closeFavorites();
-    closeCheckout(); closeHelp(); closeInfoModal();
-    closeOrderTracking(); closeAccount(); closeBudgetFilterModal();
-    closeFlashPopup();
+    const isOpen = id => { const el = document.getElementById(id); return !!el && (el.classList.contains('open') || el.classList.contains('visible')); };
+    if (isOpen('product-modal')) closeProduct();
+    if (isOpen('cart-drawer')) closeCart();
+    if (isOpen('fav-drawer')) closeFavorites();
+    if (isOpen('checkout-modal')) closeCheckout();
+    if (isOpen('help-modal')) closeHelp();
+    if (isOpen('info-modal')) closeInfoModal();
+    if (isOpen('tracking-modal')) closeOrderTracking();
+    if (isOpen('account-modal')) closeAccount();
+    if (isOpen('budget-filter-modal')) closeBudgetFilterModal();
+    if (isOpen('flash-popup')) closeFlashPopup();
     document.getElementById('search-suggestions').style.display = 'none';
   }
   
@@ -3151,7 +3306,7 @@ Object.assign(window, {
   selectGender, highlightBudget, goToShopFromBudget, selectBudget, switchGender,
   navClick, categoryClick, showCategoryPage, goHome, sortProducts,
   slideBanner, goToSlide,
-  openProduct, closeProduct, changeModalQty, addToCartFromModal,
+  openProduct, closeProduct, changeModalQty, addToCartFromModal, selectModalImage,
   addToCart, removeFromCart, changeQty, openCart, closeCart,
   toggleFavorite, openFavorites, closeFavorites,
   handleSearchInput, doSearch,
@@ -3171,7 +3326,7 @@ Object.assign(window, {
   toggleGenderTheme,
   updateSlider,
   openBudgetUpgradeModal, closeBudgetUpgradeModal, applyBudgetUpgrade,
-  applyCoupon, removeCoupon,
+  applyCoupon, removeCoupon, fillCoupon,
   applyGiftBalance, removeGiftBalance,
   selectMembership,
   addToCompare, removeFromCompare, clearCompare, openCompareModal, closeCompareModal,
