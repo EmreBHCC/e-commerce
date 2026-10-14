@@ -48,24 +48,6 @@
   --header-height: 60px;
 }
 
-/* ===== FEMALE THEME ===== */
-body.theme-female {
-  --accent: #D81B7E;
-  --accent-hover: #b5176a;
-  --accent-light: #fce4f4;
-  --accent-gradient: linear-gradient(135deg, #D81B7E 0%, #f06bba 100%);
-  --shadow-hover: 0 8px 32px rgba(216,27,126,0.18);
-}
-
-/* ===== MALE THEME ===== */
-body.theme-male {
-  --accent: #1565C0;
-  --accent-hover: #0d47a1;
-  --accent-light: #e3f0ff;
-  --accent-gradient: linear-gradient(135deg, #1565C0 0%, #1e88e5 100%);
-  --shadow-hover: 0 8px 32px rgba(21,101,192,0.18);
-}
-
 /* ============================================================
    RESET & BASE
    ============================================================ */
@@ -120,9 +102,9 @@ img { max-width: 100%; display: block; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 65% at 10% 60%, rgba(213,20,110,0.38) 0%, transparent 58%),
-    radial-gradient(ellipse 70% 65% at 90% 60%, rgba(21,101,200,0.38) 0%, transparent 58%),
-    radial-gradient(ellipse 55% 40% at 50% 105%, rgba(120,0,70,0.28) 0%, transparent 60%);
+    radial-gradient(ellipse 70% 65% at 10% 60%, rgba(255,96,0,0.32) 0%, transparent 58%),
+    radial-gradient(ellipse 70% 65% at 90% 60%, rgba(69,90,100,0.38) 0%, transparent 58%),
+    radial-gradient(ellipse 55% 40% at 50% 105%, rgba(40,40,40,0.28) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -170,6 +152,14 @@ img { max-width: 100%; display: block; }
   font-size: 0.95rem;
   margin-bottom: 36px;
   text-align: center;
+}
+
+.gs-question {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
 }
 
 /* Trust stats */
@@ -242,24 +232,14 @@ img { max-width: 100%; display: block; }
   text-align: center;
 }
 
-.gender-card.female {
-  background: linear-gradient(150deg, #c0156b 0%, #e01e8c 38%, #f269ae 68%, #ffaad3 100%) !important;
-  box-shadow: 0 16px 56px rgba(224,30,140,0.5), 0 6px 20px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.22);
+.gender-card {
+  background: linear-gradient(150deg, #7a3b00 0%, #ff6000 38%, #ff8533 68%, #ffc599 100%) !important;
+  box-shadow: 0 16px 56px rgba(255,96,0,0.5), 0 6px 20px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.22);
 }
 
-.gender-card.male {
-  background: linear-gradient(150deg, #0e4eaa 0%, #1874d0 38%, #45a6f5 68%, #9fd0ff 100%) !important;
-  box-shadow: 0 16px 56px rgba(21,116,208,0.5), 0 6px 20px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.22);
-}
-
-.gender-card:hover { transform: translateY(-12px) scale(1.02); }
-
-.gender-card.female:hover {
-  box-shadow: 0 28px 80px rgba(224,30,140,0.65), 0 8px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.22);
-}
-
-.gender-card.male:hover {
-  box-shadow: 0 28px 80px rgba(21,116,208,0.65), 0 8px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.22);
+.gender-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 28px 80px rgba(255,96,0,0.65), 0 8px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.22);
 }
 
 .gender-card:active { transform: translateY(-4px) scale(1); transition-duration: 0.1s; }
@@ -1300,6 +1280,32 @@ img { max-width: 100%; display: block; }
 .badge-sale { background: var(--red); color: #fff; }
 .badge-new { background: #2e7d32; color: #fff; }
 .badge-hot { background: var(--accent-gradient); color: #fff; }
+.badge-scarcity { background: #e65100; color: #fff; }
+.badge-social { background: #1565c0; color: #fff; }
+
+/* Deneysel koşul mesaj yuvası — kart boyutunu koşullar arasında sabit tutmak için */
+.product-condition-slot {
+  min-height: 46px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+}
+.condition-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.condition-scarcity { color: #e65100; }
+.condition-social { color: #1565c0; }
+.modal-condition-slot {
+  min-height: 0;
+  padding: 0;
+  margin: 4px 0 8px;
+}
+.modal-condition-slot .condition-msg { font-size: 0.82rem; }
 
 /* Discount % badge */
 .product-discount-badge {
@@ -2328,7 +2334,7 @@ img { max-width: 100%; display: block; }
 /* ============================================================
    BUDGET STEP
    ============================================================ */
-.gender-step { width: 100%; display: flex; justify-content: center; }
+.gender-step { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
 /* Step-2 modunda logo/tagline/stats gizle */
 .gender-screen.step2-mode { justify-content: center; padding: 16px 24px; }
@@ -4870,3 +4876,5 @@ img { max-width: 100%; display: block; }
   border-radius: 50px;
   border: 1px solid rgba(99,102,241,.2);
 }
+
+/* Göz takibi — canvas tabanlı gaze izi (#gaze-trail-canvas) app.js içinde inline stille oluşturulur */

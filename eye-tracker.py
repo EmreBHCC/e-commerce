@@ -208,6 +208,7 @@ mouse_lock = threading.Lock()
 
 calibration_offset_yaw = 0
 calibration_offset_pitch = 0
+_calib_samples = []  # her kalibrasyon noktası tıklamasından gelen (delta_yaw, delta_pitch) örnekleri
 
 calib_step = 0
 
@@ -410,9 +411,10 @@ def compute_and_draw_coordinate_box(frame, face_landmarks, indices, ref_matrix_c
         for i in indices
     ])
     center = np.mean(points_3d, axis=0)
-    for i in indices:
-        x2, y2 = int(face_landmarks[i].x * w), int(face_landmarks[i].y * h)
-        cv2.circle(frame, (x2, y2), 3, color, -1)
+    if not _HEADLESS:
+        for i in indices:
+            x2, y2 = int(face_landmarks[i].x * w), int(face_landmarks[i].y * h)
+            cv2.circle(frame, (x2, y2), 3, color, -1)
     centered = points_3d - center
     cov = np.cov(centered.T)
     eigvals, eigvecs = np.linalg.eigh(cov)
@@ -429,13 +431,14 @@ def compute_and_draw_coordinate_box(frame, face_landmarks, indices, ref_matrix_c
         for i in range(3):
             if np.dot(R_final[:, i], R_ref[:, i]) < 0:
                 R_final[:, i] *= -1
-    draw_wireframe_cube(frame, center, R_final, size)
-    axis_length = size * 1.2
-    axis_dirs = [R_final[:, 0], -R_final[:, 1], -R_final[:, 2]]
-    axis_colors = [(0,255,0),(0,0,255),(255,0,0)]
-    for i in range(3):
-        end_pt = center + axis_dirs[i] * axis_length
-        cv2.line(frame, (int(center[0]), int(center[1])), (int(end_pt[0]), int(end_pt[1])), axis_colors[i], 2)
+    if not _HEADLESS:
+        draw_wireframe_cube(frame, center, R_final, size)
+        axis_length = size * 1.2
+        axis_dirs = [R_final[:, 0], -R_final[:, 1], -R_final[:, 2]]
+        axis_colors = [(0,255,0),(0,0,255),(255,0,0)]
+        for i in range(3):
+            end_pt = center + axis_dirs[i] * axis_length
+            cv2.line(frame, (int(center[0]), int(center[1])), (int(end_pt[0]), int(end_pt[1])), axis_colors[i], 2)
     return center, R_final, points_3d
 
 def convert_gaze_to_screen_coordinates(combined_gaze_direction, calibration_offset_yaw, calibration_offset_pitch):
@@ -710,8 +713,14 @@ right_sphere_locked = False
 right_sphere_local_offset = None
 right_calibration_nose_scale = None
 
-gaze_visualizer = GazeCursor()
-gaze_visualizer.update_position(CENTER_X, CENTER_Y)
+if _HEADLESS:
+    class _NullGazeCursor:
+        def update_position(self, x, y):
+            pass
+    gaze_visualizer = _NullGazeCursor()
+else:
+    gaze_visualizer = GazeCursor()
+    gaze_visualizer.update_position(CENTER_X, CENTER_Y)
 
 _heatmap_frame_skip = 3
 _heatmap_frame_count = 0
@@ -793,38 +802,37 @@ while cap.isOpened():
                     _auto_calibrated = False
                     _auto_calib_counter = AUTO_CALIB_FRAMES - 10
 
-        x_iris_l = int(left_iris.x * w)
-        y_iris_l = int(left_iris.y * h)
         if not left_sphere_locked:
-            cv2.circle(frame, (x_iris_l, y_iris_l), 10, (255,25,25), 2)
+            if not _HEADLESS:
+                cv2.circle(frame, (int(left_iris.x * w), int(left_iris.y * h)), 10, (255,25,25), 2)
         else:
             current_nose_scale = compute_scale(nose_points_3d)
             scale_ratio = current_nose_scale / left_calibration_nose_scale if left_calibration_nose_scale else 1.0
             scaled_offset = left_sphere_local_offset * scale_ratio
             sphere_world_l = head_center + R_final @ scaled_offset
-            x_sphere_l, y_sphere_l = int(sphere_world_l[0]), int(sphere_world_l[1])
             scaled_radius_l = int(base_radius * scale_ratio)
-            cv2.circle(frame, (x_sphere_l, y_sphere_l), scaled_radius_l, (255,255,25), 2)
+            if not _HEADLESS:
+                cv2.circle(frame, (int(sphere_world_l[0]), int(sphere_world_l[1])), scaled_radius_l, (255,255,25), 2)
 
-        x_iris_r = int(right_iris.x * w)
-        y_iris_r = int(right_iris.y * h)
         if not right_sphere_locked:
-            cv2.circle(frame, (x_iris_r, y_iris_r), 10, (25,255,25), 2)
+            if not _HEADLESS:
+                cv2.circle(frame, (int(right_iris.x * w), int(right_iris.y * h)), 10, (25,255,25), 2)
         else:
             current_nose_scale = compute_scale(nose_points_3d)
             scale_ratio_r = current_nose_scale / right_calibration_nose_scale if right_calibration_nose_scale else 1.0
             scaled_offset_r = right_sphere_local_offset * scale_ratio_r
             sphere_world_r = head_center + R_final @ scaled_offset_r
-            x_sphere_r, y_sphere_r = int(sphere_world_r[0]), int(sphere_world_r[1])
             scaled_radius_r = int(base_radius * scale_ratio_r)
-            cv2.circle(frame, (x_sphere_r, y_sphere_r), scaled_radius_r, (25,255,255), 2)
+            if not _HEADLESS:
+                cv2.circle(frame, (int(sphere_world_r[0]), int(sphere_world_r[1])), scaled_radius_r, (25,255,255), 2)
 
         iris_3d_left  = np.array([left_iris.x  * w, left_iris.y  * h, left_iris.z  * w])
         iris_3d_right = np.array([right_iris.x * w, right_iris.y * h, right_iris.z * w])
 
         if left_sphere_locked and right_sphere_locked:
-            draw_gaze(frame, sphere_world_l, iris_3d_left,  scaled_radius_l, (55,255,0), 130)
-            draw_gaze(frame, sphere_world_r, iris_3d_right, scaled_radius_r, (55,255,0), 130)
+            if not _HEADLESS:
+                draw_gaze(frame, sphere_world_l, iris_3d_left,  scaled_radius_l, (55,255,0), 130)
+                draw_gaze(frame, sphere_world_r, iris_3d_right, scaled_radius_r, (55,255,0), 130)
 
             left_gaze_dir  = iris_3d_left  - sphere_world_l
             left_gaze_dir  /= np.linalg.norm(left_gaze_dir)
@@ -861,54 +869,57 @@ while cap.isOpened():
 
             write_screen_position(screen_x, screen_y)
 
-            combined_origin = (sphere_world_l + sphere_world_r) / 2
-            combined_target = combined_origin + avg_combined_direction * gaze_length
-            cv2.line(frame,
-                     (int(combined_origin[0]), int(combined_origin[1])),
-                     (int(combined_target[0]),  int(combined_target[1])),
-                     (255,255,10), 3)
+            if not _HEADLESS:
+                combined_origin = (sphere_world_l + sphere_world_r) / 2
+                combined_target = combined_origin + avg_combined_direction * gaze_length
+                cv2.line(frame,
+                         (int(combined_origin[0]), int(combined_origin[1])),
+                         (int(combined_target[0]),  int(combined_target[1])),
+                         (255,255,10), 3)
 
-            texts = [f"Screen: ({screen_x}, {screen_y})"]
-            font2 = cv2.FONT_HERSHEY_SIMPLEX; fs2 = 0.7; th2 = 2
-            for i, text in enumerate(texts):
-                (tw, _), _ = cv2.getTextSize(text, font2, fs2, th2)
-                cv2.putText(frame, text, ((w-tw)//2, 30), font2, fs2, (0,255,0), th2)
+                texts = [f"Screen: ({screen_x}, {screen_y})"]
+                font2 = cv2.FONT_HERSHEY_SIMPLEX; fs2 = 0.7; th2 = 2
+                for i, text in enumerate(texts):
+                    (tw, _), _ = cv2.getTextSize(text, font2, fs2, th2)
+                    cv2.putText(frame, text, ((w-tw)//2, 30), font2, fs2, (0,255,0), th2)
 
-            hm_status = f"Heatmap: {'ON' if gaze_heatmap.visible else 'OFF'}  pts={len(gaze_heatmap.raw_points)}"
-            cv2.putText(frame, hm_status, (10, h-15),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (0, 220, 120) if gaze_heatmap.visible else (100,100,100), 1, cv2.LINE_AA)
+                hm_status = f"Heatmap: {'ON' if gaze_heatmap.visible else 'OFF'}  pts={len(gaze_heatmap.raw_points)}"
+                cv2.putText(frame, hm_status, (10, h-15),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                            (0, 220, 120) if gaze_heatmap.visible else (100,100,100), 1, cv2.LINE_AA)
 
-        for idx, lm in enumerate(face_landmarks):
-            x2, y2 = int(lm.x * w), int(lm.y * h)
-            cv2.circle(frame, (x2, y2), 0, (255,255,255), -1)
+        if not _HEADLESS:
+            for idx, lm in enumerate(face_landmarks):
+                x2, y2 = int(lm.x * w), int(lm.y * h)
+                cv2.circle(frame, (x2, y2), 0, (255,255,255), -1)
 
-        update_orbit_from_keys()
+        if not _HEADLESS:
+            update_orbit_from_keys()
 
-        landmarks3d = None
-        if results.multi_face_landmarks:
-            lm = results.multi_face_landmarks[0].landmark
-            landmarks3d = np.array([[p.x*w, p.y*h, p.z*w] for p in lm], dtype=float)
+            landmarks3d = None
+            if results.multi_face_landmarks:
+                lm = results.multi_face_landmarks[0].landmark
+                landmarks3d = np.array([[p.x*w, p.y*h, p.z*w] for p in lm], dtype=float)
 
-        render_debug_view_orbit(
-            h, w,
-            head_center3d=head_center if 'head_center' in locals() else None,
-            sphere_world_l=sphere_world_l if left_sphere_locked and 'sphere_world_l' in locals() else None,
-            scaled_radius_l=scaled_radius_l if left_sphere_locked and 'scaled_radius_l' in locals() else None,
-            sphere_world_r=sphere_world_r if right_sphere_locked and 'sphere_world_r' in locals() else None,
-            scaled_radius_r=scaled_radius_r if right_sphere_locked and 'scaled_radius_r' in locals() else None,
-            iris3d_l=iris_3d_left  if 'iris_3d_left'  in locals() else None,
-            iris3d_r=iris_3d_right if 'iris_3d_right' in locals() else None,
-            left_locked=left_sphere_locked,
-            right_locked=right_sphere_locked,
-            landmarks3d=landmarks3d,
-            combined_dir=avg_combined_direction if 'avg_combined_direction' in locals() else None,
-            gaze_len=5230,
-            monitor_corners=monitor_corners,
-            monitor_center=monitor_center_w,
-            monitor_normal=monitor_normal_w,
-            gaze_markers=gaze_markers
-        )
+            render_debug_view_orbit(
+                h, w,
+                head_center3d=head_center if 'head_center' in locals() else None,
+                sphere_world_l=sphere_world_l if left_sphere_locked and 'sphere_world_l' in locals() else None,
+                scaled_radius_l=scaled_radius_l if left_sphere_locked and 'scaled_radius_l' in locals() else None,
+                sphere_world_r=sphere_world_r if right_sphere_locked and 'sphere_world_r' in locals() else None,
+                scaled_radius_r=scaled_radius_r if right_sphere_locked and 'scaled_radius_r' in locals() else None,
+                iris3d_l=iris_3d_left  if 'iris_3d_left'  in locals() else None,
+                iris3d_r=iris_3d_right if 'iris_3d_right' in locals() else None,
+                left_locked=left_sphere_locked,
+                right_locked=right_sphere_locked,
+                landmarks3d=landmarks3d,
+                combined_dir=avg_combined_direction if 'avg_combined_direction' in locals() else None,
+                gaze_len=5230,
+                monitor_corners=monitor_corners,
+                monitor_center=monitor_center_w,
+                monitor_normal=monitor_normal_w,
+                gaze_markers=gaze_markers
+            )
 
     frame = gaze_heatmap.overlay_on_frame(frame)
 
@@ -924,18 +935,39 @@ while cap.isOpened():
 
     if os.path.exists(_CALIBRATE_FILE):
         try:
+            with open(_CALIBRATE_FILE, 'r') as _cf:
+                _calib_payload = _json.load(_cf)
+        except Exception:
+            _calib_payload = {}
+        try:
             os.remove(_CALIBRATE_FILE)
-        except FileNotFoundError:
-            pass
+        except OSError:
+            pass  # dosya bir başka yazma işlemiyle çakışmış olabilir — bir sonraki karede tekrar denenir
         if (left_sphere_locked and right_sphere_locked
                 and 'avg_combined_direction' in locals()
                 and avg_combined_direction is not None):
             try:
                 _, _, raw_yaw, raw_pitch = convert_gaze_to_screen_coordinates(
                     avg_combined_direction, 0, 0)
-                calibration_offset_yaw   = -raw_yaw
-                calibration_offset_pitch = -raw_pitch
-                print(f'[Calib] Merkez kalibrasyonu: yaw_off={calibration_offset_yaw:.2f} pitch_off={calibration_offset_pitch:.2f}')
+                target_x = _calib_payload.get('x')
+                target_y = _calib_payload.get('y')
+                if target_x is not None and target_y is not None:
+                    # Kullanıcı bu noktaya tıkladı → o an gerçekten oraya baktığı kesin biliniyor.
+                    # Fare tıklamasını göz kalibrasyonu için yer-doğrulama (ground truth) olarak kullan.
+                    _yawDeg, _pitchDeg = 12.0, 8.0  # convert_gaze_to_screen_coordinates ile aynı olmalı
+                    target_yaw   = (target_x / MONITOR_WIDTH)  * (2 * _yawDeg)   - _yawDeg
+                    target_pitch = _pitchDeg - (target_y / MONITOR_HEIGHT) * (2 * _pitchDeg)
+                    delta_yaw, delta_pitch = target_yaw - raw_yaw, target_pitch - raw_pitch
+                else:
+                    # Koordinatsız eski sinyal — ekran merkezine bakıldığı varsayılır
+                    delta_yaw, delta_pitch = -raw_yaw, -raw_pitch
+
+                _calib_samples.append((delta_yaw, delta_pitch))
+                del _calib_samples[:-5]  # sadece son 5 örneği tut — göz mouse'u anlık takip etsin,
+                                          # eski (artık geçersiz) konumlar offset'i geride bırakmasın
+                calibration_offset_yaw   = sum(s[0] for s in _calib_samples) / len(_calib_samples)
+                calibration_offset_pitch = sum(s[1] for s in _calib_samples) / len(_calib_samples)
+                print(f'[Calib] yaw_off={calibration_offset_yaw:.2f} pitch_off={calibration_offset_pitch:.2f}')
             except Exception as _ce:
                 print(f'[Calib] Hata: {_ce}')
 
@@ -1090,5 +1122,5 @@ else:
 for _sig in (_STOP_FILE, _CALIBRATE_FILE):
     try:
         os.remove(_sig)
-    except FileNotFoundError:
+    except OSError:
         pass
