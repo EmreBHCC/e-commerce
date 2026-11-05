@@ -1,14 +1,14 @@
 # ShopX: CLAUDE.md
 
 Alışveriş bağımlılığı araştırması için **sahte bir e-ticaret sitesi**. Denek gerçek bir mağazada
-geziyormuş gibi davranır. Her tıklama, ürün bakışı, sepet hareketi ve (isteğe bağlı) göz takibi
+geziyormuş gibi davranır. Her tıklama, ürün bakışı ve sepet hareketi
 araştırmacının admin panelinde canlı olarak kaydedilir. Ürün değil, **deney düzeneği**: amaç
 satış değil, ölçüm.
 
 - **Ekip:** Emre (EmreBHCC, repo sahibi) + Levent Aslan (lvntaslann, collaborator). Kodun
   büyük kısmını 2026-06/07'de Levent yazdı.
 - **Dallar:** `main` kararlı hal. `experiment-conditions` en son iş (deneysel pazarlama
-  koşulları + eye-tracker düzeltmeleri), Levent 2026-10-14'te PR #1 ile `main`'e birleştirdi
+  koşulları), Levent 2026-10-14'te PR #1 ile `main`'e birleştirdi
   (d0f3ea4). `v2-profesyonel` bunun üstünde, `main`'in içerdiği her şeyi zaten taşıyor.
 - **Açık işler:** `YAPILACAKLAR.md`.
 - **README.md:** mimari ve API için iyi bir harita, ama kısmen eskimiş (bkz. "README'de eskimiş
@@ -22,8 +22,7 @@ python server.py        # ya da app.bat — Flask + Socket.IO, 0.0.0.0:5000, deb
 
 - Mağaza `http://localhost:5000`, admin `http://localhost:5000/admin`. Sunucu açılınca ikisini
   varsayılan tarayıcıda kendisi açar (`_open_browser`, reloader'da bir kez).
-- Bağımlılıklar `requirements.txt` içinde. Sadece site için `flask` + `flask-socketio` yeter. Eye-tracker için
-  mediapipe/opencv/scipy/pyautogui/keyboard gerekir.
+- Bağımlılıklar `requirements.txt` içinde. Site için `flask` + `flask-socketio` yeter.
 - Ürünler çalışma anında **dummyjson.com**'dan çekilir (internet gerekir). Erişilemezse
   `FALLBACK_PRODUCTS` (8 emoji'li ürün) devreye girer.
 - Test, lint veya derleme adımı yok. Düz HTML/CSS/vanilla JS, paketleyici yok.
@@ -32,13 +31,11 @@ python server.py        # ya da app.bat — Flask + Socket.IO, 0.0.0.0:5000, deb
 
 | Dosya | Ne |
 | --- | --- |
-| `server.py` | Flask REST + Socket.IO merkezi. JSON dosya veritabanı, oturum durumu, eye-tracker alt sürecini başlatır/durdurur, gaze yayını |
+| `server.py` | Flask REST + Socket.IO merkezi. JSON dosya veritabanı, oturum durumu |
 | `index.html` / `app.js` / `style.css` | Mağaza (SPA). `app.js` ~3200 satır, tek dosya, global `State` nesnesi |
 | `admin.html` / `admin.js` / `admin.css` | Araştırmacı paneli: canlı loglar, kontrol merkezi (uzak komutlar), denekler, istatistik, dışa aktarma |
-| `eye-tracker.py` | MediaPipe Face Mesh ile bakış → ekran koordinatı. Oturum sonunda heatmap PNG/CSV/JSON yazar |
 | `reviews/*.json` | Gerçek denek yorumları (`{exportedAt, participant, reviews:[{productId, rating, comment, ...}]}`), `/api/reviews` ürün başına birleştirir |
-| `data/` | **git dışı** çalışma verisi: `logs.json`, `sessions.json`, `<denek_slug>/` heatmap'leri, eye-tracker sinyal dosyaları |
-| `screen_position.txt` | Eye-tracker'ın anlık bakış noktası (x,y). Çalışırken sürekli yazılır, **git'te izleniyor ama runtime dosyası**; değişmişse commit'e katma |
+| `data/` | **git dışı** çalışma verisi: `logs.json`, `sessions.json` |
 
 ### `app.js` içinde nereye bakılır
 
@@ -60,11 +57,9 @@ python server.py        # ya da app.bat — Flask + Socket.IO, 0.0.0.0:5000, deb
 
 **Oturum yaşam döngüsü:**
 1. Admin → Kontrol Merkezi'nde denek adı girip oturum başlatır (`session_started`).
-2. Sunucu mağazaya `SESSION_STARTED` gönderir **ve eye-tracker'ı otomatik başlatır** (kamera
-   açılır, Windows'ta yeni konsol penceresi). Mağaza kalibrasyon ekranını gösterir (7 nokta × 5 tık).
+2. Sunucu mağazaya `SESSION_STARTED` gönderir.
 3. Denek gezer. Her `logAction` → `log` olayı → sunucu `data/logs.json`'a yazar + admin'e iletir.
-4. Admin oturumu durdurur → mağaza `resetToInitial()` ile sıfırlanır, eye-tracker'a dur sinyali
-   gider, heatmap `data/<slug>/` altına düşer, admin'e `heatmap_saved` gelir.
+4. Admin oturumu durdurur → mağaza `resetToInitial()` ile sıfırlanır.
 
 Oturum yokken mağazanın üstünde "Bu oturum kayıt altına alınmıyor" şeridi görünür. Bu normal.
 
@@ -91,21 +86,19 @@ açık/koyu modu.
   Bilinen ihlal: kart ve modal puanları tüm koşullarda farklı kaynaklardan geliyor
   (`YAPILACAKLAR.md`).
 - **`data/` ve `reviews/` gerçek denek verisi.** Silme, üzerine yazma, test verisiyle kirletme.
-  Admin'deki "Logları Temizle" `logs.json`'ı boşaltır. Oturum silme ise o denegin
-  `data/<slug>/` heatmap klasörünü de **kalıcı olarak siler** (`_delete_session_data_folder`).
+  Admin'deki "Logları Temizle" `logs.json`'ı boşaltır. Oturum silme `sessions.json`'dan
+  kalıcı olarak kaldırır.
 - **Admin sekmesi oturum boyunca açık kalmalı.** Oturumun kendi log listesi (`sess.logs`)
   admin tarayıcısında birikir ve saniyede bir `PUT /api/sessions/<id>` ile kaydedilir. Admin
   kapalıyken gelen loglar sadece global `logs.json`'a düşer. O dosya da **son 1000 kayıtla
   sınırlı** (`MAX_LOGS`), eskiler atılır.
-- **Eye-tracker kamera açar.** Doğrulama için oturum başlatmak = kamera + yeni konsol penceresi.
-  Emre'ye sormadan oturum başlatma.
 
 ## Doğrulama nasıl yapılır
 
 Test takımı yok, doğrulama tarayıcıda yapılır:
 
 1. `python server.py` arka planda çalıştır, `curl` ile `/`, `/admin`, `/api/sessions`,
-   `/api/reviews`, `/api/heatmaps` 200 dönüyor mu bak.
+   `/api/reviews` 200 dönüyor mu bak.
 2. Tarayıcıda (Chrome eklentisi, yoksa headless Chrome + CDP) mağazayı sür:
    `document.getElementById('btn-female').click()` → `goToShopFromBudget()` → kartların
    (`.product-card[data-condition]`) oluşmasını bekle → `openProduct(id)`.

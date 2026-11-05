@@ -2,13 +2,9 @@
 
 import json
 import os
-import re
-import shutil
-import subprocess
-import sys
 import webbrowser
 from datetime import datetime
-from threading import Lock, Thread, Timer
+from threading import Lock, Timer
 
 from flask import Flask, jsonify, request, send_from_directory
 from flask_socketio import SocketIO, emit, join_room
@@ -18,14 +14,9 @@ DATA_DIR        = os.path.join(BASE_DIR, 'data')
 REVIEWS_DIR     = os.path.join(BASE_DIR, 'reviews')
 LOGS_FILE       = os.path.join(DATA_DIR, 'logs.json')
 SESS_FILE       = os.path.join(DATA_DIR, 'sessions.json')
-HEATMAPS_DIR    = os.path.join(DATA_DIR, 'heatmaps')
-EYETRACKER_FILE = os.path.join(BASE_DIR, 'eye-tracker.py')
-EYETRACKER_STOP      = os.path.join(DATA_DIR, 'eyetracker_stop')
-EYETRACKER_CALIBRATE = os.path.join(DATA_DIR, 'eyetracker_calibrate')
 MAX_LOGS        = 1000
 
 os.makedirs(DATA_DIR, exist_ok=True)
-os.makedirs(HEATMAPS_DIR, exist_ok=True)
 
 app       = Flask(__name__, static_folder=BASE_DIR, static_url_path='')
 app.config['SECRET_KEY'] = 'shopx-secret-2026'
@@ -96,29 +87,16 @@ def api_update_session(session_id):
     write_json(SESS_FILE, sessions)
     return jsonify({'ok': True})
 
-def _delete_session_data_folder(session_name):
-    """Bir denek/oturumun data/<slug>/ klasörünü (heatmap PNG/CSV/JSON dahil) siler."""
-    if not session_name:
-        return
-    folder = os.path.join(DATA_DIR, _slug(session_name))
-    if os.path.isdir(folder):
-        shutil.rmtree(folder, ignore_errors=True)
-
 @app.route('/api/sessions/<session_id>', methods=['DELETE'])
 def api_delete_session(session_id):
     sessions = read_json(SESS_FILE)
-    target = next((s for s in sessions if s.get('id') == session_id), None)
     sessions = [s for s in sessions if s.get('id') != session_id]
     write_json(SESS_FILE, sessions)
-    if target:
-        _delete_session_data_folder(target.get('name'))
     socketio.emit('sessions_updated', to='admin')
     return jsonify({'ok': True})
 
 @app.route('/api/sessions/all', methods=['DELETE'])
 def api_clear_sessions():
-    for s in read_json(SESS_FILE):
-        _delete_session_data_folder(s.get('name'))
     write_json(SESS_FILE, [])
     socketio.emit('sessions_updated', to='admin')
     return jsonify({'ok': True})
@@ -131,98 +109,7 @@ def api_export_all():
         'logs':       read_json(LOGS_FILE),
     })
 
-_active_session   = {'active': False, 'name': None}
-_eye_tracker_proc = None
-
-def _slug(name):
-    return re.sub(r'[^\w]', '_', name)[:20].strip('_') or 'denek'
-
-def start_eye_tracker(session_name):
-    global _eye_tracker_proc, _gaze_broadcaster_active
-    if _eye_tracker_proc and _eye_tracker_proc.poll() is None:
-        _eye_tracker_proc.terminate()
-        try: _eye_tracker_proc.wait(timeout=3)
-        except Exception: _eye_tracker_proc.kill()
-    try: os.remove(EYETRACKER_STOP)
-    except FileNotFoundError: pass
-    try: os.remove(EYETRACKER_CALIBRATE)
-    except FileNotFoundError: pass
-
-    if os.name == 'nt':
-        kwargs = {'creationflags': subprocess.CREATE_NEW_CONSOLE}
-    else:
-        kwargs = {}
-    try:
-        _eye_tracker_proc = subprocess.Popen(
-            [sys.executable, EYETRACKER_FILE,
-             '--session', session_name,
-             '--output-dir', os.path.join(DATA_DIR, _slug(session_name)),
-             '--headless'],
-            **kwargs
-        )
-        print(f'[EyeTracker] Başlatıldı PID={_eye_tracker_proc.pid}')
-        _gaze_broadcaster_active = True
-        Thread(target=_broadcast_gaze, daemon=True).start()
-        Thread(target=_watch_eye_tracker, args=(session_name,), daemon=True).start()
-    except Exception as e:
-        print(f'[EyeTracker] Başlatma hatası: {e}')
-
-def stop_eye_tracker():
-    global _gaze_broadcaster_active
-    _gaze_broadcaster_active = False
-    try:
-        os.makedirs(DATA_DIR, exist_ok=True)
-        with open(EYETRACKER_STOP, 'w') as f:
-            f.write('stop')
-        print('[EyeTracker] Durdurma sinyali yazıldı')
-    except Exception as e:
-        print(f'[EyeTracker] Sinyal hatası: {e}')
-
-_gaze_broadcaster_active = False
-
-def _broadcast_gaze():
-    """screen_position.txt'yi okuyup shop sayfasına gaze pozisyonunu yayınla."""
-    global _gaze_broadcaster_active
-    import time as _t
-    SCREEN_POS_FILE = os.path.join(BASE_DIR, 'screen_position.txt')
-    last_line = ''
-    while _gaze_broadcaster_active:
-        try:
-            with open(SCREEN_POS_FILE, 'r') as f:
-                line = f.read().strip()
-            if line and line != last_line:
-                parts = line.split(',')
-                if len(parts) == 2:
-                    x, y = int(parts[0]), int(parts[1])
-                    socketio.emit('gaze_position', {'x': x, 'y': y}, to='shop')
-                    last_line = line
-        except Exception:
-            pass
-        _t.sleep(0.05)
-
-def _watch_eye_tracker(session_name):
-    global _eye_tracker_proc, _gaze_broadcaster_active
-    proc = _eye_tracker_proc
-    if not proc:
-        return
-    proc.wait()
-    _gaze_broadcaster_active = False
-    print('[EyeTracker] Süreç tamamlandı, heatmap taranıyor...')
-    import time as _t; _t.sleep(0.8)
-
-    slug     = _slug(session_name)
-    sess_dir = os.path.join(DATA_DIR, slug)
-    prefix   = slug + '_'
-    if os.path.isdir(sess_dir):
-        files = [f"{slug}/{f}" for f in os.listdir(sess_dir)
-                 if f.startswith(prefix) and f.endswith('.png')]
-    else:
-        files = []
-    if files:
-        socketio.emit('heatmap_saved', {'session': session_name, 'files': files}, to='admin')
-        print(f'[EyeTracker] Heatmap gönderildi: {files}')
-    else:
-        print('[EyeTracker] Heatmap bulunamadı.')
+_active_session = {'active': False, 'name': None}
 
 @socketio.on('connect')
 def on_connect():
@@ -253,38 +140,7 @@ def on_session_started(data):
     global _active_session
     _active_session = {'active': True, 'name': data.get('name', '')}
     emit('command', {'cmd': 'SESSION_STARTED', 'name': _active_session['name']}, to='shop')
-    start_eye_tracker(_active_session['name'])
     print(f'[WS] Oturum başlatıldı: {_active_session["name"]}')
-
-def _write_calibrate_signal(payload):
-    """EYETRACKER_CALIBRATE dosyasını atomik biçimde yazar (geçici dosya + os.replace) —
-    eye-tracker.py aynı anda dosyayı okuyup siliyor olabilir, doğrudan üzerine yazmak
-    Windows'ta paylaşım ihlali (PermissionError) riski taşır."""
-    os.makedirs(DATA_DIR, exist_ok=True)
-    tmp = EYETRACKER_CALIBRATE + f'.tmp{os.getpid()}'
-    with open(tmp, 'w') as f:
-        json.dump(payload, f)
-    os.replace(tmp, EYETRACKER_CALIBRATE)
-
-@socketio.on('calibration_complete')
-def on_calibration_complete(data):
-    """Shop → Sunucu: bir kalibrasyon noktası tıklandı, gerçek ekran konumunu eye-tracker'a ilet"""
-    try:
-        payload = {'x': (data or {}).get('x'), 'y': (data or {}).get('y')}
-        _write_calibrate_signal(payload)
-        print(f'[EyeTracker] Kalibrasyon sinyali yazıldı: {payload}')
-    except Exception as e:
-        print(f'[EyeTracker] Kalibrasyon sinyal hatası: {e}')
-
-@socketio.on('calibration_mouse')
-def on_calibration_mouse(data):
-    """Shop → Sunucu: kalibrasyon sırasında canlı mouse konumu (kullanıcı mouse'a bakıyor varsayımıyla
-    eye-tracker offsetini sürekli ince ayar yapmak için kullanılır)"""
-    try:
-        payload = {'x': (data or {}).get('x'), 'y': (data or {}).get('y')}
-        _write_calibrate_signal(payload)
-    except Exception:
-        pass
 
 @socketio.on('session_stopped')
 def on_session_stopped(data):
@@ -293,7 +149,6 @@ def on_session_stopped(data):
     name = _active_session.get('name', 'denek')
     _active_session = {'active': False, 'name': None}
     emit('command', {'cmd': 'SESSION_STOPPED'}, to='shop')
-    stop_eye_tracker()
     print(f'[WS] Oturum durduruldu: {name}')
 
 @socketio.on('log')
@@ -342,44 +197,6 @@ def api_get_reviews():
         except Exception:
             pass
     return jsonify(by_product)
-
-@app.route('/api/heatmap/<path:filename>')
-def api_serve_heatmap(filename):
-    clean = filename.replace('\\', '/')
-    parts = clean.split('/')
-    if any(p == '..' for p in parts) or len(parts) > 2:
-        return jsonify({'error': 'Geçersiz dosya adı'}), 400
-    if len(parts) == 2:
-        subdir, fname = parts
-        return send_from_directory(os.path.join(DATA_DIR, subdir), fname)
-    return send_from_directory(HEATMAPS_DIR, parts[0])
-
-@app.route('/api/heatmaps')
-def api_list_heatmaps():
-    metas = []
-    search_dirs = [HEATMAPS_DIR]
-    if os.path.isdir(DATA_DIR):
-        for d in os.listdir(DATA_DIR):
-            full = os.path.join(DATA_DIR, d)
-            if os.path.isdir(full) and d not in ('heatmaps',):
-                search_dirs.append(full)
-    for sdir in search_dirs:
-        if not os.path.isdir(sdir): continue
-        for fname in os.listdir(sdir):
-            if not fname.endswith('.json'): continue
-            try:
-                with open(os.path.join(sdir, fname), 'r', encoding='utf-8') as f:
-                    m = json.load(f)
-                    parent = os.path.basename(sdir)
-                    if parent != 'heatmaps':
-                        if m.get('png'):
-                            m['png'] = f"{parent}/{m['png']}"
-                        if m.get('csv'):
-                            m['csv'] = f"{parent}/{m['csv']}"
-                    metas.append(m)
-            except Exception:
-                pass
-    return jsonify(sorted(metas, key=lambda x: x.get('timestamp', ''), reverse=True))
 
 def _open_browser():
     webbrowser.open('http://localhost:5000')

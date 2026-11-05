@@ -19,8 +19,7 @@
   - [Ödeme Akışı](#7-ödeme-akışı)
   - [Admin Paneli](#8-admin-paneli-adminhtml--adminjs)
   - [Gerçek Zamanlı İletişim](#9-gerçek-zamanlı-i̇letişim-socketio)
-  - [Göz Takip Sistemi](#10-göz-takip-sistemi-eye-trackerpy)
-  - [Flask Backend](#11-flask-backend-serverpy)
+  - [Flask Backend](#10-flask-backend-serverpy)
 - [Veri Akışı](#veri-akışı)
 - [Ekran Akışı](#ekran-akışı)
 - [API Referansı](#api-referansı)
@@ -37,7 +36,6 @@ ShopX, alışveriş bağımlılığı araştırmaları için tasarlanmış bir *
 - Cinsiyet bazlı ürün keşfi ve satın alma kararları
 - Bütçe kısıtlamasının harcama davranışına etkisi
 - Yapay zeka önerileri altında karar alma süreci
-- Göz takibi ile sayfa ısı haritası analizi
 
 ---
 
@@ -55,9 +53,6 @@ ShopX, alışveriş bağımlılığı araştırmaları için tasarlanmış bir *
 ├─────────────────────────────────────────────────────────────┤
 │                    HARICI SERVISLER                         │
 │        DummyJSON API (ürün verileri) · USD→TRY (x38)       │
-├─────────────────────────────────────────────────────────────┤
-│                     GÖZ TAKİBİ                              │
-│       MediaPipe · OpenCV · PyAutoGUI · SciPy                │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -87,13 +82,6 @@ ShopX, alışveriş bağımlılığı araştırmaları için tasarlanmış bir *
                                │   data/ (JSON)     │
                                │  logs.json          │
                                │  sessions.json      │
-                               │  heatmaps/          │
-                               └───────────────────┘
-                                          ▲
-                               ┌──────────┴────────┐
-                               │  eye-tracker.py    │
-                               │  (subprocess)      │
-                               │  MediaPipe+OpenCV  │
                                └───────────────────┘
 ```
 
@@ -309,7 +297,6 @@ Araştırmacıların test oturumlarını yönettiği kontrol merkezi.
 │                                                 │
 │  Oturum Yönetimi:                               │
 │  ├─ Denek adı gir → oturumu başlat             │
-│  ├─ Göz takibini etkinleştir/devre dışı bırak  │
 │  ├─ Canlı log filtresi (tür / anahtar kelime)  │
 │  └─ JSON veya CSV olarak dışa aktar            │
 └─────────────────────────────────────────────────┘
@@ -340,7 +327,7 @@ Araştırmacıların test oturumlarını yönettiği kontrol merkezi.
   ├─ session_started            ├─ session_status
   ├─ session_stopped            ├─ logs_history
   ├─ log (her aksiyon)          ├─ logs_cleared
-  └─ heartbeat                  └─ heatmap_saved
+  └─ heartbeat
 
             │                              │
             └──────────┬───────────────────┘
@@ -353,40 +340,7 @@ Araştırmacıların test oturumlarını yönettiği kontrol merkezi.
 
 ---
 
-### 10. Göz Takip Sistemi (`eye-tracker.py`)
-
-```
-┌─────────────────────────────────────────────────┐
-│              GÖZ TAKİP AKIŞI                    │
-│                                                 │
-│  Kamera → OpenCV → MediaPipe Face Mesh          │
-│                │                                │
-│                ▼                                │
-│       Göz noktaları tespit et                   │
-│                │                                │
-│                ▼                                │
-│    SciPy ile bakış yönü hesapla                 │
-│                │                                │
-│                ▼                                │
-│  PyAutoGUI ile ekran koordinatı dönüştür        │
-│                │                                │
-│                ▼                                │
-│    Tkinter overlay ile görsel imleç             │
-│                │                                │
-│                ▼                                │
-│  NumPy ile ısı haritası verisi biriktir         │
-│                │                                │
-│                ▼                                │
-│  Oturum sonu: PNG + JSON + CSV kaydet           │
-│  → data/heatmaps/<isim>_<tarih>.*               │
-└─────────────────────────────────────────────────┘
-```
-
-Üretilen dosyalar: `deneme_20260508_122230.png`, `.json`, `.csv`
-
----
-
-### 11. Flask Backend (`server.py`)
+### 10. Flask Backend (`server.py`)
 
 **REST API Uç Noktaları:**
 
@@ -404,8 +358,6 @@ DEL  /api/sessions/<id>       → oturumu sil
 DEL  /api/sessions/all        → tüm oturumları sil
 
 GET  /api/export              → tüm veriyi dışa aktar (JSON)
-GET  /api/heatmaps            → ısı haritası listesi
-GET  /api/heatmap/<dosya>     → ısı haritası resmi
 ```
 
 **Yapılandırma:**
@@ -415,7 +367,6 @@ BASE_DIR   = proje kök dizini
 DATA_DIR   = ./data/
 LOGS_FILE  = ./data/logs.json    (maks. 1000 kayıt)
 SESS_FILE  = ./data/sessions.json
-HEATMAPS   = ./data/heatmaps/
 SECRET_KEY = 'shopx-secret-2026'
 PORT       = 5000
 ```
@@ -516,8 +467,7 @@ Sayfası       Modali          │
   "endTime": "2026-06-02T14:45:00.000Z",
   "gender": "female",
   "budget": "medium",
-  "logs": [...],
-  "eyeTracking": true
+  "logs": [...]
 }
 ```
 
@@ -530,7 +480,6 @@ Sayfası       Modali          │
 ```
 Python 3.9+
 pip
-Webcam (göz takibi için)
 ```
 
 ### Kurulum
@@ -538,9 +487,6 @@ Webcam (göz takibi için)
 ```bash
 # Bağımlılıkları yükle
 pip install flask flask-socketio
-
-# Göz takibi için ek bağımlılıklar
-pip install opencv-python mediapipe numpy pyautogui keyboard scipy
 ```
 
 ### Çalıştırma
@@ -575,17 +521,12 @@ e-commerce/
 ├── admin.js             # Admin panel mantığı (861 satır)
 ├── admin.css            # Admin panel stilleri
 │
-├── eye-tracker.py       # Göz takip modülü (MediaPipe + OpenCV)
 ├── app.bat              # Windows hızlı başlatma betiği
 ├── requirements.txt     # Python bağımlılıkları
 │
 └── data/
     ├── logs.json        # Canlı aktivite logları (maks. 1000)
-    ├── sessions.json    # Kayıtlı test oturumları
-    └── heatmaps/        # Göz takibi çıktıları
-        ├── *.png        # Isı haritası görüntüsü
-        ├── *.json       # Bakış noktası verileri
-        └── *.csv        # Ham koordinat verileri
+    └── sessions.json    # Kayıtlı test oturumları
 ```
 
 ---
@@ -610,9 +551,6 @@ e-commerce/
 | Admin | Oturum kayıt/durdurma | ✅ |
 | Admin | JSON/CSV dışa aktarma | ✅ |
 | Admin | İstatistik dashboard | ✅ |
-| Göz Takibi | MediaPipe tabanlı gaze detection | ✅ |
-| Göz Takibi | Isı haritası üretimi (PNG) | ✅ |
-| Göz Takibi | Oturum bazlı kayıt | ✅ |
 | Arayüz | Karanlık/aydınlık tema | ✅ |
 | Arayüz | Cinsiyet bazlı tema renkleri | ✅ |
 | Arayüz | Duyarlı (responsive) tasarım | ✅ |
