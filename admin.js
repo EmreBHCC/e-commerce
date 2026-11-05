@@ -248,6 +248,8 @@ function refreshSubjectList() {
           <button class="action-btn secondary" onclick="viewSessionDetail('${sess.id}')">🔍 Detay</button>
           <button class="action-btn secondary" onclick="exportSession('${sess.id}')">⬇ JSON</button>
           <button class="action-btn secondary" onclick="exportSessionCSV('${sess.id}')">📊 CSV</button>
+          <button class="action-btn secondary" onclick="exportSessionByCategory('${sess.id}','json')">🗂 Kategori JSON</button>
+          <button class="action-btn secondary" onclick="exportSessionByCategory('${sess.id}','xlsx')">📗 Kategori Excel</button>
           ${sess.heatmapFiles && sess.heatmapFiles.length ? `<button class="action-btn secondary" onclick="viewSessionDetail('${sess.id}')" title="Göz takibi mevcut" style="color:#22c55e;border-color:rgba(34,197,94,.4)">👁 Heatmap</button>` : ''}
           ${!isActive ? `<button class="action-btn danger" onclick="deleteSession('${sess.id}')">🗑</button>` : ''}
         </div>
@@ -321,6 +323,8 @@ function viewSessionDetail(id) {
         <div style="display:flex;gap:8px">
           <button style="padding:7px 12px;background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit" onclick="exportSession('${sess.id}')">⬇ JSON</button>
           <button style="padding:7px 12px;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit" onclick="exportSessionCSV('${sess.id}')">📊 CSV</button>
+          <button style="padding:7px 12px;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit" onclick="exportSessionByCategory('${sess.id}','json')">🗂 Kategori JSON</button>
+          <button style="padding:7px 12px;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit" onclick="exportSessionByCategory('${sess.id}','xlsx')">📗 Kategori Excel</button>
           <button onclick="document.getElementById('sess-detail-modal').style.display='none'" style="padding:7px 12px;background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit">✕ Kapat</button>
         </div>
       </div>
@@ -397,6 +401,179 @@ function exportAllSessionsCSV() {
   });
   downloadText([header, ...rows].join('\n'), `shopx-all-sessions-${Date.now()}.csv`, 'text/csv');
   showAdminToast(`📊 CSV indirildi`, 'success');
+}
+
+/* ── Kategoriye göre dışa aktarma ─────────────────────────────
+   Log metinleri/tipleri değiştirilmez; kategori, alt kategori ve ek sütunlar
+   mesaj kalıbından dışa aktarma sırasında çıkarılır (eski oturumlar için de çalışır). */
+const _condOf = m => ((m || '').match(/\[Koşul: ([^\]]+)\]/) || [])[1] || '';
+const _normName = s => (s || '').replace(/\s*\[Koşul:[^\]]*\]/, '').replace(/\s*–\s*[\d.,]+\s*TL.*$/, '')
+  .replace(/\s*\([^()]*\)\s*$/, '').trim();
+const _restOf = m => (m || '').replace(/^[^:]+:\s*/, '');
+const _generic = m => (m || '').split(/[:–(]/)[0].trim();
+// Sıra: OturumID, Denek, Zaman, Tip, Kategori, Alt Kategori, Mesaj, Cinsiyet, Sepet
+const _EXPORT_BASE = ['OturumID', 'Denek', 'Zaman', 'Tip', 'Kategori', 'Alt Kategori', 'Mesaj', 'Cinsiyet', 'Sepet'];
+const _baseVals = (sess, l, cat) =>
+  [sess.id, sess.name, l.time, l.type, cat.label, (cat.sub || _generic)(l.msg || ''), l.msg || '', l.gender || '', l.cartSize || 0];
+
+// Ürün adı → koşul (oturumdaki [Koşul: ...] etiketli loglardan)
+function _buildCondMap(sess) {
+  const map = {};
+  (sess.logs || []).forEach(l => {
+    const c = _condOf(l.msg);
+    const n = c && _normName(_restOf(l.msg));
+    if (n) map[n.toLowerCase()] = c;
+  });
+  return map;
+}
+
+// Flaş indirim özeti: pop-up başına tek satır (gösterildi → kapandı → tıklandı mı)
+function _deriveFlashSummary(items) {
+  const bySess = new Map();
+  items.forEach(it => { if (!bySess.has(it.sess)) bySess.set(it.sess, []); bySess.get(it.sess).push(it.log); });
+  const rows = [];
+  bySess.forEach((logs, sess) => {
+    const pops = []; let open = null;
+    logs.forEach(l => {
+      const m = l.msg || ''; let r;
+      if ((r = m.match(/^Flaş indirim pop-up gösterildi:\s*(.*)$/))) {
+        open = { name: r[1], shown: l, closed: null, clicked: false }; pops.push(open);
+      } else if (/^Flaş indirim pop-up kapatıldı/.test(m)) {
+        if (open && !open.closed) open.closed = l;
+      } else if ((r = m.match(/^Flaş indirimden satın alındı:\s*(.*)$/))) {
+        for (let i = pops.length - 1; i >= 0; i--) if (pops[i].name === r[1]) { pops[i].clicked = true; break; }
+      }
+    });
+    pops.forEach(p => {
+      const secs = p.closed ? Math.round((Date.parse(p.closed.timestamp) - Date.parse(p.shown.timestamp)) / 1000) : NaN;
+      const result = p.clicked ? 'Tıklandı – sepete eklendi'
+        : !p.closed ? 'Tıklanmadı – kapanış kaydı yok'
+        : secs >= 119 ? 'Tıklanmadı – süre doldu' : 'Tıklanmadı – kapatıldı';
+      rows.push([sess.id, sess.name, p.shown.time, p.name, 'discount', p.closed ? p.closed.time : '',
+        isNaN(secs) ? '' : secs, p.clicked ? 'Evet' : 'Hayır', result, p.shown.gender || '']);
+    });
+  });
+  return { cols: ['OturumID', 'Denek', 'Gösterilme', 'Ürün', 'Koşul', 'Kapanma', 'Ekranda Kalma(sn)', 'Tıklandı mı', 'Sonuç', 'Cinsiyet'], rows };
+}
+
+// İlk eşleşen kategori kazanır; sıra önemlidir. `sub` = Alt Kategori, `cols/fn` = ek sütunlar.
+const EXPORT_CATEGORIES = [
+  { key: 'flas_indirim', label: 'Flaş İndirim', test: l => /^Flaş indirim/.test(l.msg || ''),
+    sub: m => /gösterildi/.test(m) ? 'Gösterildi' : /kapatıldı/.test(m) ? 'Kapatıldı' : 'Tıklandı (sepete eklendi)',
+    cols: ['Ürün'], fn: l => [/^Flaş indirim pop-up kapatıldı/.test(l.msg || '') ? '' : _restOf(l.msg)] },
+  { key: 'sayfa_kaydirma', label: 'Sayfa Kaydırma', test: l => /^Sayfa kaydırıldı/.test(l.msg || ''),
+    sub: () => 'Sayfa kaydırıldı',
+    cols: ['Kaydırma(%)'], fn: l => { const m = (l.msg || '').match(/%(\d+)/); return [m ? Number(m[1]) : '']; } },
+  { key: 'hesap', label: 'Hesap', test: l => /^(Giriş yapıldı|Kayıt olundu|Hesabım açıldı)/.test(l.msg || ''),
+    sub: m => /^Giriş/.test(m) ? 'Giriş yapıldı' : /^Kayıt/.test(m) ? 'Hesap açıldı (kayıt)' : 'Hesabım sayfası açıldı' },
+  { key: 'bekleme_suresi', label: 'Bekleme Süresi', test: l => /^Ürün üzerinde \d+s beklendi/.test(l.msg || ''),
+    sub: () => 'Ürün üzerinde bekleme',
+    cols: ['Ürün', 'Süre(sn)', 'Koşul'], fn: l => {
+      const m = (l.msg || '').match(/^Ürün üzerinde (\d+)s beklendi: (.*)$/);
+      return [m ? _normName(m[2]) : '', m ? Number(m[1]) : '', _condOf(l.msg)];
+    } },
+  { key: 'urun_goruntuleme', label: 'Ürün Görüntüleme', test: l => /^Ürün görüntülendi/.test(l.msg || ''),
+    sub: () => 'Ürün görüntülendi',
+    cols: ['Ürün', 'Fiyat(TL)', 'Koşul'], fn: l => {
+      const rest = _restOf(l.msg), p = rest.match(/–\s*([\d.,]+)\s*TL/);
+      return [_normName(rest), p ? Number(p[1].replace(',', '.')) : '', _condOf(l.msg)];
+    } },
+  { key: 'sepete_ekleme', label: 'Sepete Ekleme', test: l => /^(Sepete eklendi|Sepette adet artırıldı)/.test(l.msg || ''),
+    sub: m => /^Sepete eklendi/.test(m) ? 'Yeni ürün eklendi' : 'Adet artırıldı',
+    cols: ['Ürün', 'Fiyat(TL)', 'Koşul'], fn: (l, ctx) => {
+      const rest = _restOf(l.msg), p = rest.match(/–\s*([\d.,]+)\s*TL/), name = _normName(rest.replace(/\s*→.*$/, ''));
+      return [name, p ? Number(p[1].replace(',', '.')) : '', _condOf(l.msg) || ctx.cond(name)];
+    } },
+  { key: 'satin_alma_amaci', label: 'Satın Alma Amacı', test: l => /^Satın alma amacı/.test(l.msg || ''),
+    sub: m => ((m.match(/^Satın alma amacı: "(.*)" –/) || [])[1]) || 'Satın alma amacı',
+    cols: ['Amaç', 'Ürün', 'Koşul'], fn: (l, ctx) => {
+      const m = (l.msg || '').match(/^Satın alma amacı: "(.*)" – (.*)$/);
+      return [m ? m[1] : '', m ? m[2] : '', m ? ctx.cond(m[2]) : ''];
+    } },
+  { key: 'sepet_hareketleri', label: 'Sepet Hareketleri',
+    test: l => /^(Sepetten çıkarıldı|Sepet adedi|Sepet açıldı|Sepet kapatıldı|Kupon|Hediye)/.test(l.msg || ''),
+    sub: m => /^Sepet adedi/.test(m) ? 'Adet değiştirildi' : _generic(m) },
+  { key: 'odeme', label: 'Ödeme', test: l => /^(Ödeme|Adres girildi|Simülasyon tamamlandı)/.test(l.msg || ''),
+    sub: m => (m.match(/^Ödeme Adım \d/) || [])[0] || _generic(m) },
+  { key: 'favoriler', label: 'Favoriler', test: l => /Favori/.test(l.msg || ''),
+    sub: m => /eklendi/.test(m) ? 'Favorilere eklendi' : /çıkarıldı/.test(m) ? 'Favorilerden çıkarıldı' : /açıldı/.test(m) ? 'Favoriler açıldı' : 'Favoriler kapatıldı',
+    cols: ['Ürün'], fn: l => [/eklendi|çıkarıldı/.test(l.msg || '') ? _normName(_restOf(l.msg)) : ''] },
+  { key: 'arama', label: 'Arama', test: l => l.type === 'search',
+    cols: ['Sorgu'], fn: l => [((l.msg || '').match(/"([^"]*)"/) || [])[1] || ''] },
+  { key: 'gezinme', label: 'Gezinme', test: l => l.type === 'navigation' },
+  { key: 'sistem', label: 'Sistem', test: l => l.type === 'system' },
+  { key: 'diger', label: 'Diğer', test: () => true },
+];
+
+// → [{key, label, cols, rows}]  ("Tüm Loglar" + dolu kategoriler + "Flaş İndirim Özeti")
+function buildExportSheets(sessions) {
+  const buckets = {}; EXPORT_CATEGORIES.forEach(c => { buckets[c.key] = []; });
+  const all = [];
+  sessions.forEach(sess => {
+    const map = _buildCondMap(sess);
+    const ctx = { cond: n => map[_normName(n).toLowerCase()] || '' };
+    (sess.logs || []).forEach(l => {
+      const cat = EXPORT_CATEGORIES.find(c => c.test(l));
+      buckets[cat.key].push({ sess, log: l, ctx });
+      all.push(_baseVals(sess, l, cat));
+    });
+  });
+  const sheets = [];
+  if (all.length) sheets.push({ key: 'tum_loglar', label: 'Tüm Loglar', cols: _EXPORT_BASE, rows: all });
+  EXPORT_CATEGORIES.forEach(c => {
+    const items = buckets[c.key];
+    if (!items.length) return;
+    sheets.push({ key: c.key, label: c.label, cols: [..._EXPORT_BASE, ...(c.cols || [])],
+      rows: items.map(it => [..._baseVals(it.sess, it.log, c), ...(c.fn ? c.fn(it.log, it.ctx) : [])]) });
+    if (c.key === 'flas_indirim') sheets.push({ key: 'flas_indirim_ozet', label: 'Flaş İndirim Özeti', ..._deriveFlashSummary(items) });
+  });
+  return sheets;
+}
+
+function _sessionsForExport(ids) {
+  const all = loadSessions();
+  const list = ids ? all.filter(s => ids.includes(s.id)) : all;
+  if (!list.length) { showAdminToast('⚠️ Kayıtlı oturum yok', 'warning'); return null; }
+  return list;
+}
+
+function exportByCategoryJSON(ids, filename) {
+  const sessions = _sessionsForExport(ids);
+  if (!sessions) return;
+  const out = { exportedAt: new Date().toISOString(), sessions: sessions.map(s => ({ id: s.id, name: s.name })), categories: {} };
+  buildExportSheets(sessions).forEach(sh => {
+    out.categories[sh.key] = { label: sh.label, count: sh.rows.length,
+      logs: sh.rows.map(r => Object.fromEntries(sh.cols.map((c, i) => [c, r[i]]))) };
+  });
+  downloadJSON(out, filename);
+  showAdminToast('⬇ Kategorili JSON indirildi', 'success');
+}
+
+function exportByCategoryExcel(ids, filename) {
+  if (typeof XLSX === 'undefined') { showAdminToast('⚠️ Excel kütüphanesi yüklenemedi (internet gerekli)', 'warning'); return; }
+  const sessions = _sessionsForExport(ids);
+  if (!sessions) return;
+  const wb = XLSX.utils.book_new();
+  buildExportSheets(sessions).forEach(sh => {
+    const ws = XLSX.utils.aoa_to_sheet([sh.cols, ...sh.rows]);
+    ws['!cols'] = sh.cols.map((h, i) => ({ wch: h === 'Mesaj' ? 60 : /^(Ürün|Sonuç|Amaç|Alt Kategori)$/.test(h) ? 28 : i < 2 ? 18 : 14 }));
+    XLSX.utils.book_append_sheet(wb, ws, sh.label);
+  });
+  XLSX.writeFile(wb, filename);
+  showAdminToast('📗 Kategorili Excel indirildi', 'success');
+}
+
+function exportSessionByCategory(id, fmt) {
+  const sess = getSession(id);
+  if (!sess) return;
+  const base = `shopx-kategori-${slugify(sess.name)}-${id.slice(-8)}`;
+  if (fmt === 'xlsx') exportByCategoryExcel([id], base + '.xlsx');
+  else exportByCategoryJSON([id], base + '.json');
+}
+function exportAllByCategory(fmt) {
+  const base = `shopx-kategori-tum-oturumlar-${Date.now()}`;
+  if (fmt === 'xlsx') exportByCategoryExcel(null, base + '.xlsx');
+  else exportByCategoryJSON(null, base + '.json');
 }
 
 function downloadJSON(obj, filename) {
@@ -979,5 +1156,6 @@ Object.assign(window, {
   viewSessionDetail,
   exportSession, exportSessionCSV,
   exportAllSessions, exportAllSessionsCSV,
+  exportSessionByCategory, exportAllByCategory,
   openHeatmapZoom, closeHeatmapZoom,
 });
