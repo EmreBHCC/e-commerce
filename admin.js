@@ -248,6 +248,8 @@ function refreshSubjectList() {
           <button class="action-btn secondary" onclick="viewSessionDetail('${sess.id}')">🔍 Detay</button>
           <button class="action-btn secondary" onclick="exportSession('${sess.id}')">⬇ JSON</button>
           <button class="action-btn secondary" onclick="exportSessionCSV('${sess.id}')">📊 CSV</button>
+          <button class="action-btn secondary" onclick="exportSessionByCategory('${sess.id}','json')">🗂 Kategori JSON</button>
+          <button class="action-btn secondary" onclick="exportSessionByCategory('${sess.id}','xlsx')">📗 Kategori Excel</button>
           ${sess.heatmapFiles && sess.heatmapFiles.length ? `<button class="action-btn secondary" onclick="viewSessionDetail('${sess.id}')" title="Göz takibi mevcut" style="color:#22c55e;border-color:rgba(34,197,94,.4)">👁 Heatmap</button>` : ''}
           ${!isActive ? `<button class="action-btn danger" onclick="deleteSession('${sess.id}')">🗑</button>` : ''}
         </div>
@@ -321,6 +323,8 @@ function viewSessionDetail(id) {
         <div style="display:flex;gap:8px">
           <button style="padding:7px 12px;background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit" onclick="exportSession('${sess.id}')">⬇ JSON</button>
           <button style="padding:7px 12px;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit" onclick="exportSessionCSV('${sess.id}')">📊 CSV</button>
+          <button style="padding:7px 12px;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit" onclick="exportSessionByCategory('${sess.id}','json')">🗂 Kategori JSON</button>
+          <button style="padding:7px 12px;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit" onclick="exportSessionByCategory('${sess.id}','xlsx')">📗 Kategori Excel</button>
           <button onclick="document.getElementById('sess-detail-modal').style.display='none'" style="padding:7px 12px;background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:8px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:inherit">✕ Kapat</button>
         </div>
       </div>
